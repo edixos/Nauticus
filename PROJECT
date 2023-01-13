@@ -1,0 +1,16 @@
+domain: nauticus.io
+layout:
+- go.kubebuilder.io/v3
+projectName: nauticus
+repo: github.com/edixos/nauticus
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: nauticus.io
+  group: nauticus.io
+  kind: Space
+  path: github.com/edixos/nauticus/api/v1alpha1
+  version: v1alpha1
+version: "3"

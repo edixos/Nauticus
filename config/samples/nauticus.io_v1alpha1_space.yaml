@@ -1,0 +1,12 @@
+apiVersion: nauticus.io.nauticus.io/v1alpha1
+kind: Space
+metadata:
+  labels:
+    app.kubernetes.io/name: space
+    app.kubernetes.io/instance: space-sample
+    app.kubernetes.io/part-of: nauticus
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: nauticus
+  name: space-sample
+spec:
+  # TODO(user): Add fields here
