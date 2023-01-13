@@ -6,7 +6,7 @@ metadata:
   name: manager-role
 rules:
 - apiGroups:
-  - nauticus.io.nauticus.io
+  - nauticus.io
   resources:
   - spaces
   verbs:
@@ -18,13 +18,13 @@ rules:
   - update
   - watch
 - apiGroups:
-  - nauticus.io.nauticus.io
+  - nauticus.io
   resources:
   - spaces/finalizers
   verbs:
   - update
 - apiGroups:
-  - nauticus.io.nauticus.io
+  - nauticus.io
   resources:
   - spaces/status
   verbs:

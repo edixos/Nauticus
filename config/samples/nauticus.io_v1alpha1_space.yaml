@@ -1,4 +1,4 @@
-apiVersion: nauticus.io.nauticus.io/v1alpha1
+apiVersion: nauticus.io/v1alpha1
 kind: Space
 metadata:
   labels:

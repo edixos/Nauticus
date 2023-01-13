@@ -17,25 +17,30 @@ limitations under the License.
 package controllers
 
 import (
-	"context"
+    "context"
 
-	"k8s.io/apimachinery/pkg/runtime"
-	ctrl "sigs.k8s.io/controller-runtime"
-	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/log"
+    "github.com/go-logr/logr"
+    v1 "k8s.io/api/core/v1"
+    metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+    "k8s.io/apimachinery/pkg/runtime"
+    "k8s.io/apimachinery/pkg/util/rand"
+    "sigs.k8s.io/controller-runtime/pkg/client"
 
-	nauticusiov1alpha1 "github.com/edixos/nauticus/api/v1alpha1"
+    nauticusiov1alpha1 "github.com/edixos/nauticus/api/v1alpha1"
+    apierrors "k8s.io/apimachinery/pkg/api/errors"
+    ctrl "sigs.k8s.io/controller-runtime"
 )
 
 // SpaceReconciler reconciles a Space object
 type SpaceReconciler struct {
-	client.Client
-	Scheme *runtime.Scheme
+    client.Client
+    Scheme *runtime.Scheme
+    log    logr.Logger
 }
 
-//+kubebuilder:rbac:groups=nauticus.io.nauticus.io,resources=spaces,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=nauticus.io.nauticus.io,resources=spaces/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=nauticus.io.nauticus.io,resources=spaces/finalizers,verbs=update
+//+kubebuilder:rbac:groups=nauticus.io,resources=spaces,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=nauticus.io,resources=spaces/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=nauticus.io,resources=spaces/finalizers,verbs=update
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
@@ -47,16 +52,52 @@ type SpaceReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.13.1/pkg/reconcile
 func (r *SpaceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = log.FromContext(ctx)
+    log := r.log.WithValues("space", req.NamespacedName)
+    ctx = context.Background()
 
-	// TODO(user): your logic here
+    // Fetch the Space instance
+    space := &nauticusiov1alpha1.Space{}
+    err := r.Get(ctx, req.NamespacedName, space)
+    if err != nil {
+        if apierrors.IsNotFound(err) {
+            // Space not found, return
+            log.Error(err, "Space not found.")
+            return ctrl.Result{}, nil
+        }
+        // Error reading the object - requeue the request.
+        return ctrl.Result{}, err
+    }
+    // Generate random suffix
+    suffix := rand.String(8)
 
-	return ctrl.Result{}, nil
+    // Create a new namespace object
+    namespace := &v1.Namespace{
+        ObjectMeta: metav1.ObjectMeta{
+            Name: space.Name + "-" + suffix,
+        },
+    }
+
+    //Create the namespace in the cluster
+    err = r.Client.Create(ctx, namespace)
+    if err != nil {
+        log.Error(err, "Failed to create namespace", "namespace", namespace.Name)
+        return ctrl.Result{}, err
+    }
+
+    // Update the Space's status
+    space.Status.NamespaceName = namespace.Name
+    err = r.Client.Status().Update(ctx, space)
+    if err != nil {
+        log.Error(err, "Failed to update Space status", "space", space.Name)
+        return ctrl.Result{}, err
+    }
+
+    return ctrl.Result{}, nil
 }
 
 // SetupWithManager sets up the controller with the Manager.
 func (r *SpaceReconciler) SetupWithManager(mgr ctrl.Manager) error {
-	return ctrl.NewControllerManagedBy(mgr).
-		For(&nauticusiov1alpha1.Space{}).
-		Complete(r)
+    return ctrl.NewControllerManagedBy(mgr).
+        For(&nauticusiov1alpha1.Space{}).
+        Complete(r)
 }

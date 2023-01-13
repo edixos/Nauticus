@@ -5,15 +5,17 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.10.0
   creationTimestamp: null
-  name: spaces.nauticus.io.nauticus.io
+  name: spaces.nauticus.io
 spec:
-  group: nauticus.io.nauticus.io
+  group: nauticus.io
   names:
+    categories:
+    - spaces
     kind: Space
     listKind: SpaceList
     plural: spaces
     singular: space
-  scope: Namespaced
+  scope: Cluster
   versions:
   - name: v1alpha1
     schema:
