@@ -35,7 +35,7 @@ import (
 type SpaceReconciler struct {
     client.Client
     Scheme *runtime.Scheme
-    log    logr.Logger
+    Log    logr.Logger
 }
 
 //+kubebuilder:rbac:groups=nauticus.io,resources=spaces,verbs=get;list;watch;create;update;patch;delete
@@ -52,7 +52,7 @@ type SpaceReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.13.1/pkg/reconcile
 func (r *SpaceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-    log := r.log.WithValues("space", req.NamespacedName)
+    log := r.Log.WithValues("space", req.NamespacedName)
     ctx = context.Background()
 
     // Fetch the Space instance
@@ -68,20 +68,33 @@ func (r *SpaceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
         return ctrl.Result{}, err
     }
     // Generate random suffix
-    suffix := rand.String(8)
-
+    suffix := rand.String(4)
     // Create a new namespace object
     namespace := &v1.Namespace{
         ObjectMeta: metav1.ObjectMeta{
-            Name: space.Name + "-" + suffix,
+            Name:   space.Name + "-" + suffix,
+            Labels: space.Labels,
+            // TODO find out which labels to put here.
         },
     }
 
-    //Create the namespace in the cluster
-    err = r.Client.Create(ctx, namespace)
+    // Check if the namespace exist
+    existingNamespace := &v1.Namespace{}
+    err = r.Client.Get(ctx, client.ObjectKey{Name: space.Status.NamespaceName}, existingNamespace)
     if err != nil {
-        log.Error(err, "Failed to create namespace", "namespace", namespace.Name)
-        return ctrl.Result{}, err
+        if apierrors.IsNotFound(err) {
+            // Namespace does not exist, creating it.
+            log.Info("Creating the namespace", "namespace", namespace.Name)
+            err = r.Client.Create(ctx, namespace)
+            if err != nil {
+                log.Error(err, "Failed to create namespace", "namespace", namespace.Name)
+                return ctrl.Result{}, err
+            }
+        } else {
+            log.Error(err, "Failed to check if the namespace exists", "namespace", namespace.Name)
+        }
+    } else {
+        namespace = existingNamespace
     }
 
     // Update the Space's status
