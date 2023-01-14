@@ -74,11 +74,14 @@ func (r *SpaceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
         ObjectMeta: metav1.ObjectMeta{
             Name:   space.Name + "-" + suffix,
             Labels: space.Labels,
-            // TODO find out which labels to put here.
         },
     }
 
-    // Check if the namespace exist
+    if err := ctrl.SetControllerReference(space, namespace, r.Scheme); err != nil {
+        return ctrl.Result{}, err
+    }
+
+    // Check if the namespace exist and create it if it does not
     existingNamespace := &v1.Namespace{}
     err = r.Client.Get(ctx, client.ObjectKey{Name: space.Status.NamespaceName}, existingNamespace)
     if err != nil {
@@ -112,5 +115,6 @@ func (r *SpaceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 func (r *SpaceReconciler) SetupWithManager(mgr ctrl.Manager) error {
     return ctrl.NewControllerManagedBy(mgr).
         For(&nauticusiov1alpha1.Space{}).
+        Owns(&v1.Namespace{}).
         Complete(r)
 }
