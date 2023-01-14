@@ -61,7 +61,7 @@ func (r *SpaceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
     if err != nil {
         if apierrors.IsNotFound(err) {
             // Space not found, return
-            log.Error(err, "Space not found.")
+            log.Info("Space not found.")
             return ctrl.Result{}, nil
         }
         // Error reading the object - requeue the request.
@@ -93,6 +93,7 @@ func (r *SpaceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
                 log.Error(err, "Failed to create namespace", "namespace", namespace.Name)
                 return ctrl.Result{}, err
             }
+            log.Info("The namespace created successfully.", "namespace", namespace.Name)
         } else {
             log.Error(err, "Failed to check if the namespace exists", "namespace", namespace.Name)
         }
