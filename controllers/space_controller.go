@@ -21,9 +21,7 @@ import (
 
 	"github.com/go-logr/logr"
 	v1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/apimachinery/pkg/util/rand"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	nauticusiov1alpha1 "github.com/edixos/nauticus/api/v1alpha1"
@@ -44,20 +42,19 @@ type SpaceReconciler struct {
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
-// TODO(user): Modify the Reconcile function to compare the state specified by
 // the Space object against the actual cluster state, and then
 // perform operations to make the cluster state reflect the state specified by
 // the user.
 //
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.13.1/pkg/reconcile
-func (r *SpaceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	log := r.Log.WithValues("space", req.NamespacedName)
+func (s *SpaceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+	log := s.Log.WithValues("space", req.NamespacedName)
 	ctx = context.Background()
 
 	// Fetch the Space instance
 	space := &nauticusiov1alpha1.Space{}
-	err := r.Get(ctx, req.NamespacedName, space)
+	err := s.Get(ctx, req.NamespacedName, space)
 	if err != nil {
 		if apierrors.IsNotFound(err) {
 			// Space not found, return
@@ -67,55 +64,17 @@ func (r *SpaceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 		// Error reading the object - requeue the request.
 		return ctrl.Result{}, err
 	}
-	// Generate random suffix
-	suffix := rand.String(4)
-	// Create a new namespace object
-	namespace := &v1.Namespace{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:   space.Name + "-" + suffix,
-			Labels: space.Labels,
-		},
-	}
 
-	if err := ctrl.SetControllerReference(space, namespace, r.Scheme); err != nil {
+	if err := s.reconcileSpace(ctx, space, log); err != nil {
 		return ctrl.Result{}, err
 	}
-
-	// Check if the namespace exist and create it if it does not
-	existingNamespace := &v1.Namespace{}
-	err = r.Client.Get(ctx, client.ObjectKey{Name: space.Status.NamespaceName}, existingNamespace)
-	if err != nil {
-		if apierrors.IsNotFound(err) {
-			// Namespace does not exist, creating it.
-			log.Info("Creating the namespace", "namespace", namespace.Name)
-			err = r.Client.Create(ctx, namespace)
-			if err != nil {
-				log.Error(err, "Failed to create namespace", "namespace", namespace.Name)
-				return ctrl.Result{}, err
-			}
-			log.Info("The namespace created successfully.", "namespace", namespace.Name)
-		} else {
-			log.Error(err, "Failed to check if the namespace exists", "namespace", namespace.Name)
-		}
-	} else {
-		namespace = existingNamespace
-	}
-
-	// Update the Space's status
-	space.Status.NamespaceName = namespace.Name
-	err = r.Client.Status().Update(ctx, space)
-	if err != nil {
-		log.Error(err, "Failed to update Space status", "space", space.Name)
-		return ctrl.Result{}, err
-	}
-
 	return ctrl.Result{}, nil
 }
 
 // SetupWithManager sets up the controller with the Manager.
-func (r *SpaceReconciler) SetupWithManager(mgr ctrl.Manager) error {
+func (s *SpaceReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&nauticusiov1alpha1.Space{}).
 		Owns(&v1.Namespace{}).
-		Complete(r)
+		Complete(s)
 }

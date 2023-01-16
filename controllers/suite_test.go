@@ -44,68 +44,68 @@ var k8sClient client.Client
 var testEnv *envtest.Environment
 
 func TestAPIs(t *testing.T) {
-    RegisterFailHandler(Fail)
+	RegisterFailHandler(Fail)
 
-    RunSpecs(t, "Controller Suite")
+	RunSpecs(t, "Controller Suite")
 }
 
 var _ = BeforeSuite(func() {
-    logf.SetLogger(zap.New(zap.WriteTo(GinkgoWriter), zap.UseDevMode(true)))
+	logf.SetLogger(zap.New(zap.WriteTo(GinkgoWriter), zap.UseDevMode(true)))
 
-    By("bootstrapping test environment")
-    testEnv = &envtest.Environment{
-        CRDDirectoryPaths:     []string{filepath.Join("..", "config", "crd", "bases")},
-        ErrorIfCRDPathMissing: true,
-    }
+	By("bootstrapping test environment")
+	testEnv = &envtest.Environment{
+		CRDDirectoryPaths:     []string{filepath.Join("..", "config", "crd", "bases")},
+		ErrorIfCRDPathMissing: true,
+	}
 
-    var err error
-    // cfg is defined in this file globally.
-    cfg, err = testEnv.Start()
-    Expect(err).NotTo(HaveOccurred())
-    Expect(cfg).NotTo(BeNil())
+	var err error
+	// cfg is defined in this file globally.
+	cfg, err = testEnv.Start()
+	Expect(err).NotTo(HaveOccurred())
+	Expect(cfg).NotTo(BeNil())
 
-    err = nauticusiov1alpha1.AddToScheme(scheme.Scheme)
-    Expect(err).NotTo(HaveOccurred())
+	err = nauticusiov1alpha1.AddToScheme(scheme.Scheme)
+	Expect(err).NotTo(HaveOccurred())
 
-    //+kubebuilder:scaffold:scheme
+	//+kubebuilder:scaffold:scheme
 
-    k8sClient, err = client.New(cfg, client.Options{Scheme: scheme.Scheme})
-    Expect(err).NotTo(HaveOccurred())
-    Expect(k8sClient).NotTo(BeNil())
+	k8sClient, err = client.New(cfg, client.Options{Scheme: scheme.Scheme})
+	Expect(err).NotTo(HaveOccurred())
+	Expect(k8sClient).NotTo(BeNil())
 
 })
 
 var _ = Describe("Space controller", func() {
-    const (
-        SpaceName = "test-space"
-    )
-    Context("When creating a space", func() {
-        It("Should adds the Status.NamespaceName", func() {
-            ctx := context.Background()
-            space := &nauticusiov1alpha1.Space{
-                TypeMeta: metav1.TypeMeta{
-                    APIVersion: nauticusiov1alpha1.GroupVersion.Version,
-                    Kind:       nauticusiov1alpha1.SpaceKind,
-                },
-                ObjectMeta: metav1.ObjectMeta{
-                    Name: SpaceName,
-                },
-            }
-            err := k8sClient.Create(ctx, space)
-            Expect(err).NotTo(HaveOccurred())
+	const (
+		SpaceName = "test-space"
+	)
+	Context("When creating a space", func() {
+		It("Should adds the Status.NamespaceName", func() {
+			ctx := context.Background()
+			space := &nauticusiov1alpha1.Space{
+				TypeMeta: metav1.TypeMeta{
+					APIVersion: nauticusiov1alpha1.GroupVersion.Version,
+					Kind:       nauticusiov1alpha1.SpaceKind,
+				},
+				ObjectMeta: metav1.ObjectMeta{
+					Name: SpaceName,
+				},
+			}
+			err := k8sClient.Create(ctx, space)
+			Expect(err).NotTo(HaveOccurred())
 
-            createdSpace := &nauticusiov1alpha1.Space{}
-            err = k8sClient.Get(ctx, client.ObjectKey{
-                Name: SpaceName,
-            }, createdSpace)
-            Expect(createdSpace.Status.NamespaceName).ToNot(BeNil())
-        })
+			createdSpace := &nauticusiov1alpha1.Space{}
+			err = k8sClient.Get(ctx, client.ObjectKey{
+				Name: SpaceName,
+			}, createdSpace)
+			Expect(createdSpace.Status.NamespaceName).ToNot(BeNil())
+		})
 
-    })
+	})
 })
 
 var _ = AfterSuite(func() {
-    By("tearing down the test environment")
-    err := testEnv.Stop()
-    Expect(err).NotTo(HaveOccurred())
+	By("tearing down the test environment")
+	err := testEnv.Stop()
+	Expect(err).NotTo(HaveOccurred())
 })
