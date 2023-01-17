@@ -50,7 +50,7 @@ type SpaceReconciler struct {
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.13.1/pkg/reconcile
 func (s *SpaceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	log := s.Log.WithValues("space", req.NamespacedName)
-	ctx = context.Background()
+	ctx = context.TODO()
 
 	// Fetch the Space instance
 	space := &nauticusiov1alpha1.Space{}
@@ -76,5 +76,6 @@ func (s *SpaceReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&nauticusiov1alpha1.Space{}).
 		Owns(&v1.Namespace{}).
+		Owns(&v1.ResourceQuota{}).
 		Complete(s)
 }

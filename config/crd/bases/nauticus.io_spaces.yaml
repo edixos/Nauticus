@@ -36,6 +36,71 @@ spec:
             type: object
           spec:
             description: SpaceSpec defines the desired state of Space
+            properties:
+              resourceQuota:
+                description: ResourceQuotaSpec defines the desired hard limits to
+                  enforce for Quota.
+                properties:
+                  hard:
+                    additionalProperties:
+                      anyOf:
+                      - type: integer
+                      - type: string
+                      pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                      x-kubernetes-int-or-string: true
+                    description: 'hard is the set of desired hard limits for each
+                      named resource. More info: https://kubernetes.io/docs/concepts/policy/resource-quotas/'
+                    type: object
+                  scopeSelector:
+                    description: scopeSelector is also a collection of filters like
+                      scopes that must match each object tracked by a quota but expressed
+                      using ScopeSelectorOperator in combination with possible values.
+                      For a resource to match, both scopes AND scopeSelector (if specified
+                      in spec), must be matched.
+                    properties:
+                      matchExpressions:
+                        description: A list of scope selector requirements by scope
+                          of the resources.
+                        items:
+                          description: A scoped-resource selector requirement is a
+                            selector that contains values, a scope name, and an operator
+                            that relates the scope name and values.
+                          properties:
+                            operator:
+                              description: Represents a scope's relationship to a
+                                set of values. Valid operators are In, NotIn, Exists,
+                                DoesNotExist.
+                              type: string
+                            scopeName:
+                              description: The name of the scope that the selector
+                                applies to.
+                              type: string
+                            values:
+                              description: An array of string values. If the operator
+                                is In or NotIn, the values array must be non-empty.
+                                If the operator is Exists or DoesNotExist, the values
+                                array must be empty. This array is replaced during
+                                a strategic merge patch.
+                              items:
+                                type: string
+                              type: array
+                          required:
+                          - operator
+                          - scopeName
+                          type: object
+                        type: array
+                    type: object
+                    x-kubernetes-map-type: atomic
+                  scopes:
+                    description: A collection of filters that must match each object
+                      tracked by a quota. If not specified, the quota matches all
+                      objects.
+                    items:
+                      description: A ResourceQuotaScope defines a filter that must
+                        match each object tracked by a quota
+                      type: string
+                    type: array
+                type: object
             type: object
           status:
             description: SpaceStatus defines the observed state of Space

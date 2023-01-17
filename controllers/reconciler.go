@@ -13,5 +13,10 @@ func (s *SpaceReconciler) reconcileSpace(ctx context.Context, space *nauticusiov
 	if err != nil {
 		return err
 	}
+	log.Info("Reconciling Resource Quota for space", "Space", space.Name)
+	err = s.reconcileResourceQuota(ctx, space, log)
+	if err != nil {
+		return err
+	}
 	return nil
 }
