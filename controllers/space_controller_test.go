@@ -25,82 +25,103 @@ import (
     corev1 "k8s.io/api/core/v1"
     "k8s.io/apimachinery/pkg/api/resource"
     metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+    "k8s.io/apimachinery/pkg/types"
 
     nauticusiov1alpha1 "github.com/edixos/nauticus/api/v1alpha1"
-    "sigs.k8s.io/controller-runtime/pkg/client"
     //+kubebuilder:scaffold:imports
 )
 
 // These tests use Ginkgo (BDD-style Go testing framework). Refer to
 // http://onsi.github.io/ginkgo/ to learn more about Ginkgo.
+const (
+    SpaceName                  = "test-space"
+    SpaceNameWithResourceQuota = "test-space-resource-quota"
+    timeout                    = time.Second * 10
+    interval                   = time.Millisecond * 250
+)
 
 var _ = Describe("Space controller", func() {
-    const (
-        SpaceName                  = "test-space"
-        SpaceNameWithResourceQuota = "test-space-resource-quota"
-        timeout                    = time.Second * 10
-        interval                   = time.Millisecond * 250
-    )
-    Context("When creating a space", func() {
-        It("Should adds the Status.NamespaceName", func() {
-            ctx := context.Background()
-            space := &nauticusiov1alpha1.Space{
-                TypeMeta: metav1.TypeMeta{
-                    APIVersion: nauticusiov1alpha1.GroupVersion.Version,
-                    Kind:       nauticusiov1alpha1.SpaceKind,
-                },
-                ObjectMeta: metav1.ObjectMeta{
-                    Name: SpaceName,
-                },
-            }
-            err := k8sClient.Create(ctx, space)
-            Expect(err).NotTo(HaveOccurred())
 
-            createdSpace := &nauticusiov1alpha1.Space{}
-            err = k8sClient.Get(ctx, client.ObjectKey{
-                Name: SpaceName,
-            }, createdSpace)
-            Expect(createdSpace.Status.NamespaceName).ToNot(BeNil())
+    Context("When creating a basic space", func() {
+        var createdSpace nauticusiov1alpha1.Space
+
+        It("Create a basic resource", func() {
+            By("Creating a Space", func() {
+                ctx := context.Background()
+                space := &nauticusiov1alpha1.Space{
+                    TypeMeta: metav1.TypeMeta{
+                        APIVersion: nauticusiov1alpha1.GroupVersion.Version,
+                        Kind:       nauticusiov1alpha1.SpaceKind,
+                    },
+                    ObjectMeta: metav1.ObjectMeta{
+                        Name: SpaceName,
+                    },
+                }
+                Expect(k8sClient.Create(ctx, space)).Should(Succeed())
+                spaceLookupKey := types.NamespacedName{Name: space.Name}
+                // We'll need to retry getting this newly created Space, given that creation may not immediately happen.
+                Eventually(func() error {
+                    return k8sClient.Get(ctx, spaceLookupKey, &createdSpace)
+                }, timeout, interval).Should(Succeed())
+
+            })
+        })
+        It("Should create a Namespace", func() {
+            ctx := context.Background()
+            By("Creating an instance with a generated name", func() {
+                namespaceLookupKey := types.NamespacedName{Name: createdSpace.Status.NamespaceName}
+                createdNamespace := &corev1.Namespace{}
+                // We'll need to retry getting this newly created MsTeams, given that creation may not immediately happen.
+                Eventually(func() error {
+                    return k8sClient.Get(ctx, namespaceLookupKey, createdNamespace)
+                }, timeout, interval).Should(Succeed())
+                Expect(createdNamespace.OwnerReferences[0].UID).To(Equal(createdSpace.UID))
+                Expect(createdSpace.Status.NamespaceName).To(Equal(createdNamespace.Name))
+            })
         })
     })
-    Context("When creating a space with a resource quota", func() {
-        It("Should create a resource quota within the generated namespace", func() {
-            ctx := context.TODO()
 
-            space := &nauticusiov1alpha1.Space{
-                TypeMeta: metav1.TypeMeta{
-                    APIVersion: nauticusiov1alpha1.GroupVersion.Version,
-                    Kind:       nauticusiov1alpha1.SpaceKind,
-                },
-                ObjectMeta: metav1.ObjectMeta{
-                    Name: SpaceNameWithResourceQuota,
-                },
-                Spec: nauticusiov1alpha1.SpaceSpec{
-                    ResourceQuota: corev1.ResourceQuotaSpec{
-                        Hard: corev1.ResourceList{
-                            corev1.ResourceCPU: resource.MustParse("8"),
+    Context("When creating a space with resource quota", func() {
+        var createdSpace nauticusiov1alpha1.Space
+        var createdResourceQuota corev1.ResourceQuota
+        It("Creates a Space with resource quota spec", func() {
+            ctx := context.Background()
+            By("Creating a Space with resource quotas", func() {
+                space := &nauticusiov1alpha1.Space{
+                    TypeMeta: metav1.TypeMeta{
+                        APIVersion: nauticusiov1alpha1.GroupVersion.Version,
+                        Kind:       nauticusiov1alpha1.SpaceKind,
+                    },
+                    ObjectMeta: metav1.ObjectMeta{
+                        Name: SpaceNameWithResourceQuota,
+                    },
+                    Spec: nauticusiov1alpha1.SpaceSpec{
+                        ResourceQuota: corev1.ResourceQuotaSpec{
+                            Hard: corev1.ResourceList{
+                                corev1.ResourceCPU: resource.MustParse("8"),
+                            },
                         },
                     },
-                },
-            }
-            err := k8sClient.Create(ctx, space)
-            Expect(err).NotTo(HaveOccurred())
-            createdResourceQuota := &corev1.ResourceQuota{}
-            createdSpace := &nauticusiov1alpha1.Space{}
-            err = k8sClient.Get(ctx, client.ObjectKey{
-                Name: space.Name,
-            }, createdSpace)
-            Expect(err).NotTo(HaveOccurred())
+                }
+                Expect(k8sClient.Create(ctx, space)).Should(Succeed())
+                spaceLookupKey := types.NamespacedName{Name: space.Name}
+                // We'll need to retry getting this newly created Space, given that creation may not immediately happen.
+                Eventually(func() error {
+                    return k8sClient.Get(ctx, spaceLookupKey, &createdSpace)
+                }, timeout, interval).Should(Succeed())
 
-            // We'll need to retry getting this newly created space, given that creation may not immediately happen.
-
-            Eventually(func() error {
-                return k8sClient.Get(ctx, client.ObjectKey{
-                    Name:      space.Name,
-                    Namespace: space.Status.NamespaceName,
-                }, createdResourceQuota)
-            }, timeout, interval).Should(Succeed())
-
+            })
         })
+        It("Should create a resource quota", func() {
+            ctx := context.Background()
+            By("Creating a resource quota within the generated namespace", func() {
+                resourceQuotaLookupKey := types.NamespacedName{Namespace: createdSpace.Status.NamespaceName, Name: createdSpace.Name}
+                // We'll need to retry getting this newly created Space, given that creation may not immediately happen.
+                Eventually(func() error {
+                    return k8sClient.Get(ctx, resourceQuotaLookupKey, &createdResourceQuota)
+                }, timeout, interval).Should(Succeed())
+            })
+        })
+
     })
 })
