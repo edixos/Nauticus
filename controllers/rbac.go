@@ -15,29 +15,35 @@ import (
 
 func (s *SpaceReconciler) reconcileOwners(ctx context.Context, space *nauticusiov1alpha1.Space, log logr.Logger) error {
     rolebindingName := space.Name + "-owner"
-    ownersRoleBinding := &rbacv1.RoleBinding{
-        ObjectMeta: metav1.ObjectMeta{
-            Name:      rolebindingName,
-            Namespace: space.Status.NamespaceName,
-        },
-        RoleRef: rbacv1.RoleRef{
-            Kind:     "ClusterRole",
-            APIGroup: rbacv1.GroupName,
-            Name:     "admin",
-        },
-        Subjects: space.Spec.Owners,
-    }
+    ownersRoleBinding := newRoleBinding(rolebindingName, space.Status.NamespaceName, "admin", space.Spec.Owners)
     if err := controllerutil.SetControllerReference(space, ownersRoleBinding, s.Scheme); err != nil {
         return fmt.Errorf("unable to fill the ownerreference for the owners rolebindings")
     }
+    return s.createOrUpdateRoleBinding(ctx, rolebindingName, ownersRoleBinding, space, log)
+}
 
+func (s *SpaceReconciler) reconcileAdditionalRoleBindings(ctx context.Context, space *nauticusiov1alpha1.Space, log logr.Logger) error {
+
+    for _, ad := range space.Spec.AdditionalRoleBindings {
+        rolebindingName := space.Name + "-" + ad.ClusterRoleName
+        additionalRoleBinding := newRoleBinding(rolebindingName, space.Status.NamespaceName, ad.ClusterRoleName, ad.Subjects)
+        if err := controllerutil.SetControllerReference(space, additionalRoleBinding, s.Scheme); err != nil {
+            return fmt.Errorf("unable to fill the ownerreference for the additional rolebindings")
+        }
+        return s.createOrUpdateRoleBinding(ctx, rolebindingName, additionalRoleBinding, space, log)
+    }
+    return nil
+
+}
+
+func (s *SpaceReconciler) createOrUpdateRoleBinding(ctx context.Context, rolebindingName string, roleBinding *rbacv1.RoleBinding, space *nauticusiov1alpha1.Space, log logr.Logger) error {
     existingRoleBinding := &rbacv1.RoleBinding{}
     roleBindingLookupKey := types.NamespacedName{Name: rolebindingName, Namespace: space.Status.NamespaceName}
     err := s.Client.Get(ctx, roleBindingLookupKey, existingRoleBinding)
     if err != nil {
         if apierrors.IsNotFound(err) {
             log.Info("Creating the role binding", "name", space.Name, "namespace", space.Status.NamespaceName)
-            err = s.Client.Create(ctx, ownersRoleBinding)
+            err = s.Client.Create(ctx, roleBinding)
             if err != nil {
                 log.Error(err, "Failed to create role binding", "name", space.Name)
                 return err
@@ -50,11 +56,26 @@ func (s *SpaceReconciler) reconcileOwners(ctx context.Context, space *nauticusio
         }
     } else {
         log.Info("Updating existing RoleBinding", "RoleBinding", roleBindingLookupKey)
-        err = s.Client.Update(ctx, ownersRoleBinding)
+        err = s.Client.Update(ctx, roleBinding)
         if err != nil {
             log.Error(err, "Cannot Update the existing Rolebinding", "RoleBinding", roleBindingLookupKey)
         }
     }
     return nil
 
+}
+
+func newRoleBinding(name string, namespace string, clusterRoleName string, subjects []rbacv1.Subject) *rbacv1.RoleBinding {
+    return &rbacv1.RoleBinding{
+        ObjectMeta: metav1.ObjectMeta{
+            Name:      name,
+            Namespace: namespace,
+        },
+        RoleRef: rbacv1.RoleRef{
+            Kind:     "ClusterRole",
+            APIGroup: rbacv1.GroupName,
+            Name:     clusterRoleName,
+        },
+        Subjects: subjects,
+    }
 }

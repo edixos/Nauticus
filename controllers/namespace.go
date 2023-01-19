@@ -9,7 +9,6 @@ import (
 	v1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/util/rand"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
@@ -63,6 +62,5 @@ func (s *SpaceReconciler) newNamespace(space *nauticusiov1alpha1.Space) (*v1.Nam
 }
 
 func (s *SpaceReconciler) namespaceName(space *nauticusiov1alpha1.Space) string {
-	suffix := rand.String(4)
-	return space.Name + "-" + suffix
+	return space.Name
 }

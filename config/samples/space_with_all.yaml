@@ -20,3 +20,8 @@ spec:
       kind: User
     - name: smile@group.com
       kind: Group
+  additionalRoleBindings:
+    - clusterRoleName: viewer
+      subjects:
+        - name: alice
+          kind: User
