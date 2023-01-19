@@ -7,12 +7,16 @@ metadata:
     app.kubernetes.io/part-of: nauticus
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/created-by: nauticus
-  name: space-sample-rc
+  name: space-all-in-one
 spec:
-
   resourceQuota:
     hard:
       limits.cpu: "8"
       limits.memory: 16Gi
       requests.cpu: "8"
       requests.memory: 16Gi
+  owners:
+    - name: smile
+      kind: User
+    - name: smile@group.com
+      kind: Group

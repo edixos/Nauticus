@@ -18,6 +18,7 @@ package v1alpha1
 
 import (
 	corev1 "k8s.io/api/core/v1"
+	v1 "k8s.io/api/rbac/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -27,6 +28,7 @@ import (
 // SpaceSpec defines the desired state of Space
 type SpaceSpec struct {
 	ResourceQuota corev1.ResourceQuotaSpec `json:"resourceQuota,omitempty"`
+	Owners        []v1.Subject             `json:"owners,omitempty"`
 }
 
 // SpaceStatus defines the observed state of Space

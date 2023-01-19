@@ -9,15 +9,24 @@ import (
 )
 
 func (s *SpaceReconciler) reconcileSpace(ctx context.Context, space *nauticusiov1alpha1.Space, log logr.Logger) error {
-	log.Info("Reconciling Namespace for space.", "Space", space.Name)
+	log.Info("Reconciling Namespace for space.")
 	err := s.reconcileNamespace(ctx, space, log)
 	if err != nil {
 		return err
 	}
 	resourceQuotaSpecValue := reflect.ValueOf(space.Spec.ResourceQuota)
 	if !resourceQuotaSpecValue.IsZero() {
-		log.Info("Reconciling Resource Quota for space", "Space", space.Name)
+		log.Info("Reconciling Resource Quota for space")
 		err = s.reconcileResourceQuota(ctx, space, log)
+		if err != nil {
+			return err
+		}
+	}
+
+	ownerRoleBindingSpecValue := reflect.ValueOf(space.Spec.Owners)
+	if !ownerRoleBindingSpecValue.IsZero() {
+		log.Info("Reconciling Owner Role Binding for space")
+		err = s.reconcileOwners(ctx, space, log)
 		if err != nil {
 			return err
 		}

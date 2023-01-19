@@ -9,10 +9,8 @@ metadata:
     app.kubernetes.io/created-by: nauticus
   name: space-sample-rc
 spec:
-
-  resourceQuota:
-    hard:
-      limits.cpu: "8"
-      limits.memory: 16Gi
-      requests.cpu: "8"
-      requests.memory: 16Gi
+  owners:
+    - name: smile
+      kind: User
+    - name: smile@group.com
+      kind: Group
