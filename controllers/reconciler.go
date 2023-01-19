@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"reflect"
 
 	nauticusiov1alpha1 "github.com/edixos/nauticus/api/v1alpha1"
 	"github.com/go-logr/logr"
@@ -13,10 +14,14 @@ func (s *SpaceReconciler) reconcileSpace(ctx context.Context, space *nauticusiov
 	if err != nil {
 		return err
 	}
-	log.Info("Reconciling Resource Quota for space", "Space", space.Name)
-	err = s.reconcileResourceQuota(ctx, space, log)
-	if err != nil {
-		return err
+	resourceQuotaSpecValue := reflect.ValueOf(space.Spec.ResourceQuota)
+	if !resourceQuotaSpecValue.IsZero() {
+		log.Info("Reconciling Resource Quota for space", "Space", space.Name)
+		err = s.reconcileResourceQuota(ctx, space, log)
+		if err != nil {
+			return err
+		}
 	}
+
 	return nil
 }

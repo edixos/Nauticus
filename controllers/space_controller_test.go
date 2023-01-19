@@ -1,19 +1,18 @@
-///*
-//Copyright 2023.
+// /*
+// Copyright 2023.
 //
-//Licensed under the Apache License, Version 2.0 (the "License");
-//you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
-//    http://www.apache.org/licenses/LICENSE-2.0
+//	http://www.apache.org/licenses/LICENSE-2.0
 //
-//Unless required by applicable law or agreed to in writing, software
-//distributed under the License is distributed on an "AS IS" BASIS,
-//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//See the License for the specific language governing permissions and
-//limitations under the License.
-//*/
-//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// */
 package controllers
 
 import (
@@ -82,12 +81,12 @@ var _ = Describe("Space controller", func() {
     })
 
     Context("When creating a space with resource quota", func() {
-        var createdSpace nauticusiov1alpha1.Space
+        var createdSpaceWithQuota nauticusiov1alpha1.Space
         var createdResourceQuota corev1.ResourceQuota
+        ctx := context.Background()
         It("Creates a Space with resource quota spec", func() {
-            ctx := context.Background()
             By("Creating a Space with resource quotas", func() {
-                space := &nauticusiov1alpha1.Space{
+                spaceWithResourceQuota := &nauticusiov1alpha1.Space{
                     TypeMeta: metav1.TypeMeta{
                         APIVersion: nauticusiov1alpha1.GroupVersion.Version,
                         Kind:       nauticusiov1alpha1.SpaceKind,
@@ -103,20 +102,23 @@ var _ = Describe("Space controller", func() {
                         },
                     },
                 }
-                Expect(k8sClient.Create(ctx, space)).Should(Succeed())
-                spaceLookupKey := types.NamespacedName{Name: space.Name}
+                Expect(k8sClient.Create(ctx, spaceWithResourceQuota)).Should(Succeed())
+                spaceLookupKey := types.NamespacedName{Name: spaceWithResourceQuota.Name}
                 // We'll need to retry getting this newly created Space, given that creation may not immediately happen.
                 Eventually(func() error {
-                    return k8sClient.Get(ctx, spaceLookupKey, &createdSpace)
+                    return k8sClient.Get(ctx, spaceLookupKey, &createdSpaceWithQuota)
                 }, timeout, interval).Should(Succeed())
 
             })
         })
         It("Should create a resource quota", func() {
             ctx := context.Background()
+            resourceQuotaLookupKey := types.NamespacedName{
+                Namespace: createdSpaceWithQuota.Status.NamespaceName,
+                Name:      createdSpaceWithQuota.Name,
+            }
             By("Creating a resource quota within the generated namespace", func() {
-                resourceQuotaLookupKey := types.NamespacedName{Namespace: createdSpace.Status.NamespaceName, Name: createdSpace.Name}
-                // We'll need to retry getting this newly created Space, given that creation may not immediately happen.
+                // We'll need to retry getting this newly created resource-quota, given that creation may not immediately happen.
                 Eventually(func() error {
                     return k8sClient.Get(ctx, resourceQuotaLookupKey, &createdResourceQuota)
                 }, timeout, interval).Should(Succeed())

@@ -14,13 +14,12 @@ limitations under the License.
 package controllers
 
 import (
+    "context"
     "path/filepath"
     "testing"
-    "time"
 
     . "github.com/onsi/ginkgo/v2"
     . "github.com/onsi/gomega"
-    "github.com/onsi/gomega/gexec"
     ctrl "sigs.k8s.io/controller-runtime"
 
     "k8s.io/client-go/kubernetes/scheme"
@@ -37,9 +36,13 @@ import (
 // These tests use Ginkgo (BDD-style Go testing framework). Refer to
 // http://onsi.github.io/ginkgo/ to learn more about Ginkgo.
 
-var cfg *rest.Config
-var k8sClient client.Client
-var testEnv *envtest.Environment
+var (
+    cfg       *rest.Config
+    k8sClient client.Client
+    testEnv   *envtest.Environment
+    ctx       context.Context
+    cancel    context.CancelFunc
+)
 
 func TestAPIs(t *testing.T) {
     RegisterFailHandler(Fail)
@@ -49,6 +52,7 @@ func TestAPIs(t *testing.T) {
 
 var _ = BeforeSuite(func() {
     logf.SetLogger(zap.New(zap.WriteTo(GinkgoWriter), zap.UseDevMode(true)))
+    ctx, cancel = context.WithCancel(context.TODO())
 
     By("bootstrapping test environment")
     testEnv = &envtest.Environment{
@@ -84,15 +88,8 @@ var _ = BeforeSuite(func() {
 
     go func() {
         defer GinkgoRecover()
-        err = k8sManager.Start(ctrl.SetupSignalHandler())
+        err = k8sManager.Start(ctx)
         Expect(err).ToNot(HaveOccurred(), "failed to run manager")
-        gexec.KillAndWait(4 * time.Second)
-
-        // Teardown the test environment once controller is fnished.
-        // Otherwise from Kubernetes 1.21+, teardon timeouts waiting on
-        // kube-apiserver to return
-        err := testEnv.Stop()
-        Expect(err).ToNot(HaveOccurred())
     }()
 
     k8sClient = k8sManager.GetClient()
@@ -101,5 +98,8 @@ var _ = BeforeSuite(func() {
 })
 
 var _ = AfterSuite(func() {
+    cancel()
     By("tearing down the test environment")
+    err := testEnv.Stop()
+    Expect(err).NotTo(HaveOccurred())
 })
