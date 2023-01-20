@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [ "*" ]
+  pull_request:
+    branches: [ "*" ]
+
+jobs:
+  commit_lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: wagoid/commitlint-github-action@v2
+        with:
+          firstParent: true
+  golangci:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v2.3.0
+        with:
+          version: v1.45.2
+          only-new-issues: false
+          args: --timeout 2m --config .golangci.yml
+  diff:
+    name: diff
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '1.18'
+      - run: make installer
+      - name: Checking if YAML installer file is not aligned
+        run: if [[ $(git diff | wc -l) -gt 0 ]]; then echo ">>> Untracked generated files have not been committed" && git --no-pager diff && exit 1; fi
+      - run: make apidoc
+      - name: Checking if the CRDs documentation is not aligned
+        run: if [[ $(git diff | wc -l) -gt 0 ]]; then echo ">>> CRDs generated documentation have not been committed" && git --no-pager diff && exit 1; fi
+      - name: Checking if YAML installer generated untracked files
+        run: test -z "$(git ls-files --others --exclude-standard 2> /dev/null)"
+      - name: Checking if source code is not formatted
+        run: test -z "$(git diff 2> /dev/null)"
