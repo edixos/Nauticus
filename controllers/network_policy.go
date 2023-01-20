@@ -1,0 +1,79 @@
+package controllers
+
+import (
+    "context"
+    "fmt"
+
+    nauticusiov1alpha1 "github.com/edixos/nauticus/api/v1alpha1"
+    "github.com/edixos/nauticus/pkg/api/v1alpha1"
+    networkingv1 "k8s.io/api/networking/v1"
+    metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+    "sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
+)
+
+func (s *SpaceReconciler) reconcileNetworkPolicies(ctx context.Context, space *nauticusiov1alpha1.Space) (err error) {
+    if space.Spec.NetworkPolicies.EnableDefaultStrictMode {
+        networkPolicyName := fmt.Sprintf("nauticus-%s", space.Name)
+        networkPolicySpec := newNetworkPolicyDefaultSpec()
+        networkPolicy := newNetworkPolicy(networkPolicyName, space.Status.NamespaceName, networkPolicySpec)
+        err = s.syncNetworkPolicy(ctx, networkPolicy, space)
+        if err != nil {
+            s.Log.Error(err, "Cannot Synchronize Network policy")
+            return err
+        }
+    }
+    return nil
+}
+
+func (s *SpaceReconciler) syncNetworkPolicy(ctx context.Context, networkPolicy *networkingv1.NetworkPolicy, space *nauticusiov1alpha1.Space) (err error) {
+    var res controllerutil.OperationResult
+    var spaceLabel, networkPolicyLabel string
+    if spaceLabel, err = v1alpha1.GetTypeLabel(space); err != nil {
+        return
+    }
+    if networkPolicyLabel, err = v1alpha1.GetTypeLabel(networkPolicy); err != nil {
+        return
+    }
+    res, err = controllerutil.CreateOrUpdate(ctx, s.Client, networkPolicy, func() (err error) {
+        networkPolicy.SetLabels(map[string]string{
+            spaceLabel:         space.Name,
+            networkPolicyLabel: networkPolicy.Name,
+        })
+        return controllerutil.SetControllerReference(space, networkPolicy, s.Client.Scheme())
+    })
+    s.Log.Info("Network Policy sync result: "+string(res), "name", networkPolicy.Name, "namespace", space.Status.NamespaceName)
+    return nil
+}
+
+func newNetworkPolicy(name string, namespace string, networkPolicySpec networkingv1.NetworkPolicySpec) *networkingv1.NetworkPolicy {
+    return &networkingv1.NetworkPolicy{
+        ObjectMeta: metav1.ObjectMeta{
+            Name:      name,
+            Namespace: namespace,
+        },
+        Spec: networkPolicySpec,
+    }
+}
+
+func newNetworkPolicyDefaultSpec() networkingv1.NetworkPolicySpec {
+    return networkingv1.NetworkPolicySpec{
+        PodSelector: metav1.LabelSelector{MatchLabels: map[string]string{}},
+        Ingress: []networkingv1.NetworkPolicyIngressRule{
+            {
+                From: []networkingv1.NetworkPolicyPeer{
+                    {
+                        NamespaceSelector: &metav1.LabelSelector{
+                            MatchLabels: map[string]string{
+                                "nauticus.io/role": "system",
+                            },
+                        },
+                    },
+                    {
+                        PodSelector: &metav1.LabelSelector{
+                            MatchLabels: map[string]string{},
+                        },
+                    },
+                }},
+        },
+    }
+}
