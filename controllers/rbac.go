@@ -57,6 +57,7 @@ func (s *SpaceReconciler) syncRoleBinding(ctx context.Context, roleBinding *rbac
 
 	})
 	s.Log.Info("Rolebinding sync result: "+string(res), "name", roleBinding.Name, "namespace", space.Status.NamespaceName)
+	s.emitEvent(space, space.Name, res, "Ensuring RoleBinding creation/Update", err)
 	return nil
 
 }

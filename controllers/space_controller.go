@@ -21,7 +21,10 @@ import (
 
 	"github.com/go-logr/logr"
 	v1 "k8s.io/api/core/v1"
+	networkingv1 "k8s.io/api/networking/v1"
+	rbacv1 "k8s.io/api/rbac/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/client-go/tools/record"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	nauticusiov1alpha1 "github.com/edixos/nauticus/api/v1alpha1"
@@ -32,8 +35,9 @@ import (
 // SpaceReconciler reconciles a Space object
 type SpaceReconciler struct {
 	client.Client
-	Scheme *runtime.Scheme
-	Log    logr.Logger
+	Scheme   *runtime.Scheme
+	Recorder record.EventRecorder
+	Log      logr.Logger
 }
 
 //+kubebuilder:rbac:groups=nauticus.io,resources=spaces,verbs=get;list;watch;create;update;patch;delete
@@ -77,5 +81,7 @@ func (s *SpaceReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		For(&nauticusiov1alpha1.Space{}).
 		Owns(&v1.Namespace{}).
 		Owns(&v1.ResourceQuota{}).
+		Owns(&rbacv1.RoleBinding{}).
+		Owns(&networkingv1.NetworkPolicy{}).
 		Complete(s)
 }
