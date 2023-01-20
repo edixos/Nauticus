@@ -13,7 +13,9 @@ import (
 func GetTypeLabel(t metav1.Object) (label string, err error) {
 	switch v := t.(type) {
 	case *v1alpha1.Space:
-		return "nauticus.io/tenant", nil
+		return "nauticus.io/space", nil
+	case *corev1.Namespace:
+		return "nauticus.io/namespace", nil
 	case *networkingv1.NetworkPolicy:
 		return "nauticus.io/network-policy", nil
 	case *corev1.ResourceQuota:

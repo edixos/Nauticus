@@ -17,7 +17,7 @@ func (s *SpaceReconciler) reconcileSpace(ctx context.Context, space *nauticusiov
 	resourceQuotaSpecValue := reflect.ValueOf(space.Spec.ResourceQuota)
 	if !resourceQuotaSpecValue.IsZero() {
 		log.Info("Reconciling Resource Quota for space")
-		err = s.reconcileResourceQuota(ctx, space, log)
+		err = s.reconcileResourceQuota(ctx, space)
 		if err != nil {
 			return err
 		}
