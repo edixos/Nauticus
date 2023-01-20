@@ -3,6 +3,7 @@ package controllers
 import (
     "context"
     "fmt"
+    "strconv"
 
     nauticusiov1alpha1 "github.com/edixos/nauticus/api/v1alpha1"
     "github.com/edixos/nauticus/pkg/api/v1alpha1"
@@ -16,7 +17,19 @@ func (s *SpaceReconciler) reconcileNetworkPolicies(ctx context.Context, space *n
         networkPolicyName := fmt.Sprintf("nauticus-%s", space.Name)
         networkPolicySpec := newNetworkPolicyDefaultSpec()
         networkPolicy := newNetworkPolicy(networkPolicyName, space.Status.NamespaceName, networkPolicySpec)
-        err = s.syncNetworkPolicy(ctx, networkPolicy, space)
+        err = s.syncNetworkPolicy(ctx, networkPolicy, space, networkPolicySpec)
+        if err != nil {
+            s.Log.Error(err, "Cannot Synchronize Network policy")
+            return err
+        }
+    } else {
+        // TODO delete the default network policy
+    }
+
+    for i, networkPolicy := range space.Spec.NetworkPolicies.Items {
+        npName := "nauticus-custom-" + strconv.Itoa(i)
+        np := newNetworkPolicy(npName, space.Status.NamespaceName, networkPolicy)
+        err = s.syncNetworkPolicy(ctx, np, space, networkPolicy)
         if err != nil {
             s.Log.Error(err, "Cannot Synchronize Network policy")
             return err
@@ -25,7 +38,7 @@ func (s *SpaceReconciler) reconcileNetworkPolicies(ctx context.Context, space *n
     return nil
 }
 
-func (s *SpaceReconciler) syncNetworkPolicy(ctx context.Context, networkPolicy *networkingv1.NetworkPolicy, space *nauticusiov1alpha1.Space) (err error) {
+func (s *SpaceReconciler) syncNetworkPolicy(ctx context.Context, networkPolicy *networkingv1.NetworkPolicy, space *nauticusiov1alpha1.Space, spec networkingv1.NetworkPolicySpec) (err error) {
     var res controllerutil.OperationResult
     var spaceLabel, networkPolicyLabel string
     if spaceLabel, err = v1alpha1.GetTypeLabel(space); err != nil {
@@ -39,6 +52,9 @@ func (s *SpaceReconciler) syncNetworkPolicy(ctx context.Context, networkPolicy *
             spaceLabel:         space.Name,
             networkPolicyLabel: networkPolicy.Name,
         })
+        if networkPolicy.Name != fmt.Sprintf("nauticus-%s", space.Name) {
+            networkPolicy.Spec = spec
+        }
         return controllerutil.SetControllerReference(space, networkPolicy, s.Client.Scheme())
     })
     s.Log.Info("Network Policy sync result: "+string(res), "name", networkPolicy.Name, "namespace", space.Status.NamespaceName)
