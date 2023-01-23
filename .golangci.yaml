@@ -1,0 +1,43 @@
+linters-settings:
+  govet:
+    check-shadowing: true
+  dupl:
+    threshold: 100
+  goconst:
+    min-len: 2
+    min-occurrences: 2
+  cyclop:
+    max-complexity: 27
+  gocognit:
+    min-complexity: 50
+  gci:
+    sections:
+      - standard
+      - default
+
+linters:
+  enable-all: true
+  disable:
+    - funlen
+    - gochecknoinits
+    - lll
+    - exhaustivestruct
+    - maligned
+    - interfacer
+    - scopelint
+    - golint
+    - gochecknoglobals
+    - goerr113
+    - gomnd
+    - paralleltest
+    - ireturn
+    - testpackage
+    - varnamelen
+    - wrapcheck
+
+service:
+  golangci-lint-version: 1.45.2
+
+run:
+  skip-files:
+    - "zz_.*\\.go$"
