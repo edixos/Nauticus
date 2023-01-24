@@ -5,14 +5,29 @@ import (
 	"reflect"
 
 	nauticusiov1alpha1 "github.com/edixos/nauticus/api/v1alpha1"
+	ctrl "sigs.k8s.io/controller-runtime"
+	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
+	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 )
 
-func (s *SpaceReconciler) reconcileSpace(ctx context.Context, space *nauticusiov1alpha1.Space) error {
+const (
+	NauticusFinalizer = "nauticus.io/finalizer"
+)
+
+func (s *SpaceReconciler) reconcileSpace(ctx context.Context, space *nauticusiov1alpha1.Space) (result reconcile.Result, err error) {
+	if !controllerutil.ContainsFinalizer(space, NauticusFinalizer) {
+		controllerutil.AddFinalizer(space, NauticusFinalizer)
+
+		if err = s.Update(ctx, space); err != nil {
+			return ctrl.Result{}, err
+		}
+	}
+
 	s.Log.Info("Reconciling Namespace for space.")
 
-	err := s.reconcileNamespace(ctx, space)
+	err = s.reconcileNamespace(ctx, space)
 	if err != nil {
-		return err
+		return ctrl.Result{}, err
 	}
 
 	resourceQuotaSpecValue := reflect.ValueOf(space.Spec.ResourceQuota)
@@ -21,7 +36,7 @@ func (s *SpaceReconciler) reconcileSpace(ctx context.Context, space *nauticusiov
 		err = s.reconcileResourceQuota(ctx, space)
 
 		if err != nil {
-			return err
+			return ctrl.Result{}, err
 		}
 	}
 
@@ -31,7 +46,7 @@ func (s *SpaceReconciler) reconcileSpace(ctx context.Context, space *nauticusiov
 		err = s.reconcileOwners(ctx, space)
 
 		if err != nil {
-			return err
+			return ctrl.Result{}, err
 		}
 	}
 
@@ -41,7 +56,7 @@ func (s *SpaceReconciler) reconcileSpace(ctx context.Context, space *nauticusiov
 		err = s.reconcileAdditionalRoleBindings(ctx, space)
 
 		if err != nil {
-			return err
+			return ctrl.Result{}, err
 		}
 	}
 
@@ -51,9 +66,25 @@ func (s *SpaceReconciler) reconcileSpace(ctx context.Context, space *nauticusiov
 		err = s.reconcileNetworkPolicies(ctx, space)
 
 		if err != nil {
-			return err
+			return ctrl.Result{}, err
 		}
 	}
 
-	return nil
+	return ctrl.Result{}, nil
+}
+
+func (s *SpaceReconciler) reconcileDelete(ctx context.Context, space *nauticusiov1alpha1.Space) (result reconcile.Result, err error) {
+	if controllerutil.ContainsFinalizer(space, NauticusFinalizer) {
+		namespace, _ := s.newNamespace(space)
+		err = s.Client.Delete(ctx, namespace)
+
+		// remove our finalizer from the list and update it.
+		controllerutil.RemoveFinalizer(space, NauticusFinalizer)
+
+		if err = s.Update(ctx, space); err != nil {
+			return ctrl.Result{}, err
+		}
+	}
+	// Stop reconciliation as the item is being deleted
+	return ctrl.Result{}, nil
 }

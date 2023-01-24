@@ -26,6 +26,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/tools/record"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/predicate"
 
 	nauticusiov1alpha1 "github.com/edixos/nauticus/api/v1alpha1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
@@ -72,11 +73,11 @@ func (s *SpaceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 		return ctrl.Result{}, err
 	}
 
-	if err := s.reconcileSpace(ctx, space); err != nil {
-		return ctrl.Result{}, err
+	if !space.ObjectMeta.DeletionTimestamp.IsZero() {
+		return s.reconcileDelete(ctx, space)
 	}
 
-	return ctrl.Result{}, nil
+	return s.reconcileSpace(ctx, space)
 }
 
 // SetupWithManager sets up the controller with the Manager.
@@ -87,5 +88,6 @@ func (s *SpaceReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Owns(&v1.ResourceQuota{}).
 		Owns(&rbacv1.RoleBinding{}).
 		Owns(&networkingv1.NetworkPolicy{}).
+		WithEventFilter(predicate.GenerationChangedPredicate{}).
 		Complete(s)
 }
