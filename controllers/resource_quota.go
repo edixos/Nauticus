@@ -19,28 +19,35 @@ func (s *SpaceReconciler) reconcileResourceQuota(ctx context.Context, space *nau
 		Spec: space.Spec.ResourceQuota,
 	}
 	err = s.syncResourceQuotas(ctx, resourceQuota, space)
-	return nil
+
+	return err
 }
 
 func (s *SpaceReconciler) syncResourceQuotas(ctx context.Context, resourceQuota *corev1.ResourceQuota, space *nauticusiov1alpha1.Space) (err error) {
-	var res controllerutil.OperationResult
-	var spaceLabel, resourceQuotaLabel string
+	var (
+		res                            controllerutil.OperationResult
+		spaceLabel, resourceQuotaLabel string
+	)
+
 	if spaceLabel, err = v1alpha1.GetTypeLabel(space); err != nil {
 		return
 	}
+
 	if resourceQuotaLabel, err = v1alpha1.GetTypeLabel(resourceQuota); err != nil {
 		return
 	}
+
 	res, err = controllerutil.CreateOrUpdate(ctx, s.Client, resourceQuota, func() error {
 		resourceQuota.SetLabels(map[string]string{
 			spaceLabel:         space.Name,
 			resourceQuotaLabel: resourceQuota.Name,
 		})
 		resourceQuota.Spec = space.Spec.ResourceQuota
+
 		return controllerutil.SetControllerReference(space, resourceQuota, s.Scheme)
 	})
 	s.Log.Info("ResourceQuota sync result: "+string(res), "name", resourceQuota.Name)
 	s.emitEvent(space, space.Name, res, "Ensuring ResourceQuota creation/Update", err)
 
-	return nil
+	return err
 }

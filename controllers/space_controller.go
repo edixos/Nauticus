@@ -32,7 +32,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 )
 
-// SpaceReconciler reconciles a Space object
+// SpaceReconciler reconciles a Space object.
 type SpaceReconciler struct {
 	client.Client
 	Scheme   *runtime.Scheme
@@ -58,20 +58,24 @@ func (s *SpaceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 
 	// Fetch the Space instance
 	space := &nauticusiov1alpha1.Space{}
+
 	err := s.Get(ctx, req.NamespacedName, space)
 	if err != nil {
 		if apierrors.IsNotFound(err) {
 			// Space not found, return
 			log.Info("Space not found.")
+
 			return ctrl.Result{}, nil
 		}
+
 		// Error reading the object - requeue the request.
 		return ctrl.Result{}, err
 	}
 
-	if err := s.reconcileSpace(ctx, space, log); err != nil {
+	if err := s.reconcileSpace(ctx, space); err != nil {
 		return ctrl.Result{}, err
 	}
+
 	return ctrl.Result{}, nil
 }
 

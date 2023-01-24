@@ -6,26 +6,27 @@ import (
 
 	nauticusiov1alpha1 "github.com/edixos/nauticus/api/v1alpha1"
 	"github.com/edixos/nauticus/pkg/api/v1alpha1"
-	"github.com/go-logr/logr"
 	rbacv1 "k8s.io/api/rbac/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
-func (s *SpaceReconciler) reconcileOwners(ctx context.Context, space *nauticusiov1alpha1.Space, log logr.Logger) error {
+func (s *SpaceReconciler) reconcileOwners(ctx context.Context, space *nauticusiov1alpha1.Space) (err error) {
 	rolebindingName := space.Name + "-owner"
 	ownersRoleBinding := newRoleBinding(rolebindingName, space.Status.NamespaceName, "admin", space.Spec.Owners)
+
 	return s.syncRoleBinding(ctx, ownersRoleBinding, space, ownersRoleBinding.RoleRef, ownersRoleBinding.Subjects)
 }
 
-func (s *SpaceReconciler) reconcileAdditionalRoleBindings(ctx context.Context, space *nauticusiov1alpha1.Space, log logr.Logger) error {
-
+func (s *SpaceReconciler) reconcileAdditionalRoleBindings(ctx context.Context, space *nauticusiov1alpha1.Space) (err error) {
 	for _, ad := range space.Spec.AdditionalRoleBindings {
 		rolebindingName := space.Name + "-" + ad.ClusterRoleName
 		additionalRoleBinding := newRoleBinding(rolebindingName, space.Status.NamespaceName, ad.ClusterRoleName, ad.Subjects)
-		if err := controllerutil.SetControllerReference(space, additionalRoleBinding, s.Scheme); err != nil {
+
+		if err = controllerutil.SetControllerReference(space, additionalRoleBinding, s.Scheme); err != nil {
 			return fmt.Errorf("unable to fill the ownerreference for the additional rolebindings")
 		}
+
 		return s.syncRoleBinding(ctx, additionalRoleBinding, space,
 			rbacv1.RoleRef{
 				Kind:     "ClusterRole",
@@ -33,19 +34,24 @@ func (s *SpaceReconciler) reconcileAdditionalRoleBindings(ctx context.Context, s
 				Name:     ad.ClusterRoleName,
 			}, ad.Subjects)
 	}
-	return nil
 
+	return err
 }
 
 func (s *SpaceReconciler) syncRoleBinding(ctx context.Context, roleBinding *rbacv1.RoleBinding, space *nauticusiov1alpha1.Space, desiredRoleRef rbacv1.RoleRef, desiredSubjects []rbacv1.Subject) (err error) {
-	var res controllerutil.OperationResult
-	var spaceLabel, roleBindingLabel string
+	var (
+		res                          controllerutil.OperationResult
+		spaceLabel, roleBindingLabel string
+	)
+
 	if spaceLabel, err = v1alpha1.GetTypeLabel(space); err != nil {
 		return
 	}
+
 	if roleBindingLabel, err = v1alpha1.GetTypeLabel(roleBinding); err != nil {
 		return
 	}
+
 	res, err = controllerutil.CreateOrUpdate(ctx, s.Client, roleBinding, func() error {
 		roleBinding.SetLabels(map[string]string{
 			spaceLabel:       space.Name,
@@ -53,13 +59,14 @@ func (s *SpaceReconciler) syncRoleBinding(ctx context.Context, roleBinding *rbac
 		})
 		roleBinding.RoleRef = desiredRoleRef
 		roleBinding.Subjects = desiredSubjects
-		return controllerutil.SetControllerReference(space, roleBinding, s.Client.Scheme())
 
+		return controllerutil.SetControllerReference(space, roleBinding, s.Client.Scheme())
 	})
+
 	s.Log.Info("Rolebinding sync result: "+string(res), "name", roleBinding.Name, "namespace", space.Status.NamespaceName)
 	s.emitEvent(space, space.Name, res, "Ensuring RoleBinding creation/Update", err)
-	return nil
 
+	return err
 }
 
 func newRoleBinding(name string, namespace string, clusterRoleName string, subjects []rbacv1.Subject) *rbacv1.RoleBinding {

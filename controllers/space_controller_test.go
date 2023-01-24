@@ -39,7 +39,6 @@ const (
 )
 
 var _ = Describe("Space controller", func() {
-
 	Context("When creating a basic space", func() {
 		var createdSpace nauticusiov1alpha1.Space
 
@@ -61,7 +60,6 @@ var _ = Describe("Space controller", func() {
 				Eventually(func() error {
 					return k8sClient.Get(ctx, spaceLookupKey, &createdSpace)
 				}, timeout, interval).Should(Succeed())
-
 			})
 		})
 		It("Should create a Namespace", func() {
@@ -107,7 +105,6 @@ var _ = Describe("Space controller", func() {
 				Eventually(func() error {
 					return k8sClient.Get(ctx, spaceLookupKey, &createdSpaceWithQuota)
 				}, timeout, interval).Should(Succeed())
-
 			})
 		})
 		It("Should create a resource quota", func() {
