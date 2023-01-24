@@ -26,7 +26,6 @@ func (s *SpaceReconciler) reconcileSpace(ctx context.Context, space *nauticusiov
 	}
 
 	ownerRoleBindingSpecValue := reflect.ValueOf(space.Spec.Owners)
-
 	if !ownerRoleBindingSpecValue.IsZero() {
 		s.Log.Info("Reconciling Owner Role Binding for space")
 		err = s.reconcileOwners(ctx, space)
@@ -37,7 +36,6 @@ func (s *SpaceReconciler) reconcileSpace(ctx context.Context, space *nauticusiov
 	}
 
 	additionalBindingSpecValue := reflect.ValueOf(space.Spec.AdditionalRoleBindings)
-
 	if !additionalBindingSpecValue.IsZero() {
 		s.Log.Info("Reconciling Additional Role Binding for space")
 		err = s.reconcileAdditionalRoleBindings(ctx, space)
@@ -48,7 +46,6 @@ func (s *SpaceReconciler) reconcileSpace(ctx context.Context, space *nauticusiov
 	}
 
 	networkPolicies := reflect.ValueOf(space.Spec.NetworkPolicies)
-
 	if !networkPolicies.IsZero() {
 		s.Log.Info("Reconciling NetworkPolicies for space")
 		err = s.reconcileNetworkPolicies(ctx, space)
