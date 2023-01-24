@@ -17,51 +17,53 @@ limitations under the License.
 package v1alpha1
 
 import (
-	corev1 "k8s.io/api/core/v1"
-	v1 "k8s.io/api/rbac/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+    corev1 "k8s.io/api/core/v1"
+    v1 "k8s.io/api/rbac/v1"
+    metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
-
-// EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
-// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
 // SpaceSpec defines the desired state of Space
 type SpaceSpec struct {
-	ResourceQuota          corev1.ResourceQuotaSpec `json:"resourceQuota,omitempty"`
-	Owners                 []v1.Subject             `json:"owners,omitempty"`
-	AdditionalRoleBindings AdditionalRoleBindings   `json:"additionalRoleBindings,omitempty"`
-	NetworkPolicies        NetworkPolicies          `json:"networkPolicies,omitempty"`
+    // Specifies a list of ResourceQuota resources assigned to the Space. The assigned values are inherited by the namespace created by the Space. Optional
+    ResourceQuota corev1.ResourceQuotaSpec `json:"resourceQuota,omitempty"`
+    // Specifies the owners of the Space. Mandatory
+    Owners []v1.Subject `json:"owners,omitempty"`
+    // Specifies additional RoleBindings assigned to the Space. Nauticus will ensure that the namespace in the Space always contain the RoleBinding for the given ClusterRole. Optional
+    AdditionalRoleBindings AdditionalRoleBindings `json:"additionalRoleBindings,omitempty"`
+    // Specifies the NetworkPolicies assigned to the Tenant. The assigned NetworkPolicies are inherited by the namespace created in the Space. Optional.
+    NetworkPolicies NetworkPolicies `json:"networkPolicies,omitempty"`
 }
 
 // SpaceStatus defines the observed state of Space
 type SpaceStatus struct {
-	// NamespaceName the name of the created underlying namespace.
-	NamespaceName string `json:"namespaceName,omitempty"`
+    // NamespaceName the name of the created underlying namespace.
+    NamespaceName string `json:"namespaceName,omitempty"`
 }
 
-//+kubebuilder:object:root=true
-//+kubebuilder:resource:scope=Cluster,categories={spaces}
-//+kubebuilder:subresource:status
-//+kubebuilder:printcolumn:name="NamespaceName",type=string,JSONPath=`.status.namespaceName`
+// +kubebuilder:object:root=true
+// +kubebuilder:resource:scope=Cluster,categories={spaces}
+// +kubebuilder:subresource:status
+// +kubebuilder:printcolumn:name="NamespaceName",type=string,JSONPath=`.status.namespaceName`
+// +kubebuilder:printcolumn:name="Age",type="date",JSONPath=".metadata.creationTimestamp",description="Age"
 
 // Space is the Schema for the spaces API
 type Space struct {
-	metav1.TypeMeta   `json:",inline"`
-	metav1.ObjectMeta `json:"metadata,omitempty"`
+    metav1.TypeMeta   `json:",inline"`
+    metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   SpaceSpec   `json:"spec,omitempty"`
-	Status SpaceStatus `json:"status,omitempty"`
+    Spec   SpaceSpec   `json:"spec,omitempty"`
+    Status SpaceStatus `json:"status,omitempty"`
 }
 
 //+kubebuilder:object:root=true
 
 // SpaceList contains a list of Space
 type SpaceList struct {
-	metav1.TypeMeta `json:",inline"`
-	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []Space `json:"items"`
+    metav1.TypeMeta `json:",inline"`
+    metav1.ListMeta `json:"metadata,omitempty"`
+    Items           []Space `json:"items"`
 }
 
 func init() {
-	SchemeBuilder.Register(&Space{}, &SpaceList{})
+    SchemeBuilder.Register(&Space{}, &SpaceList{})
 }

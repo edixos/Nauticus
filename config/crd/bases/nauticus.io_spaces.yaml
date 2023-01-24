@@ -21,6 +21,10 @@ spec:
     - jsonPath: .status.namespaceName
       name: NamespaceName
       type: string
+    - description: Age
+      jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
     name: v1alpha1
     schema:
       openAPIV3Schema:
@@ -42,6 +46,9 @@ spec:
             description: SpaceSpec defines the desired state of Space
             properties:
               additionalRoleBindings:
+                description: Specifies additional RoleBindings assigned to the Space.
+                  Nauticus will ensure that the namespace in the Space always contain
+                  the RoleBinding for the given ClusterRole. Optional
                 items:
                   properties:
                     clusterRoleName:
@@ -83,6 +90,9 @@ spec:
                   type: object
                 type: array
               networkPolicies:
+                description: Specifies the NetworkPolicies assigned to the Tenant.
+                  The assigned NetworkPolicies are inherited by the namespace created
+                  in the Space. Optional.
                 properties:
                   enableDefaultStrictMode:
                     type: boolean
@@ -609,6 +619,7 @@ spec:
                     type: array
                 type: object
               owners:
+                description: Specifies the owners of the Space. Mandatory
                 items:
                   description: Subject contains a reference to the object or user
                     identities a role binding applies to.  This can either hold a
@@ -641,8 +652,9 @@ spec:
                   x-kubernetes-map-type: atomic
                 type: array
               resourceQuota:
-                description: ResourceQuotaSpec defines the desired hard limits to
-                  enforce for Quota.
+                description: Specifies a list of ResourceQuota resources assigned
+                  to the Space. The assigned values are inherited by the namespace
+                  created by the Space. Optional
                 properties:
                   hard:
                     additionalProperties:

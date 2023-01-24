@@ -102,28 +102,28 @@ SpaceSpec defines the desired state of Space
         <td><b><a href="#spacespecadditionalrolebindingsindex">additionalRoleBindings</a></b></td>
         <td>[]object</td>
         <td>
-          <br/>
+          Specifies additional RoleBindings assigned to the Space. Nauticus will ensure that the namespace in the Space always contain the RoleBinding for the given ClusterRole. Optional<br/>
         </td>
         <td>false</td>
       </tr><tr>
         <td><b><a href="#spacespecnetworkpolicies">networkPolicies</a></b></td>
         <td>object</td>
         <td>
-          <br/>
+          Specifies the NetworkPolicies assigned to the Tenant. The assigned NetworkPolicies are inherited by the namespace created in the Space. Optional.<br/>
         </td>
         <td>false</td>
       </tr><tr>
         <td><b><a href="#spacespecownersindex">owners</a></b></td>
         <td>[]object</td>
         <td>
-          <br/>
+          Specifies the owners of the Space. Mandatory<br/>
         </td>
         <td>false</td>
       </tr><tr>
         <td><b><a href="#spacespecresourcequota">resourceQuota</a></b></td>
         <td>object</td>
         <td>
-          ResourceQuotaSpec defines the desired hard limits to enforce for Quota.<br/>
+          Specifies a list of ResourceQuota resources assigned to the Space. The assigned values are inherited by the namespace created by the Space. Optional<br/>
         </td>
         <td>false</td>
       </tr></tbody>
@@ -214,7 +214,7 @@ Subject contains a reference to the object or user identities a role binding app
 
 
 
-
+Specifies the NetworkPolicies assigned to the Tenant. The assigned NetworkPolicies are inherited by the namespace created in the Space. Optional.
 
 <table>
     <thead>
@@ -1014,7 +1014,7 @@ Subject contains a reference to the object or user identities a role binding app
 
 
 
-ResourceQuotaSpec defines the desired hard limits to enforce for Quota.
+Specifies a list of ResourceQuota resources assigned to the Space. The assigned values are inherited by the namespace created by the Space. Optional
 
 <table>
     <thead>
