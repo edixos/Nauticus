@@ -37,7 +37,7 @@ Resource Types:
 
 
 
-Space is the Schema for the spaces API
+Space is the Schema for the spaces API.
 
 <table>
     <thead>
@@ -69,14 +69,14 @@ Space is the Schema for the spaces API
         <td><b><a href="#spacespec">spec</a></b></td>
         <td>object</td>
         <td>
-          SpaceSpec defines the desired state of Space<br/>
+          SpaceSpec defines the desired state of Space.<br/>
         </td>
         <td>false</td>
       </tr><tr>
         <td><b><a href="#spacestatus">status</a></b></td>
         <td>object</td>
         <td>
-          SpaceStatus defines the observed state of Space<br/>
+          SpaceStatus defines the observed state of Space.<br/>
         </td>
         <td>false</td>
       </tr></tbody>
@@ -87,7 +87,7 @@ Space is the Schema for the spaces API
 
 
 
-SpaceSpec defines the desired state of Space
+SpaceSpec defines the desired state of Space.
 
 <table>
     <thead>
@@ -102,7 +102,7 @@ SpaceSpec defines the desired state of Space
         <td><b><a href="#spacespecadditionalrolebindingsindex">additionalRoleBindings</a></b></td>
         <td>[]object</td>
         <td>
-          Specifies additional RoleBindings assigned to the Space. Nauticus will ensure that the namespace in the Space always contain the RoleBinding for the given ClusterRole. Optional<br/>
+          Specifies additional RoleBindings assigned to the Space. Nauticus will ensure that the namespace in the Space always contain the RoleBinding for the given ClusterRole. Optional.<br/>
         </td>
         <td>false</td>
       </tr><tr>
@@ -116,14 +116,14 @@ SpaceSpec defines the desired state of Space
         <td><b><a href="#spacespecownersindex">owners</a></b></td>
         <td>[]object</td>
         <td>
-          Specifies the owners of the Space. Mandatory<br/>
+          Specifies the owners of the Space. Mandatory.<br/>
         </td>
         <td>false</td>
       </tr><tr>
         <td><b><a href="#spacespecresourcequota">resourceQuota</a></b></td>
         <td>object</td>
         <td>
-          Specifies a list of ResourceQuota resources assigned to the Space. The assigned values are inherited by the namespace created by the Space. Optional<br/>
+          Specifies a list of ResourceQuota resources assigned to the Space. The assigned values are inherited by the namespace created by the Space. Optional.<br/>
         </td>
         <td>false</td>
       </tr></tbody>
@@ -1014,7 +1014,7 @@ Subject contains a reference to the object or user identities a role binding app
 
 
 
-Specifies a list of ResourceQuota resources assigned to the Space. The assigned values are inherited by the namespace created by the Space. Optional
+Specifies a list of ResourceQuota resources assigned to the Space. The assigned values are inherited by the namespace created by the Space. Optional.
 
 <table>
     <thead>
@@ -1120,7 +1120,7 @@ A scoped-resource selector requirement is a selector that contains values, a sco
 
 
 
-SpaceStatus defines the observed state of Space
+SpaceStatus defines the observed state of Space.
 
 <table>
     <thead>

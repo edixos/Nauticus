@@ -28,7 +28,7 @@ spec:
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: Space is the Schema for the spaces API
+        description: Space is the Schema for the spaces API.
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -43,12 +43,12 @@ spec:
           metadata:
             type: object
           spec:
-            description: SpaceSpec defines the desired state of Space
+            description: SpaceSpec defines the desired state of Space.
             properties:
               additionalRoleBindings:
                 description: Specifies additional RoleBindings assigned to the Space.
                   Nauticus will ensure that the namespace in the Space always contain
-                  the RoleBinding for the given ClusterRole. Optional
+                  the RoleBinding for the given ClusterRole. Optional.
                 items:
                   properties:
                     clusterRoleName:
@@ -619,7 +619,7 @@ spec:
                     type: array
                 type: object
               owners:
-                description: Specifies the owners of the Space. Mandatory
+                description: Specifies the owners of the Space. Mandatory.
                 items:
                   description: Subject contains a reference to the object or user
                     identities a role binding applies to.  This can either hold a
@@ -654,7 +654,7 @@ spec:
               resourceQuota:
                 description: Specifies a list of ResourceQuota resources assigned
                   to the Space. The assigned values are inherited by the namespace
-                  created by the Space. Optional
+                  created by the Space. Optional.
                 properties:
                   hard:
                     additionalProperties:
@@ -718,7 +718,7 @@ spec:
                 type: object
             type: object
           status:
-            description: SpaceStatus defines the observed state of Space
+            description: SpaceStatus defines the observed state of Space.
             properties:
               namespaceName:
                 description: NamespaceName the name of the created underlying namespace.
