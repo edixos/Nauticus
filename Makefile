@@ -11,6 +11,16 @@ else
 GOBIN=$(shell go env GOBIN)
 endif
 
+# go-install-tool will 'go install' any package $2 and install it to $1.
+PROJECT_DIR := $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
+define go-install-tool
+@[ -f $(1) ] || { \
+set -e ;\
+echo "Installing $(2)" ;\
+GOBIN=$(PROJECT_DIR)/bin go install $(2) ;\
+}
+endef
+
 # Setting SHELL to bash allows bash commands to be executed by recipes.
 # Options are set to exit when a recipe line exits non-zero or a piped command fails.
 SHELL = /usr/bin/env bash -o pipefail
@@ -62,6 +72,15 @@ test: manifests generate fmt vet envtest ## Run tests.
 installer: manifests kustomize
 	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
 	$(KUSTOMIZE) build config/default > config/install.yaml
+
+APIDOCS_GEN = $(shell pwd)/bin/crdoc
+.PHONY: apidocs-gen
+apidocs-gen: ## Download crdoc locally if necessary.
+	$(call go-install-tool,$(APIDOCS_GEN),fybrik.io/crdoc@latest)
+
+.PHONY: apidoc
+apidoc: apidocs-gen
+	$(APIDOCS_GEN) crdoc --resources config/crd/bases --output docs/crds-apis.md --template docs/template/reference-cr.tmpl
 
 ##@ Build
 
