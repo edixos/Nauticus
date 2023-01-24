@@ -16,17 +16,17 @@ jobs:
       - uses: wagoid/commitlint-github-action@v2
         with:
           firstParent: true
-#  golangci:
-#    name: lint
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v2
-#      - name: Run golangci-lint
-#        uses: golangci/golangci-lint-action@v2.3.0
-#        with:
-#          version: v1.45.2
-#          only-new-issues: false
-#          args: --timeout 2m --config .golangci.yml
+  golangci:
+    name: lint
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v2.3.0
+        with:
+          version: v1.45.2
+          only-new-issues: false
+          args: --timeout 2m --config .golangci.yml
   diff:
     name: diff
     runs-on: ubuntu-20.04
