@@ -3,6 +3,7 @@ package controllers
 import (
 	"context"
 	"reflect"
+	"time"
 
 	nauticusiov1alpha1 "github.com/edixos/nauticus/api/v1alpha1"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -12,6 +13,7 @@ import (
 
 const (
 	NauticusFinalizer = "nauticus.io/finalizer"
+	requeueAfter      = time.Minute * 3
 )
 
 func (s *SpaceReconciler) reconcileSpace(ctx context.Context, space *nauticusiov1alpha1.Space) (result reconcile.Result, err error) {
@@ -70,7 +72,9 @@ func (s *SpaceReconciler) reconcileSpace(ctx context.Context, space *nauticusiov
 		}
 	}
 
-	return ctrl.Result{}, nil
+	return ctrl.Result{
+		RequeueAfter: requeueAfter,
+	}, nil
 }
 
 func (s *SpaceReconciler) reconcileDelete(ctx context.Context, space *nauticusiov1alpha1.Space) (result reconcile.Result, err error) {

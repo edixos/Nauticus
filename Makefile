@@ -1,8 +1,20 @@
+VERSION ?= $$(git describe --abbrev=0 --tags --match "v*")
 
 # Image URL to use all building/pushing image targets
-IMG ?= controller:latest
+IMG ?= ghcr.io/edixos/nauticus:$(VERSION)
+
 # ENVTEST_K8S_VERSION refers to the version of kubebuilder assets to be downloaded by envtest binary.
 ENVTEST_K8S_VERSION = 1.25.0
+
+# Get information about git current status
+GIT_HEAD_COMMIT ?= $$(git rev-parse --short HEAD)
+GIT_TAG_COMMIT  ?= $$(git rev-parse --short $(VERSION))
+GIT_MODIFIED_1  ?= $$(git diff $(GIT_HEAD_COMMIT) $(GIT_TAG_COMMIT) --quiet && echo "" || echo ".dev")
+GIT_MODIFIED_2  ?= $$(git diff --quiet && echo "" || echo ".dirty")
+GIT_MODIFIED    ?= $$(echo "$(GIT_MODIFIED_1)$(GIT_MODIFIED_2)")
+GIT_REPO        ?= $$(git config --get remote.origin.url)
+BUILD_DATE      ?= $$(git log -1 --format="%at" | xargs -I{} date -d @{} +%Y-%m-%dT%H:%M:%S)
+# BUILD_DATE      ?= $$(git log -1 --format="%at" | xargs -I{} date  +%Y-%m-%dT%H:%M:%S)
 
 # Get the currently used golang install path (in GOPATH/bin, unless GOBIN is set)
 ifeq (,$(shell go env GOBIN))
@@ -105,8 +117,13 @@ run: manifests generate fmt vet ## Run a controller from your host.
 # (i.e. docker build --platform linux/arm64 ). However, you must enable docker buildKit for it.
 # More info: https://docs.docker.com/develop/develop-images/build_enhancements/
 .PHONY: docker-build
-docker-build: test ## Build docker image with the manager.
-	docker build -t ${IMG} .
+docker-build: test
+	docker build . -t ${IMG} --build-arg GIT_HEAD_COMMIT=$(GIT_HEAD_COMMIT) \
+ 							 --build-arg GIT_TAG_COMMIT=$(GIT_TAG_COMMIT) \
+ 							 --build-arg GIT_MODIFIED=$(GIT_MODIFIED) \
+ 							 --build-arg GIT_REPO=$(GIT_REPO) \
+ 							 --build-arg GIT_LAST_TAG=$(VERSION) \
+ 							 --build-arg BUILD_DATE=$(BUILD_DATE)
 
 .PHONY: docker-push
 docker-push: ## Push docker image with the manager.
@@ -143,10 +160,10 @@ install: manifests kustomize ## Install CRDs into the K8s cluster specified in ~
 uninstall: manifests kustomize ## Uninstall CRDs from the K8s cluster specified in ~/.kube/config. Call with ignore-not-found=true to ignore resource not found errors during deletion.
 	$(KUSTOMIZE) build config/crd | kubectl delete --ignore-not-found=$(ignore-not-found) -f -
 
+# Deploy controller in the configured Kubernetes cluster in ~/.kube/config
 .PHONY: deploy
-deploy: manifests kustomize ## Deploy controller to the K8s cluster specified in ~/.kube/config.
-	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
-	$(KUSTOMIZE) build config/default | kubectl apply -f -
+deploy: installer
+	kubectl apply -f config/install.yaml
 
 .PHONY: undeploy
 undeploy: ## Undeploy controller from the K8s cluster specified in ~/.kube/config. Call with ignore-not-found=true to ignore resource not found errors during deletion.

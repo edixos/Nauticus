@@ -18,21 +18,22 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"os"
+	goRuntime "runtime"
 
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
 	// to ensure that exec-entrypoint and run can make use of them.
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
 
+	nauticusiov1alpha1 "github.com/edixos/nauticus/api/v1alpha1"
+	"github.com/edixos/nauticus/controllers"
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
-
-	nauticusiov1alpha1 "github.com/edixos/nauticus/api/v1alpha1"
-	"github.com/edixos/nauticus/controllers"
 	//+kubebuilder:scaffold:imports
 )
 
@@ -46,6 +47,14 @@ func init() {
 
 	//+kubebuilder:scaffold:scheme
 	utilruntime.Must(nauticusiov1alpha1.AddToScheme(scheme))
+}
+
+func printVersion() {
+	setupLog.Info(fmt.Sprintf("Nauticus Version %s %s%s", GitTag, GitCommit, GitDirty))
+	setupLog.Info(fmt.Sprintf("Build from: %s", GitRepo))
+	setupLog.Info(fmt.Sprintf("Build date: %s", BuildTime))
+	setupLog.Info(fmt.Sprintf("Go Version: %s", goRuntime.Version()))
+	setupLog.Info(fmt.Sprintf("Go OS/Arch: %s/%s", goRuntime.GOOS, goRuntime.GOARCH))
 }
 
 func main() {
@@ -68,6 +77,8 @@ func main() {
 	flag.Parse()
 
 	ctrl.SetLogger(zap.New(zap.UseFlagOptions(&opts)))
+
+	printVersion()
 
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{
 		Scheme:                 scheme,
