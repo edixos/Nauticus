@@ -808,6 +808,7 @@ spec:
         command:
         - /manager
         image: ghcr.io/edixos/nauticus:v0.0.1-alpha1
+        imagePullPolicy: Always
         livenessProbe:
           httpGet:
             path: /healthz
