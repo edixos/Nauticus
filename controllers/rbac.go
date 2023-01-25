@@ -13,26 +13,27 @@ import (
 
 func (s *SpaceReconciler) reconcileOwners(ctx context.Context, space *nauticusiov1alpha1.Space) (err error) {
 	rolebindingName := space.Name + "-owner"
-	ownersRoleBinding := newRoleBinding(rolebindingName, space.Status.NamespaceName, "admin", space.Spec.Owners)
+
+	roleRef := rbacv1.RoleRef{
+		Kind:     "ClusterRole",
+		APIGroup: rbacv1.GroupName,
+		Name:     "admin",
+	}
+	ownersRoleBinding := newRoleBinding(rolebindingName, space.Status.NamespaceName, roleRef, space.Spec.Owners)
 
 	return s.syncRoleBinding(ctx, ownersRoleBinding, space, ownersRoleBinding.RoleRef, ownersRoleBinding.Subjects)
 }
 
 func (s *SpaceReconciler) reconcileAdditionalRoleBindings(ctx context.Context, space *nauticusiov1alpha1.Space) (err error) {
 	for _, ad := range space.Spec.AdditionalRoleBindings {
-		rolebindingName := space.Name + "-" + ad.ClusterRoleName
-		additionalRoleBinding := newRoleBinding(rolebindingName, space.Status.NamespaceName, ad.ClusterRoleName, ad.Subjects)
+		rolebindingName := space.Name + "-" + ad.RoleRef.Name
+		additionalRoleBinding := newRoleBinding(rolebindingName, space.Status.NamespaceName, ad.RoleRef, ad.Subjects)
 
 		if err = controllerutil.SetControllerReference(space, additionalRoleBinding, s.Scheme); err != nil {
 			return fmt.Errorf("unable to fill the ownerreference for the additional rolebindings")
 		}
 
-		return s.syncRoleBinding(ctx, additionalRoleBinding, space,
-			rbacv1.RoleRef{
-				Kind:     "ClusterRole",
-				APIGroup: rbacv1.GroupName,
-				Name:     ad.ClusterRoleName,
-			}, ad.Subjects)
+		return s.syncRoleBinding(ctx, additionalRoleBinding, space, ad.RoleRef, ad.Subjects)
 	}
 
 	return err
@@ -69,17 +70,13 @@ func (s *SpaceReconciler) syncRoleBinding(ctx context.Context, roleBinding *rbac
 	return err
 }
 
-func newRoleBinding(name string, namespace string, clusterRoleName string, subjects []rbacv1.Subject) *rbacv1.RoleBinding {
+func newRoleBinding(name string, namespace string, roleRef rbacv1.RoleRef, subjects []rbacv1.Subject) *rbacv1.RoleBinding {
 	return &rbacv1.RoleBinding{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
 			Namespace: namespace,
 		},
-		RoleRef: rbacv1.RoleRef{
-			Kind:     "ClusterRole",
-			APIGroup: rbacv1.GroupName,
-			Name:     clusterRoleName,
-		},
+		RoleRef:  roleRef,
 		Subjects: subjects,
 	}
 }

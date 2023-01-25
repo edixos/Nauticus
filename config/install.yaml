@@ -57,8 +57,24 @@ spec:
                 description: Specifies additional RoleBindings assigned to the Space. Nauticus will ensure that the namespace in the Space always contain the RoleBinding for the given ClusterRole. Optional.
                 items:
                   properties:
-                    clusterRoleName:
-                      type: string
+                    roleRef:
+                      description: RoleRef contains information that points to the role being used
+                      properties:
+                        apiGroup:
+                          description: APIGroup is the group for the resource being referenced
+                          type: string
+                        kind:
+                          description: Kind is the type of resource being referenced
+                          type: string
+                        name:
+                          description: Name is the name of resource being referenced
+                          type: string
+                      required:
+                      - apiGroup
+                      - kind
+                      - name
+                      type: object
+                      x-kubernetes-map-type: atomic
                     subjects:
                       items:
                         description: Subject contains a reference to the object or user identities a role binding applies to.  This can either hold a direct API object reference, or a value for non-objects such as user and group names.
