@@ -146,10 +146,10 @@ SpaceSpec defines the desired state of Space.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b>clusterRoleName</b></td>
-        <td>string</td>
+        <td><b><a href="#spacespecadditionalrolebindingsindexroleref">roleRef</a></b></td>
+        <td>object</td>
         <td>
-          <br/>
+          RoleRef contains information that points to the role being used<br/>
         </td>
         <td>false</td>
       </tr><tr>
@@ -159,6 +159,46 @@ SpaceSpec defines the desired state of Space.
           <br/>
         </td>
         <td>false</td>
+      </tr></tbody>
+</table>
+
+
+### Space.spec.additionalRoleBindings[index].roleRef
+
+
+
+RoleRef contains information that points to the role being used
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>apiGroup</b></td>
+        <td>string</td>
+        <td>
+          APIGroup is the group for the resource being referenced<br/>
+        </td>
+        <td>true</td>
+      </tr><tr>
+        <td><b>kind</b></td>
+        <td>string</td>
+        <td>
+          Kind is the type of resource being referenced<br/>
+        </td>
+        <td>true</td>
+      </tr><tr>
+        <td><b>name</b></td>
+        <td>string</td>
+        <td>
+          Name is the name of resource being referenced<br/>
+        </td>
+        <td>true</td>
       </tr></tbody>
 </table>
 

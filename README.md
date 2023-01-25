@@ -1,4 +1,5 @@
 # Nauticus
+[![CI](https://github.com/edixos/nauticus/actions/workflows/ci.yml/badge.svg)](https://github.com/edixos/nauticus/actions/workflows/ci.yml)
 
 <p align="center">
   <img src="assets/logo/nauticus-w.png" />
