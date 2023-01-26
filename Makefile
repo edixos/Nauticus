@@ -92,7 +92,7 @@ apidocs-gen: ## Download crdoc locally if necessary.
 
 .PHONY: apidoc
 apidoc: apidocs-gen
-	$(APIDOCS_GEN) crdoc --resources config/crd/bases --output docs/crds-apis.md --template docs/template/reference-cr.tmpl
+	$(APIDOCS_GEN) crdoc --resources config/crd/bases --output docs/docs/crds-apis.md --template docs/template/reference-cr.tmpl
 
 GOLANGCI_LINT = $(shell pwd)/bin/golangci-lint
 golangci-lint: ## Download golangci-lint locally if necessary.

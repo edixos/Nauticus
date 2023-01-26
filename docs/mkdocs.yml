@@ -1,0 +1,85 @@
+site_name: Nauticus
+repo_name: "edixos/nauticus"
+repo_url: https://github.com/edixos/nauticus
+
+theme:
+  name: material
+  custom_dir: material/overrides
+  # logo: assets/images/logos/nauticus.png
+
+  features:
+    - navigation.tabs
+    - navigation.instant
+    - header.autohide
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.indexes
+    - navigation.expand
+    - content.code.copy
+    #- content.tabs.link #Insiders only so far
+  font:
+    text: Raleway
+    code: Ubuntu Sans Mono
+
+  palette: # https://www.materialpalette.com/colors
+    - scheme: slate
+      primary: yellow # comment to replace by /docs/assets/stylesheets
+      accent:  amber
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+    - scheme: default
+      primary: yellow # comment to replace by /docs/assets/stylesheets
+      accent: amber
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+  include_sidebar: true
+# Page tree
+nav:
+  - Home: index.md
+  - Getting started:
+    - Installation: getting-started.md
+  - Reference:
+    - API Specification: crds-apis.md
+extra:
+  analytics:
+    provider: google
+    property: !ENV GOOGLE_ANALYTICS_KEY
+
+  social:
+    - icon: material/github
+      link: 'https://github.com/edixos/nauticus'
+
+markdown_extensions:
+  - admonition
+  - abbr
+  - attr_list
+  - def_list
+  - footnotes
+  - meta
+  - md_in_html
+  - codehilite
+  - pymdownx.critic
+  - pymdownx.caret
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.tilde
+  - pymdownx.tabbed
+  - pymdownx.details
+  - pymdownx.inlinehilite
+  - pymdownx.smartsymbols
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - toc:
+      # insert a blank space before the character
+      permalink: " ¶"
+
+plugins:
+  - search
