@@ -1,6 +1,8 @@
 # Nauticus
 
-![NauticusLogo](assets/images/logos/nauticus.png)
+![NauticusLogoWhite](assets/images/logos/nauticus.png#only-dark)
+![NauticusLogoBlack](assets/images/logos/nauticus-b.png#only-light)
+
 
 Welcome to Nauticus, the Kubernetes space management controller. With Nauticus, you can easily create, update, and delete spaces within your Kubernetes cluster. Each space is a unique namespace with its own set of resources and quotas, making it ideal for multi-tenancy environments.
 
