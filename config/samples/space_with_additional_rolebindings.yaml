@@ -7,11 +7,13 @@ metadata:
     app.kubernetes.io/part-of: nauticus
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/created-by: nauticus
-  name: space-sample-rc
+  name: space-sample-add-rb
 spec:
-  resourceQuota:
-    hard:
-      limits.cpu: "8"
-      limits.memory: 16Gi
-      requests.cpu: "8"
-      requests.memory: 16Gi
+  additionalRoleBindings:
+    - roleRef:
+        apiGroup: rbac.authorization.k8s.io
+        kind: ClusterRole
+        name: viewer
+      subjects:
+        - name: Sam
+          kind: User

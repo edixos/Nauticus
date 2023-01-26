@@ -28,6 +28,10 @@ In this section, we will explain how to install Nauticus using Helm and kubectl.
 
 ### Helm
 
+!!! Warning "Chart Not available Yet"
+    The project is under active development, the chart will be available soon.
+    Please refer to [kubectl](#kubectl) installation method.
+
 1. Make sure that you have docker and kind installed if you want to create a kubernetes cluster within Docker
 2. Start by creating a new Kubernetes cluster with kind command if you don't have one.
 
@@ -53,12 +57,12 @@ In this section, we will explain how to install Nauticus using Helm and kubectl.
    
 6. Use the following command to check the status of the Nauticus pods:
      
-     ```bash
+     ```bash  title="Get Nauticus Controller pod"
      kubectl get pods -n nauticus-system
      ```
    
 7. Use the following command to verify that the Nauticus controller is running:
-     ```bash
+     ```bash  title="Get Nauticus Controller logs"
      kubectl logs -f <nauticus-controller-pod-name> -n nauticus-system
      ```
 
@@ -71,16 +75,16 @@ the resources needed for Nauticus to function properly.
 
 1. Apply the manifest file using kubectl:
 
-     ```bash
+     ```bash  title="Install Nauticus from all-in-one manifest file"
      kubectl apply -f https://raw.githubusercontent.com/edixos/nauticus/main/config/install.yam
      ```
 
 2. Use the following command to check the status of the Nauticus pods:
-     ```bash
+     ```bash  title="Get Nauticus Controller pod"
      kubectl get pods -n nauticus-system
      ```
 3. Use the following command to verify that the Nauticus controller is running:
-     ```bash
+     ```bash title="Get Nauticus Controller logs"
      kubectl logs -f <nauticus-controller-pod-name> -n nauticus-system
      ```
    
@@ -88,7 +92,7 @@ the resources needed for Nauticus to function properly.
 
 To use Nauticus to create a new space, you can use the following kubectl command:
 
-  ```bash
+  ```bash title="Create a basic Space"
    cat <<EOF | kubectl apply -f -
    apiVersion: nauticus.com/v1alpha1
    kind: Space

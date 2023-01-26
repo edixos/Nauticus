@@ -5,7 +5,7 @@ repo_url: https://github.com/edixos/nauticus
 theme:
   name: material
   custom_dir: material/overrides
-  # logo: assets/images/logos/nauticus.png
+  logo: assets/images/logos/nauticus-logo-b.png
 
   features:
     - navigation.tabs
@@ -35,11 +35,30 @@ theme:
         icon: material/toggle-switch
         name: Switch to light mode
   include_sidebar: true
+
+  theme:
+    icon:
+      admonition:
+        note: octicons/tag-16
+        abstract: octicons/checklist-16
+        info: octicons/info-16
+        tip: octicons/squirrel-16
+        success: octicons/check-16
+        question: octicons/question-16
+        warning: octicons/alert-16
+        failure: octicons/x-circle-16
+        danger: octicons/zap-16
+        bug: octicons/bug-16
+        example: octicons/beaker-16
+        quote: octicons/quote-16
 # Page tree
 nav:
   - Home: index.md
   - Getting started:
     - Installation: getting-started.md
+    - Contributing: contributing.md
+  - Tutorials:
+    - Space Tutorial: tutorial.md
   - Reference:
     - API Specification: crds-apis.md
 extra:
@@ -47,10 +66,11 @@ extra:
     provider: google
     property: !ENV GOOGLE_ANALYTICS_KEY
 
+  generator: false
   social:
     - icon: material/github
       link: 'https://github.com/edixos/nauticus'
-
+  logo: assets/images/logos/nauticus.png
 markdown_extensions:
   - admonition
   - abbr
@@ -81,5 +101,7 @@ markdown_extensions:
       # insert a blank space before the character
       permalink: " ¶"
 
+
 plugins:
   - search
+  - include-markdown

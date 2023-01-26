@@ -1,0 +1,32 @@
+apiVersion: nauticus.io/v1alpha1
+kind: Space
+metadata:
+  labels:
+    app.kubernetes.io/name: space
+    app.kubernetes.io/instance: space-sample
+    app.kubernetes.io/part-of: nauticus
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: nauticus
+  name: space-sample-np
+spec:
+  networkPolicies:
+    enableDefaultStrictMode: true # false
+    items:
+      - policyTypes:
+          - Ingress
+          - Egress
+        egress:
+          - to:
+              - ipBlock:
+                  cidr: 0.0.0.0/0
+                  except:
+                    - 192.168.0.0/16
+        ingress:
+          - from:
+              - namespaceSelector:
+                  matchLabels:
+                    app.kubernetes.io/instance: space-all-in-one
+              - podSelector: { }
+              - ipBlock:
+                  cidr: 192.168.0.0/16
+        podSelector: { }
