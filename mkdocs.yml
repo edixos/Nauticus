@@ -4,7 +4,7 @@ repo_url: https://github.com/edixos/nauticus
 
 theme:
   name: material
-  custom_dir: material/overrides
+  custom_dir: overrides
   logo: assets/images/logos/nauticus-logo-b.png
 
   features:

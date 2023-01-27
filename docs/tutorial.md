@@ -6,10 +6,10 @@ Welcome to the Nauticus tutorial page! Here, you will learn about the powerful f
 
 In the Nauticus controller, you have the option to specify the owner(s) of a space. This allows you to assign specific users or teams to be responsible for managing the resources within a particular space. This feature is particularly useful in a multi-tenant environment, where different teams may be responsible for different parts of the application.
 
-To specify the owner(s) of a space, you can add the "owners" field in the space specification. The field should contain a list of email addresses of the users or teams that will be designated as the owner(s) of the space. For example, if you want to assign the space to the team "dev-team@example.com", the space specification would look like this:
+To specify the owner(s) of a space, you can add the "owners" field in the space specification. The field should contain a list of email addresses of the users or teams that will be designated as the owner(s) of the space. For example, if you want to assign the space to the team `dev-team@example.com`, the space specification would look like this:
 
 ```yaml title="config/samples/space_with_owners.yaml"
-{% include "../../config/samples/space_with_owners.yaml" %}
+{% include "../config/samples/space_with_owners.yaml" %}
 ```
 
 ```bash title="Create Space with Resource Quota"
@@ -25,7 +25,7 @@ To begin, you will need to create a new Space resource and specify the desired r
 Here his an example of a Space with resource quota specification:
 
 ```yaml title="config/samples/space_with_resource_quotas.yaml"
-{% include "../../config/samples/space_with_resource_quotas.yaml" %}
+{% include "../config/samples/space_with_resource_quotas.yaml" %}
 ```
 
 
@@ -47,7 +47,7 @@ When you create a space, you have the option to specify a `enableDefaultStrictMo
 To create a network policy for your space, you can use the kubectl command line tool and specify the desired rules in a manifest file. Here is an example of a manifest file that creates a network policy in underlying space's namespace.
 
 ```yaml title="config/samples/space_with_network_policy.yaml"
-{% include "../../config/samples/space_with_network_policy.yaml" %}
+{% include "../config/samples/space_with_network_policy.yaml" %}
 ```
 
 ```bash title="Create Space with Network Policy"
@@ -60,7 +60,7 @@ One of the features of Nauticus is the ability to assign additional role binding
 To assign additional role bindings, you can include the `additionalRoleBindings` field in the space specification. This field should contain a list of objects, each with `subjects` and `roleRef` field.
 
 ```yaml title="config/samples/space_with_additional_rolebindings.yaml"
-{% include "../../config/samples/space_with_additional_rolebindings.yaml" %}
+{% include "../config/samples/space_with_additional_rolebindings.yaml" %}
 ```
 
 ```bash title="Create Space with Network Policy"
