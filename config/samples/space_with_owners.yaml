@@ -7,10 +7,8 @@ metadata:
     app.kubernetes.io/part-of: nauticus
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/created-by: nauticus
-  name: space-sample-rc
+  name: space-sample-owners
 spec:
   owners:
-    - name: smile
-      kind: User
-    - name: smile@group.com
+    - name: dev-team@example.com
       kind: Group
