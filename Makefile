@@ -80,8 +80,9 @@ vet: ## Run go vet against code.
 test: manifests generate fmt vet envtest ## Run tests.
 	KUBEBUILDER_ASSETS="$(shell $(ENVTEST) use $(ENVTEST_K8S_VERSION) --bin-dir $(LOCALBIN) -p path)" go test ./... -coverprofile cover.out
 
-# Creates the single file to install Capsule without any external dependency
-installer: manifests kustomize
+
+.PHONY: installer
+installer: manifests kustomize ## Creates the single file to install Nauticus without any external dependency
 	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
 	$(KUSTOMIZE) build config/default > config/install.yaml
 
@@ -91,7 +92,7 @@ apidocs-gen: ## Download crdoc locally if necessary.
 	$(call go-install-tool,$(APIDOCS_GEN),fybrik.io/crdoc@latest)
 
 .PHONY: apidoc
-apidoc: apidocs-gen
+apidoc: apidocs-gen ## Generate CRD Documentation
 	$(APIDOCS_GEN) crdoc --resources config/crd/bases --output docs/crds-apis.md --template docs/template/reference-cr.tmpl
 
 GOLANGCI_LINT = $(shell pwd)/bin/golangci-lint
@@ -107,7 +108,9 @@ golint: golangci-lint
 
 .PHONY: build
 build: manifests generate fmt vet ## Build manager binary.
-	go build -o bin/manager main.go
+	CGO_ENABLED=0 GO111MODULE=on go build \
+		-gcflags "-N -l" \
+		-o manager
 
 .PHONY: run
 run: manifests generate fmt vet ## Run a controller from your host.
@@ -117,7 +120,7 @@ run: manifests generate fmt vet ## Run a controller from your host.
 # (i.e. docker build --platform linux/arm64 ). However, you must enable docker buildKit for it.
 # More info: https://docs.docker.com/develop/develop-images/build_enhancements/
 .PHONY: docker-build
-docker-build: test
+docker-build: test ## Builds Docker Image
 	docker build . -t ${IMG} --build-arg GIT_HEAD_COMMIT=$(GIT_HEAD_COMMIT) \
  							 --build-arg GIT_TAG_COMMIT=$(GIT_TAG_COMMIT) \
  							 --build-arg GIT_MODIFIED=$(GIT_MODIFIED) \
@@ -162,7 +165,7 @@ uninstall: manifests kustomize ## Uninstall CRDs from the K8s cluster specified 
 
 # Deploy controller in the configured Kubernetes cluster in ~/.kube/config
 .PHONY: deploy
-deploy: installer
+deploy: installer ## Deploys the controller from the generated config/install.yaml file
 	kubectl apply -f config/install.yaml
 
 .PHONY: undeploy

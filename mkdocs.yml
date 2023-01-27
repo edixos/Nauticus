@@ -56,11 +56,17 @@ nav:
   - Home: index.md
   - Getting started:
     - Installation: getting-started.md
-    - Contributing: contributing.md
+
   - Tutorials:
     - Space Tutorial: tutorial.md
   - Reference:
     - API Specification: crds-apis.md
+  - Community:
+      - Contributing:
+          - Contribution Process: contributing/process.md
+          - Developer Guide: contributing/dev-guide.md
+          - Code Of Conduct: contributing/coc.md
+
 extra:
   analytics:
     provider: google
