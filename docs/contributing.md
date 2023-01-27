@@ -1,11 +1,7 @@
 
 ## Contributing to Nauticus
 
-We welcome contributions to Nauticus! Here are some guidelines to follow:
+Thank you for your interest in contributing to Nauticus. Whether it's a bug report, new feature, correction, or additional documentation, we greatly value feedback and contributions from our community.
 
-1. Fork the repository and create a new branch for your feature or bug fix.
-2. Follow the project's existing code style and add appropriate test coverage.
-3. Submit a pull request to the main repository's `develop` branch.
-4. Be prepared to answer any questions and address any feedback on your pull request.
+Please read through this document before submitting any issues or pull requests to ensure we have all the necessary information to effectively respond to your bug report or contribution.
 
-Thank you for your contribution!
