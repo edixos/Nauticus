@@ -20,10 +20,8 @@ Welcome to Nauticus, the Kubernetes space management controller. With Nauticus, 
 - ✅ **Network Policies:** Create network policies for each space, restricting ingress communication from other spaces or namespaces.
 - ✅ **Space Owners:** Specify the owner(s) of each space, giving them full control over the resources within.
 - ✅ **Additional RoleBindings:** Assign additional role bindings to each space, providing fine-grained access control.
+- ✅ **LimitRanges:** Assign Limit Ranges to each space, providing an additional layer of control over resource utilization in the cluster.
 
 ## Getting Started
 
 To get started with Nauticus, check out our [installation guide](getting-started.md) and [tutorial](tutorial.md) to learn more about the features and how to use them.
-
-## Contributing
-

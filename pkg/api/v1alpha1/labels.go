@@ -22,6 +22,8 @@ func GetTypeLabel(t metav1.Object) (label string, err error) {
 		return "nauticus.io/resource-quota", nil
 	case *rbacv1.RoleBinding:
 		return "nauticus.io/role-binding", nil
+	case *corev1.LimitRange:
+		return "nauticus.io/limit-range", nil
 	default:
 		err = fmt.Errorf("type %T is not mapped as Nauticus label recognized", v)
 	}

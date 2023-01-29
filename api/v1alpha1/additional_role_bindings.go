@@ -7,4 +7,4 @@ type AdditionalRoleBinding struct {
 	Subjects []v1.Subject `json:"subjects,omitempty"`
 }
 
-type AdditionalRoleBindings []AdditionalRoleBinding
+type AdditionalRoleBindingsSpec []AdditionalRoleBinding

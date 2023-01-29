@@ -29,9 +29,11 @@ type SpaceSpec struct {
 	// Specifies the owners of the Space. Mandatory.
 	Owners []v1.Subject `json:"owners,omitempty"`
 	// Specifies additional RoleBindings assigned to the Space. Nauticus will ensure that the namespace in the Space always contain the RoleBinding for the given ClusterRole. Optional.
-	AdditionalRoleBindings AdditionalRoleBindings `json:"additionalRoleBindings,omitempty"`
+	AdditionalRoleBindings AdditionalRoleBindingsSpec `json:"additionalRoleBindings,omitempty"`
 	// Specifies the NetworkPolicies assigned to the Tenant. The assigned NetworkPolicies are inherited by the namespace created in the Space. Optional.
 	NetworkPolicies NetworkPolicies `json:"networkPolicies,omitempty"`
+	// Specifies the resource min/max usage restrictions to the Space. Optional.
+	LimitRanges LimitRangesSpec `json:"limitRanges,omitempty"`
 }
 
 // SpaceStatus defines the observed state of Space.

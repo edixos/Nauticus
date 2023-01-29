@@ -29,7 +29,7 @@ fixes #
 <!--- If you're unsure about any of these, don't hesitate to ask. We're here to help! -->
 - [ ] My change requires a change to the documentation.
 - [ ] I have updated the documentation accordingly.
-- [ ] I've read the [CONTRIBUTION](https://github.com/kubernetes/ingress-nginx/blob/main/CONTRIBUTING.md) guide
+- [ ] I've read the [CONTRIBUTION](https://github.com/edixos/nauticus/blob/main/docs/contributing/process.md) guide
 - [ ] All new and existing tests passed.
 
 ## Does my pull request need a release note?

@@ -66,3 +66,37 @@ To assign additional role bindings, you can include the `additionalRoleBindings`
 ```bash title="Create Space with Network Policy"
 kubectl apply -f config/samples/space_with_additional_rolebindings.yaml
 ```
+
+## Assign Limit Ranges
+
+The limit range feature in Nauticus allows users to set constraints on the resources that can be requested and consumed by the containers in a namespace. This feature provides an additional layer of control over resource utilization in the cluster, ensuring that high resource-intensive workloads do not affect the performance of other services. To utilize this feature, users can specify limit ranges in their `Space` configuration and Nauticus will enforce these limits at runtime. This provides a simple and effective way to manage the resource consumption in a multi-tenant cluster environment.
+
+```yaml title="config/samples/space_with_limit_ranges.yaml"
+{% include "../config/samples/space_with_limit_ranges.yaml" %}
+```
+
+```bash title="Create Space with Network Policy"
+kubectl apply -f config/samples/space_with_limit_ranges.yaml
+```
+
+## Space Example with All Features Combined Together
+
+In this example, we will demonstrate how to create a Space in Nauticus that combines all the features discussed so far: resource quota, network policy, space owners, and additional role bindings.
+
+```yaml title="config/samples/space_with_all.yaml"
+{% include "../config/samples/space_with_all.yaml" %}
+```
+
+```bash title="Create Space with all features"
+kubectl apply -f config/samples/space_with_all.yaml
+```
+
+
+After creating the Space resource, you can verify the resource quota and network policy by checking the respective resources in the namespace created for this Space. You can also check the role bindings and owners by using the 
+
+```bash title="Retreive Space informations"
+kubectl get rolebindings,networkpolicies,resourcequotas,limitranges -n space-all-in-one 
+kubectl describe space space-all-in-one 
+```
+
+This Space example demonstrates how Nauticus enables you to easily manage and control your Kubernetes resources by combining various features in a single resource.

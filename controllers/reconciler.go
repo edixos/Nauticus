@@ -72,6 +72,16 @@ func (s *SpaceReconciler) reconcileSpace(ctx context.Context, space *nauticusiov
 		}
 	}
 
+	limitRanges := reflect.ValueOf(space.Spec.LimitRanges)
+	if !limitRanges.IsZero() {
+		s.Log.Info("Reconciling LimitRanges for space")
+		err = s.reconcileLimitRanges(ctx, space)
+
+		if err != nil {
+			return ctrl.Result{}, err
+		}
+	}
+
 	return ctrl.Result{
 		RequeueAfter: requeueAfter,
 	}, nil

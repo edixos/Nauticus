@@ -106,6 +106,13 @@ SpaceSpec defines the desired state of Space.
         </td>
         <td>false</td>
       </tr><tr>
+        <td><b><a href="#spacespeclimitranges">limitRanges</a></b></td>
+        <td>object</td>
+        <td>
+          Specifies the resource min/max usage restrictions to the Space. Optional.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
         <td><b><a href="#spacespecnetworkpolicies">networkPolicies</a></b></td>
         <td>object</td>
         <td>
@@ -244,6 +251,119 @@ Subject contains a reference to the object or user identities a role binding app
         <td>string</td>
         <td>
           Namespace of the referenced object.  If the object kind is non-namespace, such as "User" or "Group", and this value is not empty the Authorizer should report an error.<br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+### Space.spec.limitRanges
+
+
+
+Specifies the resource min/max usage restrictions to the Space. Optional.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b><a href="#spacespeclimitrangesitemsindex">items</a></b></td>
+        <td>[]object</td>
+        <td>
+          <br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+### Space.spec.limitRanges.items[index]
+
+
+
+LimitRangeSpec defines a min/max usage limit for resources that match on kind.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b><a href="#spacespeclimitrangesitemsindexlimitsindex">limits</a></b></td>
+        <td>[]object</td>
+        <td>
+          Limits is the list of LimitRangeItem objects that are enforced.<br/>
+        </td>
+        <td>true</td>
+      </tr></tbody>
+</table>
+
+
+### Space.spec.limitRanges.items[index].limits[index]
+
+
+
+LimitRangeItem defines a min/max usage limit for any resource that matches on kind.
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>type</b></td>
+        <td>string</td>
+        <td>
+          Type of resource that this limit applies to.<br/>
+        </td>
+        <td>true</td>
+      </tr><tr>
+        <td><b>default</b></td>
+        <td>map[string]int or string</td>
+        <td>
+          Default resource requirement limit value by resource name if resource limit is omitted.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>defaultRequest</b></td>
+        <td>map[string]int or string</td>
+        <td>
+          DefaultRequest is the default resource requirement request value by resource name if resource request is omitted.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>max</b></td>
+        <td>map[string]int or string</td>
+        <td>
+          Max usage constraints on this kind by resource name.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>maxLimitRequestRatio</b></td>
+        <td>map[string]int or string</td>
+        <td>
+          MaxLimitRequestRatio if specified, the named resource must have a request and limit that are both non-zero where limit divided by request is less than or equal to the enumerated value; this represents the max burst for the named resource.<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>min</b></td>
+        <td>map[string]int or string</td>
+        <td>
+          Min usage constraints on this kind by resource name.<br/>
         </td>
         <td>false</td>
       </tr></tbody>
