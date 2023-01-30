@@ -1,5 +1,7 @@
 # Nauticus
 [![CI](https://github.com/edixos/nauticus/actions/workflows/ci.yml/badge.svg)](https://github.com/edixos/nauticus/actions/workflows/ci.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/edixos/nauticus)](https://goreportcard.com/report/github.com/edixos/nauticus)
+[![GitHub license](https://img.shields.io/github/license/edixos/nauticus.svg)](https://github.com/edixos/nauticus/blob/main/LICENSE)
 
 <p align="center">
   <img src="assets/logo/nauticus-w.png" />
@@ -21,4 +23,4 @@ We are actively working on improving and expanding the capabilities of the contr
 
 Please also keep in mind that as the controller is under development, the API may change, and backward compatibility may not be guaranteed. We will do our best to minimize breaking changes, but it's possible that some changes may be necessary as the controller evolves.
 
-We encourage users to test the controller in a non-production environment, and to report any bugs or issues that they encounter. We are committed to making the Nauticus Controller a robust and reliable tool for managing Kubernetes clusters, and we appreciate your feedback and support as we work towards this goal.~~
+We encourage users to test the controller in a non-production environment, and to report any bugs or issues that they encounter. We are committed to making the Nauticus Controller a robust and reliable tool for managing Kubernetes clusters, and we appreciate your feedback and support as we work towards this goal.
