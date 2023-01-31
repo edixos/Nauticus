@@ -1,6 +1,6 @@
 site_name: Nauticus
-repo_name: "edixos/nauticus"
-repo_url: https://github.com/edixos/nauticus
+repo_name: "edixos/Nauticus"
+repo_url: https://github.com/edixos/Nauticus
 
 theme:
   name: material
