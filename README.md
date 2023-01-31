@@ -13,7 +13,7 @@ __Nauticus__ is an open-source Kubernetes controller that simplifies the managem
 
 The Nauticus Controller provides an easy-to-use interface that allows users to create and manage Spaces through the Kubernetes API. This means that users can use the same Kubernetes resources to define the desired state of their Spaces and the controller will ensure that the actual state of the Spaces matches the desired state. This declarative approach to managing Spaces makes it easy for users to understand and troubleshoot their cluster.
 
-For detailed [documentation](https://edixos.github.io/nauticus), please refer to our official documentation.
+For detailed [documentation](https://edixos.github.io/Nauticus), please refer to our official documentation.
 
 ## Status
 
