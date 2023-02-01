@@ -98,7 +98,7 @@ Nauticus will then take care of creating the Service Account with the specified 
     ~~~
 
     ```bash title="Create Space with Service Account (GCP Binding)"
-    kubectl apply -f config/samples/space_with_aws_service_accounts.yaml
+    kubectl apply -f config/samples/space_with_gcp_service_accounts.yaml
     ```
 === "AWS"
     For more details
