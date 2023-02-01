@@ -91,7 +91,7 @@ To create a Service Account using Nauticus, simply specify the desired annotatio
 Nauticus will then take care of creating the Service Account with the specified annotations.
 
 === "GCP"
-    For more details about [Workload Identity]().
+    For more details about [Workload Identity](https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity).
 
     ~~~yaml
     {% include "../config/samples/space_with_gcp_service_accounts.yaml" %}
