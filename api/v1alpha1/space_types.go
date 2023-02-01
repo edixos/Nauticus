@@ -34,6 +34,8 @@ type SpaceSpec struct {
 	NetworkPolicies NetworkPolicies `json:"networkPolicies,omitempty"`
 	// Specifies the resource min/max usage restrictions to the Space. Optional.
 	LimitRanges LimitRangesSpec `json:"limitRanges,omitempty"`
+	// Specifies a list of service account to create within the Space. Optional
+	ServiceAccounts ServiceAccountsSpec `json:"serviceAccounts,omitempty"`
 }
 
 // SpaceStatus defines the observed state of Space.

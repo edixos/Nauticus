@@ -82,6 +82,16 @@ func (s *SpaceReconciler) reconcileSpace(ctx context.Context, space *nauticusiov
 		}
 	}
 
+	serviceAccounts := reflect.ValueOf(space.Spec.ServiceAccounts)
+	if !serviceAccounts.IsZero() {
+		s.Log.Info("Reconciling ServiceAccounts for space")
+		err = s.reconcileServiceAccounts(ctx, space)
+
+		if err != nil {
+			return ctrl.Result{}, err
+		}
+	}
+
 	return ctrl.Result{
 		RequeueAfter: requeueAfter,
 	}, nil
