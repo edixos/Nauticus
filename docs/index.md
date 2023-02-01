@@ -21,6 +21,7 @@ Welcome to Nauticus, the Kubernetes space management controller. With Nauticus, 
 - ✅ **Space Owners:** Specify the owner(s) of each space, giving them full control over the resources within.
 - ✅ **Additional RoleBindings:** Assign additional role bindings to each space, providing fine-grained access control.
 - ✅ **LimitRanges:** Assign Limit Ranges to each space, providing an additional layer of control over resource utilization in the cluster.
+- ✅ **ServiceAccounts:** Create Kubernetes Service Accounts to act as a Cloud Provider Service Account.
 
 ## Getting Started
 

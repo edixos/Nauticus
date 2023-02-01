@@ -133,6 +133,13 @@ SpaceSpec defines the desired state of Space.
           Specifies a list of ResourceQuota resources assigned to the Space. The assigned values are inherited by the namespace created by the Space. Optional.<br/>
         </td>
         <td>false</td>
+      </tr><tr>
+        <td><b><a href="#spacespecserviceaccounts">serviceAccounts</a></b></td>
+        <td>object</td>
+        <td>
+          Specifies a list of service account to create within the Space. Optional<br/>
+        </td>
+        <td>false</td>
       </tr></tbody>
 </table>
 
@@ -1270,6 +1277,65 @@ A scoped-resource selector requirement is a selector that contains values, a sco
         <td>[]string</td>
         <td>
           An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.<br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+### Space.spec.serviceAccounts
+
+
+
+Specifies a list of service account to create within the Space. Optional
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b><a href="#spacespecserviceaccountsitemsindex">items</a></b></td>
+        <td>[]object</td>
+        <td>
+          Specifies the list of Service Account to be created. Optional<br/>
+        </td>
+        <td>false</td>
+      </tr></tbody>
+</table>
+
+
+### Space.spec.serviceAccounts.items[index]
+
+
+
+
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required</th>
+        </tr>
+    </thead>
+    <tbody><tr>
+        <td><b>annotations</b></td>
+        <td>map[string]string</td>
+        <td>
+          Specifies the annotations to be placed in the ServiceAccount. Optional<br/>
+        </td>
+        <td>false</td>
+      </tr><tr>
+        <td><b>name</b></td>
+        <td>string</td>
+        <td>
+          Specifies the service account name to be created. Required<br/>
         </td>
         <td>false</td>
       </tr></tbody>

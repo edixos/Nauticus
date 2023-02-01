@@ -8,6 +8,7 @@ theme:
   logo: assets/images/logos/nauticus-logo-b.png
 
   features:
+    - content.tabs.link #Insiders only so far
     - navigation.tabs
     - navigation.instant
     - header.autohide
@@ -16,7 +17,6 @@ theme:
     - navigation.indexes
     - navigation.expand
     - content.code.copy
-    #- content.tabs.link #Insiders only so far
   font:
     text: Raleway
     code: Ubuntu Sans Mono

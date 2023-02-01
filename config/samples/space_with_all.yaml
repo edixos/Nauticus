@@ -77,3 +77,11 @@ spec:
             min:
               storage: 1Gi
             type: PersistentVolumeClaim
+  serviceAccounts:
+    items:
+      - name: cloudsql
+        annotations:
+          iam.gke.io/gcp-service-account: cloudsql@GSA_PROJECT.iam.gserviceaccount.com
+      - name: gcs
+        annotations:
+          iam.gke.io/gcp-service-account: gcs@GSA_PROJECT.iam.gserviceaccount.com

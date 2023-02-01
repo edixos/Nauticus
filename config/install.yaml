@@ -509,6 +509,24 @@ spec:
                       type: string
                     type: array
                 type: object
+              serviceAccounts:
+                description: Specifies a list of service account to create within the Space. Optional
+                properties:
+                  items:
+                    description: Specifies the list of Service Account to be created. Optional
+                    items:
+                      properties:
+                        annotations:
+                          additionalProperties:
+                            type: string
+                          description: Specifies the annotations to be placed in the ServiceAccount. Optional
+                          type: object
+                        name:
+                          description: Specifies the service account name to be created. Required
+                          type: string
+                      type: object
+                    type: array
+                type: object
             type: object
           status:
             description: SpaceStatus defines the observed state of Space.
