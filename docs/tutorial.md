@@ -79,7 +79,56 @@ The limit range feature in Nauticus allows users to set constraints on the resou
 kubectl apply -f config/samples/space_with_limit_ranges.yaml
 ```
 
-## Space Example with All Features Combined Together
+
+## Create Space's Service Accounts
+
+Nauticus provides a convenient way to create a Kubernetes Service Account that can be used as a Cloud Provider Service
+Account using Cloud specific IAM Binding. Instead of manually creating the Service Account and adding the necessary
+annotations to bind it with the cloud-specific IAM, Nauticus allows you to simply create the Service Account with the
+desired annotations.
+
+To create a Service Account using Nauticus, simply specify the desired annotations in the Space configuration file.
+Nauticus will then take care of creating the Service Account with the specified annotations.
+
+=== "GCP"
+    For more details about [Workload Identity]().
+
+    ~~~yaml
+    {% include "../config/samples/space_with_gcp_service_accounts.yaml" %}
+    ~~~
+
+    ```bash title="Create Space with Service Account (GCP Binding)"
+    kubectl apply -f config/samples/space_with_aws_service_accounts.yaml
+    ```
+=== "AWS"
+    For more details
+    about [Configuring a Kubernetes service account to assume an IAM role](https://docs.aws.amazon.com/eks/latest/userguide/associate-service-account-role.html).
+
+    ~~~yaml
+    {% include "../config/samples/space_with_aws_service_accounts.yaml" %}
+    ~~~
+
+    ```bash title="Create Space with Service Account (AWS Binding)"
+    kubectl apply -f config/samples/space_with_aws_service_accounts.yaml
+    ```
+=== "Microsoft Azure"
+    For more details
+    about [Azure Workload Identity](https://azure.github.io/azure-workload-identity/docs/quick-start.html).
+
+    ~~~yaml
+    {% include "../config/samples/space_with_azure_service_accounts.yaml" %}
+    ~~~
+
+    ```bash title="Create Space with Service Account (Azure Binding)"
+    kubectl apply -f config/samples/space_with_azure_service_accounts.yaml
+    ```
+
+Once the Space is created, Nauticus will create a Service Account with the specified annotations and assign it to the
+underlying Namespace. This allows the Namespace to access the necessary resources in the cloud provider, as specified by
+the annotations.
+
+
+## Space Example with All Features Combined
 
 In this example, we will demonstrate how to create a Space in Nauticus that combines all the features discussed so far: resource quota, network policy, space owners, and additional role bindings.
 
@@ -92,7 +141,7 @@ kubectl apply -f config/samples/space_with_all.yaml
 ```
 
 
-After creating the Space resource, you can verify the resource quota and network policy by checking the respective resources in the namespace created for this Space. You can also check the role bindings and owners by using the 
+After creating the Space resource, you can verify the resource quota and network policy by checking the respective resources in the namespace created for this Space. You can also check the role bindings and owners by using the
 
 ```bash title="Retreive Space informations"
 kubectl get rolebindings,networkpolicies,resourcequotas,limitranges -n space-all-in-one 
