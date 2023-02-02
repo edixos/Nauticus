@@ -5,4 +5,4 @@ kind: Kustomization
 images:
 - name: controller
   newName: ghcr.io/edixos/nauticus
-  newTag: v0.0.1-alpha1
+  newTag: v0.0.1-alpha2
