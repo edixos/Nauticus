@@ -1,4 +1,4 @@
-name: CI gosec
+name: Go Security CI
 on:
   push:
     branches: [ "*" ]
