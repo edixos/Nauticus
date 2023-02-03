@@ -832,11 +832,6 @@ must also have cluster-admin permissions to be able to use Nauticus.</p>
 <h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link"> ¶</a></h2>
 <p>In this section, we will explain how to install Nauticus using Helm and kubectl.</p>
 <h3 id="helm">Helm<a class="headerlink" href="#helm" title="Permanent link"> ¶</a></h3>
-<div class="admonition warning">
-<p class="admonition-title">Chart Not available Yet</p>
-<p>The project is under active development, the chart will be available soon.
-Please refer to <a href="#kubectl">kubectl</a> installation method.</p>
-</div>
 <ol>
 <li>Make sure that you have docker and kind installed if you want to create a kubernetes cluster within Docker</li>
 <li>
@@ -851,12 +846,13 @@ Please refer to <a href="#kubectl">kubectl</a> installation method.</p>
 </li>
 <li>
 <p>Use the following command to add the Nauticus Helm repository:</p>
-<div class="highlight"><span class="filename">Add Nauticus Helm Repository</span><pre><span></span><code>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>nauticus<span class="w"> </span>https://nauticus.github.io/charts
+<div class="highlight"><span class="filename">Add Edixos Helm Repository</span><pre><span></span><code>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>edixos<span class="w"> </span>https://edixos.github.io/charts
 </code></pre></div>
 </li>
 <li>
-<p>Use the following command to install Nauticus:</p>
-<div class="highlight"><span class="filename">Install Naurticus with Helm</span><pre><span></span><code>helm<span class="w"> </span>install<span class="w"> </span>nauticus<span class="w"> </span>nauticus/nauticus
+<p>Use the following commands to install Nauticus:</p>
+<div class="highlight"><span class="filename">Install Naurticus with Helm</span><pre><span></span><code>kubectl<span class="w"> </span>create<span class="w"> </span>namespace<span class="w"> </span>nauticus-system
+helm<span class="w"> </span>install<span class="w"> </span>nauticus<span class="w"> </span>--namespace<span class="w"> </span>nauticus-system<span class="w"> </span>edixos/nauticus
 </code></pre></div>
 </li>
 <li>
@@ -877,7 +873,7 @@ the resources needed for Nauticus to function properly.</p>
 <ol>
 <li>
 <p>Apply the manifest file using kubectl:</p>
-<div class="highlight"><span class="filename">Install Nauticus from all-in-one manifest file</span><pre><span></span><code>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>https://raw.githubusercontent.com/edixos/nauticus/main/config/install.yam
+<div class="highlight"><span class="filename">Install Nauticus from all-in-one manifest file</span><pre><span></span><code>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>https://raw.githubusercontent.com/edixos/nauticus/main/config/install.yaml
 </code></pre></div>
 </li>
 <li>
