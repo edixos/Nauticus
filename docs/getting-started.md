@@ -28,10 +28,6 @@ In this section, we will explain how to install Nauticus using Helm and kubectl.
 
 ### Helm
 
-!!! Warning "Chart Not available Yet"
-    The project is under active development, the chart will be available soon.
-    Please refer to [kubectl](#kubectl) installation method.
-
 1. Make sure that you have docker and kind installed if you want to create a kubernetes cluster within Docker
 2. Start by creating a new Kubernetes cluster with kind command if you don't have one.
 
@@ -45,14 +41,15 @@ In this section, we will explain how to install Nauticus using Helm and kubectl.
 
 4. Use the following command to add the Nauticus Helm repository:
 
-     ```bash  title="Add Nauticus Helm Repository"
-     helm repo add nauticus https://nauticus.github.io/charts
+     ```bash  title="Add Edixos Helm Repository"
+     helm repo add edixos https://edixos.github.io/charts
      ```
    
-5. Use the following command to install Nauticus:
+5. Use the following commands to install Nauticus:
       
      ```bash title="Install Naurticus with Helm"
-     helm install nauticus nauticus/nauticus
+     kubectl create namespace nauticus-system
+     helm install nauticus --namespace nauticus-system edixos/nauticus
      ```
    
 6. Use the following command to check the status of the Nauticus pods:
