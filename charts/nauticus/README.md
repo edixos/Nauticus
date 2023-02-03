@@ -14,7 +14,7 @@
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| Ismail KABOUBI | ikaboubi@gmail.com | https://smileisak.com |
+| Ismail KABOUBI | <ikaboubi@gmail.com> | <https://smileisak.com> |
 
 ## Description
 
