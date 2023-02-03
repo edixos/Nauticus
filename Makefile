@@ -194,10 +194,12 @@ undeploy: ## Undeploy controller from the K8s cluster specified in ~/.kube/confi
 SRC_ROOT = $(shell git rev-parse --show-toplevel)
 
 
-.PHONY: helm-lint
+.PHONY: helm-docs
 helm-docs: HELMDOCS_VERSION := v1.11.0
 helm-docs: docker ## Run helm-docs within docker.
-	@docker run --rm -it -v "$(SRC_ROOT):/helm-docs" jnorwood/helm-docs:$(HELMDOCS_VERSION) --chart-search-root /helm-docs
+	@docker run --rm -v "$(SRC_ROOT):/helm-docs" jnorwood/helm-docs:$(HELMDOCS_VERSION) --chart-search-root /helm-docs
+
+
 
 .PHONY: helm-lint
 helm-lint: docker ## Run ct test linter in docker.
