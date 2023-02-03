@@ -76,7 +76,7 @@ the resources needed for Nauticus to function properly.
 1. Apply the manifest file using kubectl:
 
      ```bash  title="Install Nauticus from all-in-one manifest file"
-     kubectl apply -f https://raw.githubusercontent.com/edixos/nauticus/main/config/install.yam
+     kubectl apply -f https://raw.githubusercontent.com/edixos/nauticus/main/config/install.yaml
      ```
 
 2. Use the following command to check the status of the Nauticus pods:
