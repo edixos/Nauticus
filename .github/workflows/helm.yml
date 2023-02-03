@@ -19,19 +19,9 @@ jobs:
           version: 3.3.4
       - name: Linting Chart
         run: helm lint ./charts/nauticus
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-          check-latest: true
-      - name: Set up chart-testing
-        uses: helm/chart-testing-action@v2.3.1
-      - name: Run chart-testing (list-changed)
-        id: list-changed
-        run: |
-          changed=$(ct list-changed --config ./.github/configs/ct.yaml)
-          if [[ -n "$changed" ]]; then
-            echo "::set-output name=changed::true"
-          fi
+      - name: Setup Chart Linting
+        id: lint
+        uses: helm/chart-testing-action@v2.3.0
       - name: Run chart-testing (lint)
         run: ct lint --debug --config ./.github/configs/ct.yaml --lint-conf ./.github/configs/lintconf.yaml
       - name: Run docs-testing (helm-docs)
