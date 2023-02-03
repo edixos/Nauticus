@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    {{- include "nauticus.labels" . | nindent 4 }}
+  {{- with .Values.customAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  name: {{ include "nauticus.fullname" . }}-controller-manager-metrics-service
+  namespace: nauticus-system
+spec:
+  ports:
+    - name: https
+      port: 8443
+      protocol: TCP
+      targetPort: https
+  selector:
+    {{- include "nauticus.selectorLabels" . | nindent 4 }}

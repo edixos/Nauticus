@@ -16,6 +16,7 @@ keywords:
 maintainers:
   - email: ikaboubi@gmail.com
     name: Ismail KABOUBI
+    url: https://smileisak.com
 name: nauticus
 sources:
   - https://github.com/edixos/nauticus
@@ -26,4 +27,4 @@ version: 0.1.0
 
 # This is the version number of the application being deployed.
 # This version number should be incremented each time you make changes to the application.
-appVersion: 0.1.0
+appVersion: v0.0.1-alpha1
