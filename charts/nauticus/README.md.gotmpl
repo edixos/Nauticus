@@ -1,0 +1,62 @@
+# {{ .Name }}
+
+{{ template "chart.versionBadge" .}}{{ template "chart.typeBadge" . }}{{ template "chart.appVersionBadge" . }}
+
+{{ template "chart.deprecationWarning" . }}
+
+{{ template "chart.homepageLine" . }}
+
+## Prerequisites
+
+- Helm v3
+
+- [CertManager](https://cert-manager.io) when admission webhooks is enabled
+
+{{ template "chart.requirementsSection" . }}
+
+{{ template "chart.maintainersSection" . }}
+
+## Description
+
+{{ template "chart.description" . }}
+
+{{ template "chart.sourcesSection" . }}
+
+{{ template "chart.valuesSection" . }}
+
+## Installing the Chart
+
+### With Helm
+
+To install the chart with the release name `my-release`:
+
+```bash
+helm repo add edixos https://edixos.github.io/nauticus
+helm install edixos/{{ .Name }}
+```
+
+### With ArgoCD
+
+#### Cluster k8s with access to public registry
+
+Add new application as:
+
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Name }}
+spec:
+  project: infra
+
+  source:
+    repoURL: "https://edixos.github.io/nauticus"
+    targetRevision: "{{ .Version }}"
+    chart: {{ .Name }}
+    path: ''
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: "nauticus-system"
+
+```

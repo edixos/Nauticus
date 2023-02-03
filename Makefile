@@ -85,11 +85,28 @@ test: manifests generate fmt vet envtest ## Run tests.
 installer: manifests kustomize ## Creates the single file to install Nauticus without any external dependency
 	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
 	$(KUSTOMIZE) build config/default > config/install.yaml
+	$(KUSTOMIZE) build config/crd > charts/nauticus/crds/nauticus_crds.yaml
 
 APIDOCS_GEN = $(shell pwd)/bin/crdoc
 .PHONY: apidocs-gen
 apidocs-gen: ## Download crdoc locally if necessary.
 	$(call go-install-tool,$(APIDOCS_GEN),fybrik.io/crdoc@latest)
+
+GINKGO = $(shell pwd)/bin/ginkgo
+ginkgo: ## Download ginkgo locally if necessary.
+	$(call go-install-tool,$(GINKGO),github.com/onsi/ginkgo/ginkgo@v1.16.5)
+
+CT = $(shell pwd)/bin/ct
+ct: ## Download ct locally if necessary.
+	$(call go-install-tool,$(CT),github.com/helm/chart-testing/v3/ct@v3.7.1)
+
+KIND = $(shell pwd)/bin/kind
+kind: ## Download kind locally if necessary.
+	$(call go-install-tool,$(KIND),sigs.k8s.io/kind/cmd/kind@v0.17.0)
+
+KUSTOMIZE = $(shell pwd)/bin/kustomize
+kustomize: ## Download kustomize locally if necessary.
+	$(call install-kustomize,$(KUSTOMIZE),3.8.7)
 
 .PHONY: apidoc
 apidoc: apidocs-gen ## Generate CRD Documentation
@@ -171,6 +188,36 @@ deploy: installer ## Deploys the controller from the generated config/install.ya
 .PHONY: undeploy
 undeploy: ## Undeploy controller from the K8s cluster specified in ~/.kube/config. Call with ignore-not-found=true to ignore resource not found errors during deletion.
 	$(KUSTOMIZE) build config/default | kubectl delete --ignore-not-found=$(ignore-not-found) -f -
+
+
+# Helm
+SRC_ROOT = $(shell git rev-parse --show-toplevel)
+
+
+.PHONY: helm-docs
+helm-docs: HELMDOCS_VERSION := v1.11.0
+helm-docs: docker ## Run helm-docs within docker.
+	@docker run --rm -v "$(SRC_ROOT):/helm-docs" jnorwood/helm-docs:$(HELMDOCS_VERSION) --chart-search-root /helm-docs
+
+
+
+.PHONY: helm-lint
+helm-lint: docker ## Run ct test linter in docker.
+	@docker run --rm -it -w /nauticus/charts/nauticus -v $(SRC_ROOT)/:/nauticus quay.io/helmpack/chart-testing:v3.7.1 ct lint --charts . --config /nauticus/.github/configs/ct.yaml --lint-conf /nauticus/.github/configs/lintconf.yaml
+
+.PHONY: helm-test
+helm-test: kind ct docker-build ## Run ct test in a kind cluster.
+	@kind create cluster --wait=60s --name nauticus-charts
+	@kind load docker-image --name nauticus-charts ${IMG}
+	@kubectl create ns nauticus-system
+	@docker run --rm -it -w /nauticus/charts/nauticus -v $(SRC_ROOT)/:/nauticus quay.io/helmpack/chart-testing:v3.7.1 ct install --config /nauticus/.github/configs/ct.yaml --namespace=nauticus-system --all --debug
+	@kind delete cluster --name nauticus-charts
+
+docker: ## Check if docker present
+	@hash docker 2>/dev/null || {\
+		echo "You need docker" &&\
+		exit 1;\
+	}
 
 ##@ Build Dependencies
 

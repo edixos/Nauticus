@@ -1,0 +1,1 @@
+Congratulation Nauticus is now deployed in you cluster.
