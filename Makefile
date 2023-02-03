@@ -85,6 +85,7 @@ test: manifests generate fmt vet envtest ## Run tests.
 installer: manifests kustomize ## Creates the single file to install Nauticus without any external dependency
 	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
 	$(KUSTOMIZE) build config/default > config/install.yaml
+	$(KUSTOMIZE) build config/crd > charts/nauticus/crds/nauticus_crds.yaml
 
 APIDOCS_GEN = $(shell pwd)/bin/crdoc
 .PHONY: apidocs-gen
