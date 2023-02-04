@@ -3,18 +3,8 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/edixos/nauticus)](https://goreportcard.com/report/github.com/edixos/nauticus)
 [![GitHub license](https://img.shields.io/github/license/edixos/nauticus.svg)](https://github.com/edixos/nauticus/blob/main/LICENSE)
 
-<p align="center">
-  <img src="assets/logo/nauticus-w.png" alt="nauticus-logo" style="filter:invert(100%)">
-</p>
-
-<style>
-  @media (prefers-color-scheme: light) {
-    img[alt="nauticus-logo"] {
-      filter: invert(0%);
-    }
-  }
-</style>
-
+![Nauticus Logo](assets/logo/nauticus-w.png#gh-dark-mode-only)
+![Nauticus Logo](assets/logo/nauticus-b.png#gh-light-mode-only)
 
 ---
 
