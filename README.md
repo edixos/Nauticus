@@ -3,9 +3,8 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/edixos/nauticus)](https://goreportcard.com/report/github.com/edixos/nauticus)
 [![GitHub license](https://img.shields.io/github/license/edixos/nauticus.svg)](https://github.com/edixos/nauticus/blob/main/LICENSE)
 
-<p align="center">
-  <img src="assets/logo/nauticus-w.png" />
-</p>
+![Nauticus Logo](assets/logo/nauticus-w.png#gh-dark-mode-only)
+![Nauticus Logo](assets/logo/nauticus-b.png#gh-light-mode-only)
 
 ---
 
@@ -13,7 +12,7 @@ __Nauticus__ is an open-source Kubernetes controller that simplifies the managem
 
 The Nauticus Controller provides an easy-to-use interface that allows users to create and manage Spaces through the Kubernetes API. This means that users can use the same Kubernetes resources to define the desired state of their Spaces and the controller will ensure that the actual state of the Spaces matches the desired state. This declarative approach to managing Spaces makes it easy for users to understand and troubleshoot their cluster.
 
-For detailed [documentation](https://edixos.github.io/Nauticus), please refer to our official documentation.
+For detailed [documentation](https://nauticus.edixos.com), please refer to our official documentation.
 
 ## Status
 
