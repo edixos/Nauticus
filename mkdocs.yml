@@ -68,6 +68,8 @@ nav:
           - Code Of Conduct: contributing/coc.md
 
 extra:
+  version:
+    provider: mike
   analytics:
     provider: google
     property: G-YSCQHVX2PE
