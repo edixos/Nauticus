@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+
+<!-- Custom front matter -->
+{% block extrahead %}
+
+<!-- Determine title -->
+{% set title = config.site_name %}
+{% if page and page.title and not page.is_homepage %}
+{% set title = config.site_name ~ " - " ~ page.title | striptags %}
+{% endif %}
+
+
+<!-- Open graph meta tags -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="{{ title }}" />
+<meta property="og:description" content="{{ config.site_description }}" />
+<meta property="og:url" content="{{ page.canonical_url }}" />
+
+<!-- Google meta tags -->
+<!--<meta name="google-site-verification" content="">-->
+
+
+<!-- Extra stylesheets -->
+<!--  <link
+    rel="stylesheet"
+    href="{{ 'assets/stylesheets/overrides.css' | url }}"
+  />-->
+{% endblock %}
+
+
+
+<!-- Announcement bar -->
+{% block announce %}
+<!-- Extra stylesing -->
+<style>
+    .md-announce a,
+    .md-announce a:focus,
+    .md-announce a:hover{color:currentColor}.md-announce
+                                            strong{white-space:nowrap}.md-announce
+</style>
+
+<a href="">
+    <p>
+        Join the community on the <strong style="color: #278e85">#nauticus</strong> channel in the Kubernetes
+        <strong style="color: white">Slack</strong>
+        <span class="twemoji linkedin" style="color: #0e76a8">
+          {% include ".icons/fontawesome/brands/slack.svg" %}
+        </span>
+    </p>
+</a>
+
+{% endblock %}
