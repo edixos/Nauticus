@@ -123,7 +123,7 @@ extra:
     - icon: material/github
       link: 'https://github.com/edixos/nauticus'
     - icon: material/slack
-      link: ''
+      link: 'https://kubernetes.slack.com/archives/C04NQTC3R0F'
   logo: assets/images/logos/nauticus.png
 
 

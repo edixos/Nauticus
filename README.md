@@ -6,6 +6,8 @@
 ![Nauticus Logo](assets/logo/nauticus-w.png#gh-dark-mode-only)
 ![Nauticus Logo](assets/logo/nauticus-b.png#gh-light-mode-only)
 
+Join the community on the [#nauticus](https://kubernetes.slack.com/archives/C04NQTC3R0F) channel in the [Kubernetes Slack](https://slack.k8s.io/).
+
 ---
 
 __Nauticus__ is an open-source Kubernetes controller that simplifies the management of Kubernetes clusters by allowing users to create and manage "Spaces" within the cluster. A Space is a fully-managed Kubernetes namespace that includes RBAC, network policies, resources quotas, and cloud provider specific bindings.
