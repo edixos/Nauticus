@@ -62,3 +62,7 @@ For more information on release notes see: https://git.k8s.io/community/contribu
 ```release-note
 PLACE RELEASE NOTES HERE
 ```
+<!--
+If you have any issue or question, reach out us!
+https://kubernetes.slack.com/archives/C04NQTC3R0F >>> #nauticus channel 
+-->
