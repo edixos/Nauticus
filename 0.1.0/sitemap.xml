@@ -1,43 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-         <loc>https://nauticus.edixos.com/0.1.0/</loc>
-         <lastmod>2023-02-09</lastmod>
+         <loc>None</loc>
+         <lastmod>2023-02-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://nauticus.edixos.com/0.1.0/contributing/</loc>
-         <lastmod>2023-02-09</lastmod>
+         <loc>None</loc>
+         <lastmod>2023-02-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://nauticus.edixos.com/0.1.0/crds-apis/</loc>
-         <lastmod>2023-02-09</lastmod>
+         <loc>None</loc>
+         <lastmod>2023-02-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://nauticus.edixos.com/0.1.0/getting-started/</loc>
-         <lastmod>2023-02-09</lastmod>
+         <loc>None</loc>
+         <lastmod>2023-02-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://nauticus.edixos.com/0.1.0/tutorial/</loc>
-         <lastmod>2023-02-09</lastmod>
+         <loc>None</loc>
+         <lastmod>2023-02-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://nauticus.edixos.com/0.1.0/contributing/coc/</loc>
-         <lastmod>2023-02-09</lastmod>
+         <loc>None</loc>
+         <lastmod>2023-02-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://nauticus.edixos.com/0.1.0/contributing/dev-guide/</loc>
-         <lastmod>2023-02-09</lastmod>
+         <loc>None</loc>
+         <lastmod>2023-02-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://nauticus.edixos.com/0.1.0/contributing/process/</loc>
-         <lastmod>2023-02-09</lastmod>
+         <loc>None</loc>
+         <lastmod>2023-02-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
