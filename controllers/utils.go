@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"context"
+
 	"github.com/edixos/nauticus/api/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -48,7 +50,7 @@ func (s *SpaceReconciler) setSpaceCondition(space *v1alpha1.Space, observedGener
 		if cond.Status == status {
 			newCondition.LastTransitionTime = cond.LastTransitionTime
 		} else {
-			s.Log.Info("Found status change for Space %q condition %q: %q -> %q; setting lastTransitionTime to %v", space.GetObjectMeta().GetName(), conditionType, cond.Status, status, nowTime.Time)
+			s.Log.WithName(space.GetName()).Info("Found status change for Space condition, setting lastTransitionTime to", space.GetName(), nowTime)
 		}
 
 		// Overwrite the existing condition
@@ -60,5 +62,28 @@ func (s *SpaceReconciler) setSpaceCondition(space *v1alpha1.Space, observedGener
 	// If we've not found an existing condition of this type, we simply insert
 	// the new condition into the slice.
 	space.Status.Conditions = append(space.Status.Conditions, newCondition)
-	s.Log.Info("Setting lastTransitionTime for Space %q condition %q to %v", space.GetObjectMeta().GetName(), conditionType, nowTime.Time)
+	s.Log.WithName(space.GetName()).Info("Setting lastTransitionTime for Space condition ", space.GetObjectMeta().GetName(), nowTime.Time)
+}
+
+// Only the Type and Status field will be used in the comparison, meaning that
+// this function will return 'true' even if the Reason, Message and
+// LastTransitionTime fields do not match.
+func (s *SpaceReconciler) spaceHasCondition(space *v1alpha1.Space, c metav1.Condition) bool {
+	if space == nil {
+		return false
+	}
+	existingConditions := space.Status.Conditions
+	for _, cond := range existingConditions {
+		if c.Type == cond.Type && c.Status == cond.Status {
+			return true
+		}
+	}
+	return false
+}
+
+func (s *SpaceReconciler) updateStatus(ctx context.Context, space *v1alpha1.Space) {
+	err := s.Client.Status().Update(ctx, space)
+	if err != nil {
+		s.Log.Error(err, "Failed to update Space status", "space", space.Name)
+	}
 }

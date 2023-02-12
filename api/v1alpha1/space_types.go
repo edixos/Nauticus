@@ -22,6 +22,12 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+type (
+	ConditionType    string
+	ConditionReason  string
+	ConditionMessage string
+)
+
 // SpaceSpec defines the desired state of Space.
 type SpaceSpec struct {
 	// Specifies a list of ResourceQuota resources assigned to the Space. The assigned values are inherited by the namespace created by the Space. Optional.
