@@ -55,7 +55,7 @@ type SpaceStatus struct {
 // +kubebuilder:object:root=true
 // +kubebuilder:resource:scope=Cluster,categories={spaces}
 // +kubebuilder:subresource:status
-// +kubebuilder:printcolumn:name="Ready",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].reason",description="Ready"
+// +kubebuilder:printcolumn:name="Ready",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status",description="Ready"
 // +kubebuilder:printcolumn:name="Age",type="date",JSONPath=".metadata.creationTimestamp",description="Age"
 // +kubebuilder:printcolumn:name="NamespaceName",type=string,JSONPath=`.status.namespaceName`
 
