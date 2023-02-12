@@ -27,6 +27,7 @@ const (
 
 	SpaceSyncSuccessReason nauticusiov1alpha1.ConditionReason = "SpaceSyncedSuccessfully"
 	SpaceCreatingReason    nauticusiov1alpha1.ConditionReason = "SpaceCreating"
+	SpaceFailedReason      nauticusiov1alpha1.ConditionReason = "SpaceSyncFailed"
 
 	SpaceSyncSuccessMessage nauticusiov1alpha1.ConditionMessage = "Space synced successfully"
 	SpaceSyncFailMessage    nauticusiov1alpha1.ConditionMessage = "Space failed to sync"
@@ -44,11 +45,12 @@ func (s *SpaceReconciler) reconcileSpace(ctx context.Context, space *nauticusiov
 
 	s.Log.Info("Reconciling Namespace for space.")
 
-	s.setSpaceCondition(space, space.GetGeneration(), string(SpaceConditionCreating), SpaceConditionStatusUnknown, string(SpaceCreatingReason), string(SpaceCreatingMessage))
-	s.updateStatus(ctx, space)
+	s.processInProgressCondition(ctx, space)
 
 	err = s.reconcileNamespace(ctx, space)
 	if err != nil {
+		s.processFailedCondition(ctx, space)
+
 		return ctrl.Result{}, err
 	}
 
@@ -58,6 +60,8 @@ func (s *SpaceReconciler) reconcileSpace(ctx context.Context, space *nauticusiov
 		err = s.reconcileResourceQuota(ctx, space)
 
 		if err != nil {
+			s.processFailedCondition(ctx, space)
+
 			return ctrl.Result{}, err
 		}
 	}
@@ -68,6 +72,8 @@ func (s *SpaceReconciler) reconcileSpace(ctx context.Context, space *nauticusiov
 		err = s.reconcileOwners(ctx, space)
 
 		if err != nil {
+			s.processFailedCondition(ctx, space)
+
 			return ctrl.Result{}, err
 		}
 	}
@@ -78,6 +84,8 @@ func (s *SpaceReconciler) reconcileSpace(ctx context.Context, space *nauticusiov
 		err = s.reconcileAdditionalRoleBindings(ctx, space)
 
 		if err != nil {
+			s.processFailedCondition(ctx, space)
+
 			return ctrl.Result{}, err
 		}
 	}
@@ -88,6 +96,8 @@ func (s *SpaceReconciler) reconcileSpace(ctx context.Context, space *nauticusiov
 		err = s.reconcileNetworkPolicies(ctx, space)
 
 		if err != nil {
+			s.processFailedCondition(ctx, space)
+
 			return ctrl.Result{}, err
 		}
 	}
@@ -98,6 +108,8 @@ func (s *SpaceReconciler) reconcileSpace(ctx context.Context, space *nauticusiov
 		err = s.reconcileLimitRanges(ctx, space)
 
 		if err != nil {
+			s.processFailedCondition(ctx, space)
+
 			return ctrl.Result{}, err
 		}
 	}
@@ -108,9 +120,13 @@ func (s *SpaceReconciler) reconcileSpace(ctx context.Context, space *nauticusiov
 		err = s.reconcileServiceAccounts(ctx, space)
 
 		if err != nil {
+			s.processFailedCondition(ctx, space)
+
 			return ctrl.Result{}, err
 		}
 	}
+
+	s.processReadyCondition(ctx, space)
 
 	return ctrl.Result{
 		RequeueAfter: requeueAfter,

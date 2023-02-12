@@ -72,18 +72,56 @@ func (s *SpaceReconciler) spaceHasCondition(space *v1alpha1.Space, c metav1.Cond
 	if space == nil {
 		return false
 	}
+
 	existingConditions := space.Status.Conditions
 	for _, cond := range existingConditions {
 		if c.Type == cond.Type && c.Status == cond.Status {
 			return true
 		}
 	}
+
 	return false
+}
+
+func (s *SpaceReconciler) processFailedCondition(ctx context.Context, space *v1alpha1.Space) {
+	s.setSpaceCondition(
+		space,
+		space.GetGeneration(),
+		string(SpaceConditionFailed),
+		SpaceConditionStatusFalse,
+		string(SpaceFailedReason),
+		string(SpaceSyncFailMessage),
+	)
+	s.updateStatus(ctx, space)
+}
+
+func (s *SpaceReconciler) processReadyCondition(ctx context.Context, space *v1alpha1.Space) {
+	s.setSpaceCondition(
+		space,
+		space.GetGeneration(),
+		string(SpaceConditionReady),
+		SpaceConditionStatusTrue,
+		string(SpaceSyncSuccessReason),
+		string(SpaceSyncSuccessMessage),
+	)
+	s.updateStatus(ctx, space)
+}
+
+func (s *SpaceReconciler) processInProgressCondition(ctx context.Context, space *v1alpha1.Space) {
+	s.setSpaceCondition(
+		space,
+		space.GetGeneration(),
+		string(SpaceConditionCreating),
+		SpaceConditionStatusUnknown,
+		string(SpaceCreatingReason),
+		string(SpaceCreatingMessage),
+	)
+	s.updateStatus(ctx, space)
 }
 
 func (s *SpaceReconciler) updateStatus(ctx context.Context, space *v1alpha1.Space) {
 	err := s.Client.Status().Update(ctx, space)
 	if err != nil {
-		s.Log.Error(err, "Failed to update Space status", "space", space.Name)
+		s.Log.Info("Failed to update Space status", "space", space.Name)
 	}
 }

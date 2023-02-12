@@ -30,13 +30,17 @@ spec:
   scope: Cluster
   versions:
   - additionalPrinterColumns:
-    - jsonPath: .status.namespaceName
-      name: NamespaceName
+    - description: Ready
+      jsonPath: .status.conditions[?(@.type=='Ready')].reason
+      name: Ready
       type: string
     - description: Age
       jsonPath: .metadata.creationTimestamp
       name: Age
       type: date
+    - jsonPath: .status.namespaceName
+      name: NamespaceName
+      type: string
     name: v1alpha1
     schema:
       openAPIV3Schema:
