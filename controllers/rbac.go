@@ -21,7 +21,9 @@ func (s *SpaceReconciler) reconcileOwners(ctx context.Context, space *nauticusio
 	}
 	ownersRoleBinding := newRoleBinding(rolebindingName, space.Status.NamespaceName, roleRef, space.Spec.Owners)
 
-	return s.syncRoleBinding(ctx, ownersRoleBinding, space, ownersRoleBinding.RoleRef, ownersRoleBinding.Subjects)
+	err = s.syncRoleBinding(ctx, ownersRoleBinding, space, ownersRoleBinding.RoleRef, ownersRoleBinding.Subjects)
+
+	return err
 }
 
 func (s *SpaceReconciler) reconcileAdditionalRoleBindings(ctx context.Context, space *nauticusiov1alpha1.Space) (err error) {

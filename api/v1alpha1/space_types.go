@@ -22,6 +22,12 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+type (
+	ConditionType    string
+	ConditionReason  string
+	ConditionMessage string
+)
+
 // SpaceSpec defines the desired state of Space.
 type SpaceSpec struct {
 	// Specifies a list of ResourceQuota resources assigned to the Space. The assigned values are inherited by the namespace created by the Space. Optional.
@@ -42,13 +48,16 @@ type SpaceSpec struct {
 type SpaceStatus struct {
 	// NamespaceName the name of the created underlying namespace.
 	NamespaceName string `json:"namespaceName,omitempty"`
+	// Conditions List of status conditions to indicate the status of Space
+	Conditions []metav1.Condition `json:"conditions,omitempty"`
 }
 
 // +kubebuilder:object:root=true
 // +kubebuilder:resource:scope=Cluster,categories={spaces}
 // +kubebuilder:subresource:status
-// +kubebuilder:printcolumn:name="NamespaceName",type=string,JSONPath=`.status.namespaceName`
+// +kubebuilder:printcolumn:name="Ready",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status",description="Ready"
 // +kubebuilder:printcolumn:name="Age",type="date",JSONPath=".metadata.creationTimestamp",description="Age"
+// +kubebuilder:printcolumn:name="NamespaceName",type=string,JSONPath=`.status.namespaceName`
 
 // Space is the Schema for the spaces API.
 type Space struct {

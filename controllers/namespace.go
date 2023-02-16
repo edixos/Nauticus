@@ -18,15 +18,13 @@ func (s *SpaceReconciler) reconcileNamespace(ctx context.Context, space *nauticu
 
 	err = s.syncNamespace(ctx, namespace, space)
 
-	// Update the Space's status
-	space.Status.NamespaceName = namespace.Name
-	err = s.Client.Status().Update(ctx, space)
-
 	if err != nil {
-		s.Log.Error(err, "Failed to update Space status", "space", space.Name)
-
 		return err
 	}
+
+	// Update the Space's status
+	space.Status.NamespaceName = namespace.Name
+	s.updateStatus(ctx, space)
 
 	return err
 }
