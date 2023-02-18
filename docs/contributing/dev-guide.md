@@ -8,6 +8,15 @@ git clone https://github.com/<your-username>/nauticus.git
 cd nauticus
 ```
 
+
+Do not forget to add the upstream repository to rebase when needed.
+
+```shell  title="Clone Nauticus Locally"
+git remote add upstream https://github.com/edixos/nauticus.git
+```
+
+
+
 ## Building & Testing
 
 First you need a local kubernetes cluster if you want to run the controller againt a real API Server, you can create a kind 
