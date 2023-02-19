@@ -896,6 +896,9 @@ then fork the repo and clone it:</p>
 <div class="highlight"><span class="filename">Clone Nauticus Locally</span><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/&lt;your-username&gt;/nauticus.git
 <span class="nb">cd</span><span class="w"> </span>nauticus
 </code></pre></div>
+<p>Do not forget to add the upstream repository to rebase when needed.</p>
+<div class="highlight"><span class="filename">Clone Nauticus Locally</span><pre><span></span><code>git<span class="w"> </span>remote<span class="w"> </span>add<span class="w"> </span>upstream<span class="w"> </span>https://github.com/edixos/nauticus.git
+</code></pre></div>
 <h2 id="building-testing">Building &amp; Testing<a class="headerlink" href="#building-testing" title="Permanent link"> ¶</a></h2>
 <p>First you need a local kubernetes cluster if you want to run the controller againt a real API Server, you can create a kind 
 cluster for this purpose.</p>
