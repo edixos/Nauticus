@@ -19,6 +19,14 @@ linters-settings:
 linters:
   enable-all: true
   disable:
+    - nonamedreturns
+    - exhaustruct
+    - contextcheck
+    - ifshort
+    - nosnakecase
+    - structcheck
+    - varcheck
+    - deadcode
     - funlen
     - gochecknoinits
     - lll
@@ -38,7 +46,7 @@ linters:
     - gci
 
 service:
-  golangci-lint-version: 1.45.2
+  golangci-lint-version: 1.52.2
 
 run:
   skip-files:

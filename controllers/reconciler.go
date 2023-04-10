@@ -144,8 +144,8 @@ func (s *SpaceReconciler) reconcileSpace(ctx context.Context, space *nauticusiov
 
 func (s *SpaceReconciler) reconcileDelete(ctx context.Context, space *nauticusiov1alpha1.Space) (result reconcile.Result, err error) {
 	if controllerutil.ContainsFinalizer(space, NauticusFinalizer) {
-		namespace, _ := s.newNamespace(space)
-		err = s.Client.Delete(ctx, namespace)
+		namespace := s.newNamespace(space)
+		_ = s.Client.Delete(ctx, namespace)
 
 		// remove our finalizer from the list and update it.
 		controllerutil.RemoveFinalizer(space, NauticusFinalizer)
@@ -155,5 +155,5 @@ func (s *SpaceReconciler) reconcileDelete(ctx context.Context, space *nauticusio
 		}
 	}
 	// Stop reconciliation as the item is being deleted
-	return ctrl.Result{}, nil
+	return ctrl.Result{}, err
 }
