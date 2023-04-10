@@ -46,10 +46,12 @@ func (s *SpaceReconciler) reconcileSpace(ctx context.Context, space *nauticusiov
 	s.Log.Info("Reconciling Namespace for space.")
 
 	s.processInProgressCondition(ctx, space)
+	s.setMetrics(space, SpaceConditionCreating)
 
 	err = s.reconcileNamespace(ctx, space)
 	if err != nil {
 		s.processFailedCondition(ctx, space)
+		s.setMetrics(space, SpaceConditionFailed)
 
 		return ctrl.Result{}, err
 	}
@@ -61,6 +63,7 @@ func (s *SpaceReconciler) reconcileSpace(ctx context.Context, space *nauticusiov
 
 		if err != nil {
 			s.processFailedCondition(ctx, space)
+			s.setMetrics(space, SpaceConditionFailed)
 
 			return ctrl.Result{}, err
 		}
@@ -73,6 +76,7 @@ func (s *SpaceReconciler) reconcileSpace(ctx context.Context, space *nauticusiov
 
 		if err != nil {
 			s.processFailedCondition(ctx, space)
+			s.setMetrics(space, SpaceConditionFailed)
 
 			return ctrl.Result{}, err
 		}
@@ -85,6 +89,7 @@ func (s *SpaceReconciler) reconcileSpace(ctx context.Context, space *nauticusiov
 
 		if err != nil {
 			s.processFailedCondition(ctx, space)
+			s.setMetrics(space, SpaceConditionFailed)
 
 			return ctrl.Result{}, err
 		}
@@ -97,6 +102,7 @@ func (s *SpaceReconciler) reconcileSpace(ctx context.Context, space *nauticusiov
 
 		if err != nil {
 			s.processFailedCondition(ctx, space)
+			s.setMetrics(space, SpaceConditionFailed)
 
 			return ctrl.Result{}, err
 		}
@@ -109,6 +115,7 @@ func (s *SpaceReconciler) reconcileSpace(ctx context.Context, space *nauticusiov
 
 		if err != nil {
 			s.processFailedCondition(ctx, space)
+			s.setMetrics(space, SpaceConditionFailed)
 
 			return ctrl.Result{}, err
 		}
@@ -121,12 +128,14 @@ func (s *SpaceReconciler) reconcileSpace(ctx context.Context, space *nauticusiov
 
 		if err != nil {
 			s.processFailedCondition(ctx, space)
+			s.setMetrics(space, SpaceConditionFailed)
 
 			return ctrl.Result{}, err
 		}
 	}
 
 	s.processReadyCondition(ctx, space)
+	s.setMetrics(space, SpaceConditionReady)
 
 	return ctrl.Result{
 		RequeueAfter: requeueAfter,
