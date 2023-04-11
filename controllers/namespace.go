@@ -11,10 +11,7 @@ import (
 )
 
 func (s *SpaceReconciler) reconcileNamespace(ctx context.Context, space *nauticusiov1alpha1.Space) (err error) {
-	namespace, err := s.newNamespace(space)
-	if err != nil {
-		return err
-	}
+	namespace := s.newNamespace(space)
 
 	err = s.syncNamespace(ctx, namespace, space)
 
@@ -57,7 +54,7 @@ func (s *SpaceReconciler) syncNamespace(ctx context.Context, namespace *corev1.N
 	return err
 }
 
-func (s *SpaceReconciler) newNamespace(space *nauticusiov1alpha1.Space) (*corev1.Namespace, error) {
+func (s *SpaceReconciler) newNamespace(space *nauticusiov1alpha1.Space) *corev1.Namespace {
 	namespace := &corev1.Namespace{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:   s.namespaceName(space),
@@ -65,7 +62,7 @@ func (s *SpaceReconciler) newNamespace(space *nauticusiov1alpha1.Space) (*corev1
 		},
 	}
 
-	return namespace, nil
+	return namespace
 }
 
 func (s *SpaceReconciler) namespaceName(space *nauticusiov1alpha1.Space) string {

@@ -65,24 +65,6 @@ func (s *SpaceReconciler) setSpaceCondition(space *v1alpha1.Space, observedGener
 	s.Log.WithName(space.GetName()).Info("Setting lastTransitionTime for Space condition ", space.GetObjectMeta().GetName(), nowTime.Time)
 }
 
-// Only the Type and Status field will be used in the comparison, meaning that
-// this function will return 'true' even if the Reason, Message and
-// LastTransitionTime fields do not match.
-func (s *SpaceReconciler) spaceHasCondition(space *v1alpha1.Space, c metav1.Condition) bool {
-	if space == nil {
-		return false
-	}
-
-	existingConditions := space.Status.Conditions
-	for _, cond := range existingConditions {
-		if c.Type == cond.Type && c.Status == cond.Status {
-			return true
-		}
-	}
-
-	return false
-}
-
 func (s *SpaceReconciler) processFailedCondition(ctx context.Context, space *v1alpha1.Space) {
 	s.setSpaceCondition(
 		space,

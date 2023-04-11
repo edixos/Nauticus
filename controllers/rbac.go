@@ -35,7 +35,7 @@ func (s *SpaceReconciler) reconcileAdditionalRoleBindings(ctx context.Context, s
 			return fmt.Errorf("unable to fill the ownerreference for the additional rolebindings")
 		}
 
-		return s.syncRoleBinding(ctx, additionalRoleBinding, space, ad.RoleRef, ad.Subjects)
+		err = s.syncRoleBinding(ctx, additionalRoleBinding, space, ad.RoleRef, ad.Subjects)
 	}
 
 	return err

@@ -64,7 +64,6 @@ type SpaceReconciler struct {
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.13.1/pkg/reconcile
 func (s *SpaceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	log := s.Log.WithValues("space", req.NamespacedName)
-	ctx = context.TODO()
 
 	// Fetch the Space instance
 	space := &nauticusiov1alpha1.Space{}
