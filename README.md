@@ -6,7 +6,7 @@
 
 
 <p align="center">
-  <img src="assets/logo/nauticus-logo.png" />
+  <img src="assets/logo/nauticus-logo-small.png" />
 </p>
 
 Join the community on the [#nauticus](https://kubernetes.slack.com/archives/C04NQTC3R0F) channel in the [Kubernetes Slack](https://slack.k8s.io/).
