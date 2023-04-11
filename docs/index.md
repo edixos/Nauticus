@@ -1,8 +1,10 @@
 # Nauticus
 
 
-![NauticusLogoWhite](assets/images/logos/nauticus.png#only-dark)
-![NauticusLogoBlack](assets/images/logos/nauticus-b.png#only-light)
+<p align="center">
+  <img src="assets/images/logos/nauticus-logo-textless-small.png" />
+</p>
+
 
 !!! Warning "Project under development"
     The Nauticus Controller is currently under **development**. This means that the controller is functional, but it may not yet be fully tested, and there may be bugs or unfinished features.
