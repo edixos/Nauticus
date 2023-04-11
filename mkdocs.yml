@@ -14,7 +14,7 @@ copyright: Copyright &copy; 2022-2023 Edixos
 theme:
   name: material
   custom_dir: overrides
-  logo: assets/images/logos/nauticus-logo-b.png
+  logo: assets/images/logos/nauticus-logo-textless-small.png
 
   features:
     - content.tabs.link #Insiders only so far
@@ -124,7 +124,7 @@ extra:
       link: 'https://github.com/edixos/nauticus'
     - icon: material/slack
       link: 'https://kubernetes.slack.com/archives/C04NQTC3R0F'
-  logo: assets/images/logos/nauticus.png
+  logo: assets/images/logos/nauticus-logo-textless-small.png
 
 
 #===================================================================================#

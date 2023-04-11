@@ -3,8 +3,11 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/edixos/nauticus)](https://goreportcard.com/report/github.com/edixos/nauticus)
 [![GitHub license](https://img.shields.io/github/license/edixos/nauticus.svg)](https://github.com/edixos/nauticus/blob/main/LICENSE)
 
-![Nauticus Logo](assets/logo/nauticus-w.png#gh-dark-mode-only)
-![Nauticus Logo](assets/logo/nauticus-b.png#gh-light-mode-only)
+
+
+<p align="center">
+  <img src="assets/logo/nauticus-logo-small.png" />
+</p>
 
 Join the community on the [#nauticus](https://kubernetes.slack.com/archives/C04NQTC3R0F) channel in the [Kubernetes Slack](https://slack.k8s.io/).
 
