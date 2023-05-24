@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/edixos/nauticus/api/v1alpha1"
+	"github.com/edixos/nauticus/pkg/metrics"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -105,5 +106,22 @@ func (s *SpaceReconciler) updateStatus(ctx context.Context, space *v1alpha1.Spac
 	err := s.Client.Status().Update(ctx, space)
 	if err != nil {
 		s.Log.Info("Failed to update Space status", "space", space.Name)
+	}
+}
+
+func (s *SpaceReconciler) setMetrics(space *v1alpha1.Space, conditionType v1alpha1.ConditionType) {
+	switch conditionType {
+	case SpaceConditionCreating:
+		metrics.ReadySpaces.WithLabelValues(space.Name).Set(0)
+		metrics.InProgressSpaces.WithLabelValues(space.Name).Set(1)
+		metrics.FailedSpaces.WithLabelValues(space.Name).Set(0)
+	case SpaceConditionReady:
+		metrics.ReadySpaces.WithLabelValues(space.Name).Set(1)
+		metrics.InProgressSpaces.WithLabelValues(space.Name).Set(0)
+		metrics.FailedSpaces.WithLabelValues(space.Name).Set(0)
+	case SpaceConditionFailed:
+		metrics.ReadySpaces.WithLabelValues(space.Name).Set(0)
+		metrics.InProgressSpaces.WithLabelValues(space.Name).Set(0)
+		metrics.FailedSpaces.WithLabelValues(space.Name).Set(1)
 	}
 }
