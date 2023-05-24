@@ -46,7 +46,7 @@ func (s *SpaceReconciler) syncServiceAccount(ctx context.Context, serviceAccount
 		})
 		serviceAccount.SetAnnotations(annotations)
 
-		return controllerutil.SetControllerReference(space, serviceAccount, s.Client.Scheme())
+		return nil
 	})
 	s.Log.Info("ServiceAccount sync result: "+string(res), "name", serviceAccount.Name, "namespace", space.Status.NamespaceName)
 	s.emitEvent(space, space.Name, res, "Ensuring ServiceAccount creation/Update", err)

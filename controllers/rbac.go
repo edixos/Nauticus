@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 
 	nauticusiov1alpha1 "github.com/edixos/nauticus/api/v1alpha1"
 	"github.com/edixos/nauticus/pkg/api/v1alpha1"
@@ -30,10 +29,6 @@ func (s *SpaceReconciler) reconcileAdditionalRoleBindings(ctx context.Context, s
 	for _, ad := range space.Spec.AdditionalRoleBindings {
 		rolebindingName := space.Name + "-" + ad.RoleRef.Name
 		additionalRoleBinding := newRoleBinding(rolebindingName, space.Status.NamespaceName, ad.RoleRef, ad.Subjects)
-
-		if err = controllerutil.SetControllerReference(space, additionalRoleBinding, s.Scheme); err != nil {
-			return fmt.Errorf("unable to fill the ownerreference for the additional rolebindings")
-		}
 
 		err = s.syncRoleBinding(ctx, additionalRoleBinding, space, ad.RoleRef, ad.Subjects)
 	}
@@ -63,7 +58,7 @@ func (s *SpaceReconciler) syncRoleBinding(ctx context.Context, roleBinding *rbac
 		roleBinding.RoleRef = desiredRoleRef
 		roleBinding.Subjects = desiredSubjects
 
-		return controllerutil.SetControllerReference(space, roleBinding, s.Client.Scheme())
+		return nil
 	})
 
 	s.Log.Info("Rolebinding sync result: "+string(res), "name", roleBinding.Name, "namespace", space.Status.NamespaceName)

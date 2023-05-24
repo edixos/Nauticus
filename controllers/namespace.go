@@ -46,7 +46,7 @@ func (s *SpaceReconciler) syncNamespace(ctx context.Context, namespace *corev1.N
 			namespaceLabel: namespace.Name,
 		})
 
-		return controllerutil.SetControllerReference(space, namespace, s.Scheme)
+		return nil
 	})
 	s.Log.Info("Namespace sync result: "+string(res), "name", namespace.Name)
 	s.emitEvent(space, space.Name, res, "Ensuring Namespace creation", err)

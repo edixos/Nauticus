@@ -64,7 +64,7 @@ func (s *SpaceReconciler) syncNetworkPolicy(ctx context.Context, networkPolicy *
 			networkPolicy.Spec = spec
 		}
 
-		return controllerutil.SetControllerReference(space, networkPolicy, s.Client.Scheme())
+		return nil
 	})
 	s.Log.Info("Network Policy sync result: "+string(res), "name", networkPolicy.Name, "namespace", space.Status.NamespaceName)
 	s.emitEvent(space, space.Name, res, "Ensuring NetworkPolicy creation/Update", err)

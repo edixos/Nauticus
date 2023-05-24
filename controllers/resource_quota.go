@@ -44,7 +44,7 @@ func (s *SpaceReconciler) syncResourceQuotas(ctx context.Context, resourceQuota 
 		})
 		resourceQuota.Spec = space.Spec.ResourceQuota
 
-		return controllerutil.SetControllerReference(space, resourceQuota, s.Scheme)
+		return nil
 	})
 	s.Log.Info("ResourceQuota sync result: "+string(res), "name", resourceQuota.Name)
 	s.emitEvent(space, space.Name, res, "Ensuring ResourceQuota creation/Update", err)

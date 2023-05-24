@@ -92,7 +92,6 @@ func (s *SpaceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 func (s *SpaceReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&nauticusiov1alpha1.Space{}).
-		Owns(&corev1.Namespace{}).
 		Owns(&corev1.ResourceQuota{}).
 		Owns(&rbacv1.RoleBinding{}).
 		Owns(&networkingv1.NetworkPolicy{}).
