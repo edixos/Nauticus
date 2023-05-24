@@ -20,9 +20,6 @@ import (
 	"context"
 
 	"github.com/go-logr/logr"
-	corev1 "k8s.io/api/core/v1"
-	networkingv1 "k8s.io/api/networking/v1"
-	rbacv1 "k8s.io/api/rbac/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/tools/record"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -92,11 +89,6 @@ func (s *SpaceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 func (s *SpaceReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&nauticusiov1alpha1.Space{}).
-		Owns(&corev1.ResourceQuota{}).
-		Owns(&rbacv1.RoleBinding{}).
-		Owns(&networkingv1.NetworkPolicy{}).
-		Owns(&corev1.LimitRange{}).
-		Owns(&corev1.ServiceAccount{}).
 		WithEventFilter(predicate.GenerationChangedPredicate{}).
 		WithEventFilter(ignoreDeletionPredicate()).
 		Complete(s)
