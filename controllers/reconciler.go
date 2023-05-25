@@ -157,12 +157,33 @@ func (s *SpaceReconciler) reconcileDelete(ctx context.Context, space *nauticusio
 
 		return ctrl.Result{}, err
 	}
-
 	// If the annotation is not set, delete all created resources
 	if controllerutil.ContainsFinalizer(space, NauticusSpaceFinalizer) {
-		namespace := s.newNamespace(space)
+		if err = s.deleteNetworkPolicies(ctx, space); client.IgnoreNotFound(err) != nil {
+			return ctrl.Result{}, err
+		}
 
-		if err = s.Client.Delete(ctx, namespace); client.IgnoreNotFound(err) != nil {
+		if err = s.deleteLimitRanges(ctx, space); client.IgnoreNotFound(err) != nil {
+			return ctrl.Result{}, err
+		}
+
+		if err = s.deleteOwners(ctx, space); client.IgnoreNotFound(err) != nil {
+			return ctrl.Result{}, err
+		}
+
+		if err = s.deleteAdditionalRoleBindings(ctx, space); client.IgnoreNotFound(err) != nil {
+			return ctrl.Result{}, err
+		}
+
+		if err = s.deleteResourceQuota(ctx, space); client.IgnoreNotFound(err) != nil {
+			return ctrl.Result{}, err
+		}
+
+		if err = s.deleteServiceAccounts(ctx, space); client.IgnoreNotFound(err) != nil {
+			return ctrl.Result{}, err
+		}
+
+		if err = s.deleteNamespace(ctx, space); client.IgnoreNotFound(err) != nil {
 			return ctrl.Result{}, err
 		}
 

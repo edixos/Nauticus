@@ -77,3 +77,25 @@ func newRoleBinding(name string, namespace string, roleRef rbacv1.RoleRef, subje
 		Subjects: subjects,
 	}
 }
+
+func (s *SpaceReconciler) deleteOwners(ctx context.Context, space *nauticusiov1alpha1.Space) (err error) {
+	rolebindingName := space.Name + "-owner"
+
+	roleRef := rbacv1.RoleRef{}
+	ownersRoleBinding := newRoleBinding(rolebindingName, space.Status.NamespaceName, roleRef, space.Spec.Owners)
+
+	err = s.deleteObject(ctx, ownersRoleBinding)
+
+	return err
+}
+
+func (s *SpaceReconciler) deleteAdditionalRoleBindings(ctx context.Context, space *nauticusiov1alpha1.Space) (err error) {
+	for _, ad := range space.Spec.AdditionalRoleBindings {
+		rolebindingName := space.Name + "-" + ad.RoleRef.Name
+		additionalRoleBinding := newRoleBinding(rolebindingName, space.Status.NamespaceName, ad.RoleRef, ad.Subjects)
+
+		err = s.deleteObject(ctx, additionalRoleBinding)
+	}
+
+	return err
+}

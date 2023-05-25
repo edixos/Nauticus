@@ -63,3 +63,14 @@ func newServiceAccount(name, namespace string, annotations nauticusiov1alpha1.An
 		},
 	}
 }
+
+func (s *SpaceReconciler) deleteServiceAccounts(ctx context.Context, space *nauticusiov1alpha1.Space) (err error) {
+	for _, serviceAccount := range space.Spec.ServiceAccounts.Items {
+		sa := newServiceAccount(serviceAccount.Name, space.Status.NamespaceName, serviceAccount.Annotations)
+		if err = s.deleteObject(ctx, sa); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}

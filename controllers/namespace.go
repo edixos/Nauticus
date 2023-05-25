@@ -68,3 +68,9 @@ func (s *SpaceReconciler) newNamespace(space *nauticusiov1alpha1.Space) *corev1.
 func (s *SpaceReconciler) namespaceName(space *nauticusiov1alpha1.Space) string {
 	return space.Name
 }
+
+func (s *SpaceReconciler) deleteNamespace(ctx context.Context, space *nauticusiov1alpha1.Space) (err error) {
+	namespace := s.newNamespace(space)
+
+	return s.deleteObject(ctx, namespace)
+}

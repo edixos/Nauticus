@@ -65,3 +65,16 @@ func newLimitRange(name, namespace string, limitRangeSpec corev1.LimitRangeSpec)
 		Spec: limitRangeSpec,
 	}
 }
+
+func (s *SpaceReconciler) deleteLimitRanges(ctx context.Context, space *nauticusiov1alpha1.Space) (err error) {
+	for i, limitRange := range space.Spec.LimitRanges.Items {
+		lrName := "nauticus-custom-" + strconv.Itoa(i)
+		lr := newLimitRange(lrName, space.Status.NamespaceName, limitRange)
+
+		if err = s.deleteObject(ctx, lr); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}

@@ -51,3 +51,16 @@ func (s *SpaceReconciler) syncResourceQuotas(ctx context.Context, resourceQuota 
 
 	return err
 }
+
+func (s *SpaceReconciler) deleteResourceQuota(ctx context.Context, space *nauticusiov1alpha1.Space) (err error) {
+	resourceQuota := &corev1.ResourceQuota{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      space.Name,
+			Namespace: space.Status.NamespaceName,
+		},
+		Spec: space.Spec.ResourceQuota,
+	}
+	err = s.deleteObject(ctx, resourceQuota)
+
+	return err
+}

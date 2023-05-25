@@ -9,6 +9,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/utils/clock"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
@@ -124,4 +125,12 @@ func (s *SpaceReconciler) setMetrics(space *v1alpha1.Space, conditionType v1alph
 		metrics.InProgressSpaces.WithLabelValues(space.Name).Set(0)
 		metrics.FailedSpaces.WithLabelValues(space.Name).Set(1)
 	}
+}
+
+func (s *SpaceReconciler) deleteObject(ctx context.Context, object client.Object) (err error) {
+	if err = s.Client.Delete(ctx, object); client.IgnoreNotFound(err) != nil {
+		return err
+	}
+
+	return nil
 }

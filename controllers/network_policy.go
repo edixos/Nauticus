@@ -105,3 +105,26 @@ func newNetworkPolicyDefaultSpec() networkingv1.NetworkPolicySpec {
 		},
 	}
 }
+
+func (s *SpaceReconciler) deleteNetworkPolicies(ctx context.Context, space *nauticusiov1alpha1.Space) (err error) {
+	if space.Spec.NetworkPolicies.EnableDefaultStrictMode {
+		networkPolicyName := fmt.Sprintf("nauticus-%s", space.Name)
+		networkPolicySpec := newNetworkPolicyDefaultSpec()
+		networkPolicy := newNetworkPolicy(networkPolicyName, space.Status.NamespaceName, networkPolicySpec)
+
+		if err = s.deleteObject(ctx, networkPolicy); err != nil {
+			return err
+		}
+	}
+
+	for i, networkPolicy := range space.Spec.NetworkPolicies.Items {
+		npName := "nauticus-custom-" + strconv.Itoa(i)
+		np := newNetworkPolicy(npName, space.Status.NamespaceName, networkPolicy)
+
+		if err = s.deleteObject(ctx, np); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
