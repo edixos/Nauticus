@@ -62,7 +62,7 @@ theme:
       quote: octicons/quote-16
 
 #===================================================================================#
-# Mkdocs Markdown Extentions, Plugins & extras
+# Mkdocs Markdown Extensions, Plugins & extras
 #===================================================================================#
 markdown_extensions:
   - admonition
@@ -136,7 +136,8 @@ nav:
       - Installation: getting-started.md
 
   - Tutorials:
-      - Space Tutorial: tutorial.md
+      - Space Tutorial: tutorials/space-tutorial.md
+      - Ignore Underlying Deletion: tutorials/ignore-underlying-deletion.md
   - Reference:
       - API Specification: crds-apis.md
   - Community:

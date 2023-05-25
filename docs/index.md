@@ -6,12 +6,6 @@
 </p>
 
 
-!!! Warning "Project under development"
-    The Nauticus Controller is currently under **development**. This means that the controller is functional, but it may not yet be fully tested, and there may be bugs or unfinished features.
-    Please also keep in mind that as the controller is under development, the API may change, and backward compatibility may not be guaranteed. We will do our best to minimize breaking changes, but it's possible that some changes may be necessary as the controller evolves.
-    We encourage users to test the controller in a **non-production environment**, and to report any bugs or issues that they encounter. We are committed to making the Nauticus Controller a robust and reliable tool for managing Kubernetes clusters, and we appreciate your feedback and support as we work towards this goal.
-
-
 Welcome to Nauticus, the Kubernetes space management controller. With Nauticus, you can easily create, update, and delete spaces within your Kubernetes cluster. Each space is a unique namespace with its own set of resources and quotas, making it ideal for multi-tenancy environments.
 
 ![NauticusPreview](assets/images/NauticusPreview.png)
