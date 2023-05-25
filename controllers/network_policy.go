@@ -64,7 +64,7 @@ func (s *SpaceReconciler) syncNetworkPolicy(ctx context.Context, networkPolicy *
 			networkPolicy.Spec = spec
 		}
 
-		return controllerutil.SetControllerReference(space, networkPolicy, s.Client.Scheme())
+		return nil
 	})
 	s.Log.Info("Network Policy sync result: "+string(res), "name", networkPolicy.Name, "namespace", space.Status.NamespaceName)
 	s.emitEvent(space, space.Name, res, "Ensuring NetworkPolicy creation/Update", err)
@@ -104,4 +104,27 @@ func newNetworkPolicyDefaultSpec() networkingv1.NetworkPolicySpec {
 			},
 		},
 	}
+}
+
+func (s *SpaceReconciler) deleteNetworkPolicies(ctx context.Context, space *nauticusiov1alpha1.Space) (err error) {
+	if space.Spec.NetworkPolicies.EnableDefaultStrictMode {
+		networkPolicyName := fmt.Sprintf("nauticus-%s", space.Name)
+		networkPolicySpec := newNetworkPolicyDefaultSpec()
+		networkPolicy := newNetworkPolicy(networkPolicyName, space.Status.NamespaceName, networkPolicySpec)
+
+		if err = s.deleteObject(ctx, networkPolicy); err != nil {
+			return err
+		}
+	}
+
+	for i, networkPolicy := range space.Spec.NetworkPolicies.Items {
+		npName := "nauticus-custom-" + strconv.Itoa(i)
+		np := newNetworkPolicy(npName, space.Status.NamespaceName, networkPolicy)
+
+		if err = s.deleteObject(ctx, np); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

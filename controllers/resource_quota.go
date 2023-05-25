@@ -44,10 +44,23 @@ func (s *SpaceReconciler) syncResourceQuotas(ctx context.Context, resourceQuota 
 		})
 		resourceQuota.Spec = space.Spec.ResourceQuota
 
-		return controllerutil.SetControllerReference(space, resourceQuota, s.Scheme)
+		return nil
 	})
 	s.Log.Info("ResourceQuota sync result: "+string(res), "name", resourceQuota.Name)
 	s.emitEvent(space, space.Name, res, "Ensuring ResourceQuota creation/Update", err)
+
+	return err
+}
+
+func (s *SpaceReconciler) deleteResourceQuota(ctx context.Context, space *nauticusiov1alpha1.Space) (err error) {
+	resourceQuota := &corev1.ResourceQuota{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      space.Name,
+			Namespace: space.Status.NamespaceName,
+		},
+		Spec: space.Spec.ResourceQuota,
+	}
+	err = s.deleteObject(ctx, resourceQuota)
 
 	return err
 }

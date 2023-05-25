@@ -9,13 +9,14 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	ctrl "sigs.k8s.io/controller-runtime"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 )
 
 const (
-	NauticusFinalizer = "nauticus.io/finalizer"
-	requeueAfter      = time.Minute * 3
+	NauticusSpaceFinalizer = "nauticus.io/finalizer"
+	requeueAfter           = time.Minute * 3
 
 	SpaceConditionReady    nauticusiov1alpha1.ConditionType = "Ready"
 	SpaceConditionCreating nauticusiov1alpha1.ConditionType = "Creating"
@@ -35,8 +36,8 @@ const (
 )
 
 func (s *SpaceReconciler) reconcileSpace(ctx context.Context, space *nauticusiov1alpha1.Space) (result reconcile.Result, err error) {
-	if !controllerutil.ContainsFinalizer(space, NauticusFinalizer) {
-		controllerutil.AddFinalizer(space, NauticusFinalizer)
+	if !controllerutil.ContainsFinalizer(space, NauticusSpaceFinalizer) {
+		controllerutil.AddFinalizer(space, NauticusSpaceFinalizer)
 
 		if err = s.Update(ctx, space); err != nil {
 			return ctrl.Result{}, err
@@ -143,12 +144,51 @@ func (s *SpaceReconciler) reconcileSpace(ctx context.Context, space *nauticusiov
 }
 
 func (s *SpaceReconciler) reconcileDelete(ctx context.Context, space *nauticusiov1alpha1.Space) (result reconcile.Result, err error) {
-	if controllerutil.ContainsFinalizer(space, NauticusFinalizer) {
-		namespace := s.newNamespace(space)
-		_ = s.Client.Delete(ctx, namespace)
+	// The annotation is set, so skip namespace deletion
+	// Just remove the finalizer from the Space
+	if space.HasIgnoreUnderlyingDeletionAnnotation() {
+		if controllerutil.ContainsFinalizer(space, NauticusSpaceFinalizer) {
+			controllerutil.RemoveFinalizer(space, NauticusSpaceFinalizer)
+
+			if err = s.Update(ctx, space); err != nil {
+				return ctrl.Result{}, err
+			}
+		}
+
+		return ctrl.Result{}, err
+	}
+	// If the annotation is not set, delete all created resources
+	if controllerutil.ContainsFinalizer(space, NauticusSpaceFinalizer) {
+		if err = s.deleteNetworkPolicies(ctx, space); client.IgnoreNotFound(err) != nil {
+			return ctrl.Result{}, err
+		}
+
+		if err = s.deleteLimitRanges(ctx, space); client.IgnoreNotFound(err) != nil {
+			return ctrl.Result{}, err
+		}
+
+		if err = s.deleteOwners(ctx, space); client.IgnoreNotFound(err) != nil {
+			return ctrl.Result{}, err
+		}
+
+		if err = s.deleteAdditionalRoleBindings(ctx, space); client.IgnoreNotFound(err) != nil {
+			return ctrl.Result{}, err
+		}
+
+		if err = s.deleteResourceQuota(ctx, space); client.IgnoreNotFound(err) != nil {
+			return ctrl.Result{}, err
+		}
+
+		if err = s.deleteServiceAccounts(ctx, space); client.IgnoreNotFound(err) != nil {
+			return ctrl.Result{}, err
+		}
+
+		if err = s.deleteNamespace(ctx, space); client.IgnoreNotFound(err) != nil {
+			return ctrl.Result{}, err
+		}
 
 		// remove our finalizer from the list and update it.
-		controllerutil.RemoveFinalizer(space, NauticusFinalizer)
+		controllerutil.RemoveFinalizer(space, NauticusSpaceFinalizer)
 
 		if err = s.Update(ctx, space); err != nil {
 			return ctrl.Result{}, err

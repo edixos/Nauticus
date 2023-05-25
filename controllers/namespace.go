@@ -46,7 +46,7 @@ func (s *SpaceReconciler) syncNamespace(ctx context.Context, namespace *corev1.N
 			namespaceLabel: namespace.Name,
 		})
 
-		return controllerutil.SetControllerReference(space, namespace, s.Scheme)
+		return nil
 	})
 	s.Log.Info("Namespace sync result: "+string(res), "name", namespace.Name)
 	s.emitEvent(space, space.Name, res, "Ensuring Namespace creation", err)
@@ -67,4 +67,10 @@ func (s *SpaceReconciler) newNamespace(space *nauticusiov1alpha1.Space) *corev1.
 
 func (s *SpaceReconciler) namespaceName(space *nauticusiov1alpha1.Space) string {
 	return space.Name
+}
+
+func (s *SpaceReconciler) deleteNamespace(ctx context.Context, space *nauticusiov1alpha1.Space) (err error) {
+	namespace := s.newNamespace(space)
+
+	return s.deleteObject(ctx, namespace)
 }

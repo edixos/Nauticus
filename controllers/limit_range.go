@@ -48,7 +48,7 @@ func (s *SpaceReconciler) syncLimitRange(ctx context.Context, limitRange *corev1
 		})
 		limitRange.Spec = spec
 
-		return controllerutil.SetControllerReference(space, limitRange, s.Client.Scheme())
+		return nil
 	})
 	s.Log.Info("LimitRange sync result: "+string(res), "name", limitRange.Name, "namespace", space.Status.NamespaceName)
 	s.emitEvent(space, space.Name, res, "Ensuring LimitRange creation/Update", err)
@@ -64,4 +64,17 @@ func newLimitRange(name, namespace string, limitRangeSpec corev1.LimitRangeSpec)
 		},
 		Spec: limitRangeSpec,
 	}
+}
+
+func (s *SpaceReconciler) deleteLimitRanges(ctx context.Context, space *nauticusiov1alpha1.Space) (err error) {
+	for i, limitRange := range space.Spec.LimitRanges.Items {
+		lrName := "nauticus-custom-" + strconv.Itoa(i)
+		lr := newLimitRange(lrName, space.Status.NamespaceName, limitRange)
+
+		if err = s.deleteObject(ctx, lr); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

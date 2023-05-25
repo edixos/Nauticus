@@ -9,7 +9,7 @@ In the Nauticus controller, you have the option to specify the owner(s) of a spa
 To specify the owner(s) of a space, you can add the "owners" field in the space specification. The field should contain a list of email addresses of the users or teams that will be designated as the owner(s) of the space. For example, if you want to assign the space to the team `dev-team@example.com`, the space specification would look like this:
 
 ```yaml title="config/samples/space_with_owners.yaml"
-{% include "../config/samples/space_with_owners.yaml" %}
+{% include "../../config/samples/space_with_owners.yaml" %}
 ```
 
 ```bash title="Create Space with Resource Quota"
@@ -25,7 +25,7 @@ To begin, you will need to create a new Space resource and specify the desired r
 Here his an example of a Space with resource quota specification:
 
 ```yaml title="config/samples/space_with_resource_quotas.yaml"
-{% include "../config/samples/space_with_resource_quotas.yaml" %}
+{% include "../../config/samples/space_with_resource_quotas.yaml" %}
 ```
 
 
@@ -47,7 +47,7 @@ When you create a space, you have the option to specify a `enableDefaultStrictMo
 To create a network policy for your space, you can use the kubectl command line tool and specify the desired rules in a manifest file. Here is an example of a manifest file that creates a network policy in underlying space's namespace.
 
 ```yaml title="config/samples/space_with_network_policy.yaml"
-{% include "../config/samples/space_with_network_policy.yaml" %}
+{% include "../../config/samples/space_with_network_policy.yaml" %}
 ```
 
 ```bash title="Create Space with Network Policy"
@@ -60,7 +60,7 @@ One of the features of Nauticus is the ability to assign additional role binding
 To assign additional role bindings, you can include the `additionalRoleBindings` field in the space specification. This field should contain a list of objects, each with `subjects` and `roleRef` field.
 
 ```yaml title="config/samples/space_with_additional_rolebindings.yaml"
-{% include "../config/samples/space_with_additional_rolebindings.yaml" %}
+{% include "../../config/samples/space_with_additional_rolebindings.yaml" %}
 ```
 
 ```bash title="Create Space with Network Policy"
@@ -72,7 +72,7 @@ kubectl apply -f config/samples/space_with_additional_rolebindings.yaml
 The limit range feature in Nauticus allows users to set constraints on the resources that can be requested and consumed by the containers in a namespace. This feature provides an additional layer of control over resource utilization in the cluster, ensuring that high resource-intensive workloads do not affect the performance of other services. To utilize this feature, users can specify limit ranges in their `Space` configuration and Nauticus will enforce these limits at runtime. This provides a simple and effective way to manage the resource consumption in a multi-tenant cluster environment.
 
 ```yaml title="config/samples/space_with_limit_ranges.yaml"
-{% include "../config/samples/space_with_limit_ranges.yaml" %}
+{% include "../../config/samples/space_with_limit_ranges.yaml" %}
 ```
 
 ```bash title="Create Space with Network Policy"
@@ -94,7 +94,7 @@ Nauticus will then take care of creating the Service Account with the specified 
     For more details about [Workload Identity](https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity).
 
     ~~~yaml
-    {% include "../config/samples/space_with_gcp_service_accounts.yaml" %}
+    {% include "../../config/samples/space_with_gcp_service_accounts.yaml" %}
     ~~~
 
     ```bash title="Create Space with Service Account (GCP Binding)"
@@ -105,7 +105,7 @@ Nauticus will then take care of creating the Service Account with the specified 
     about [Configuring a Kubernetes service account to assume an IAM role](https://docs.aws.amazon.com/eks/latest/userguide/associate-service-account-role.html).
 
     ~~~yaml
-    {% include "../config/samples/space_with_aws_service_accounts.yaml" %}
+    {% include "../../config/samples/space_with_aws_service_accounts.yaml" %}
     ~~~
 
     ```bash title="Create Space with Service Account (AWS Binding)"
@@ -116,7 +116,7 @@ Nauticus will then take care of creating the Service Account with the specified 
     about [Azure Workload Identity](https://azure.github.io/azure-workload-identity/docs/quick-start.html).
 
     ~~~yaml
-    {% include "../config/samples/space_with_azure_service_accounts.yaml" %}
+    {% include "../../config/samples/space_with_azure_service_accounts.yaml" %}
     ~~~
 
     ```bash title="Create Space with Service Account (Azure Binding)"
@@ -133,7 +133,7 @@ the annotations.
 In this example, we will demonstrate how to create a Space in Nauticus that combines all the features discussed so far: resource quota, network policy, space owners, and additional role bindings.
 
 ```yaml title="config/samples/space_with_all.yaml"
-{% include "../config/samples/space_with_all.yaml" %}
+{% include "../../config/samples/space_with_all.yaml" %}
 ```
 
 ```bash title="Create Space with all features"
