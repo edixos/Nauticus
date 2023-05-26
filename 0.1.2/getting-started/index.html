@@ -960,7 +960,7 @@ must also have cluster-admin permissions to be able to use Nauticus.</p>
 <li>Make sure that you have docker and kind installed if you want to create a kubernetes cluster within Docker</li>
 <li>
 <p>Start by creating a new Kubernetes cluster with kind command if you don't have one.</p>
-<div class="highlight"><span class="filename">Create a kind cluster</span><pre><span></span><code>kind<span class="w"> </span>create<span class="w"> </span>cluster<span class="w"> </span>--image<span class="w"> </span>kindest/node:v1.24.1<span class="w"> </span>--wait<span class="w"> </span>5m<span class="w"> </span>--name<span class="w"> </span>nauticus
+<div class="highlight"><span class="filename">Create a kind cluster</span><pre><span></span><code>kind<span class="w"> </span>create<span class="w"> </span>cluster<span class="w"> </span>--image<span class="w"> </span>kindest/node:v1.27.2<span class="w"> </span>--wait<span class="w"> </span>5m<span class="w"> </span>--name<span class="w"> </span>nauticus
 </code></pre></div>
 </li>
 <li>
@@ -1011,15 +1011,15 @@ the resources needed for Nauticus to function properly.</p>
 </ol>
 <h2 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link"> ¶</a></h2>
 <p>To use Nauticus to create a new space, you can use the following kubectl command:</p>
-<div class="highlight"><span class="filename">Create a basic Space</span><pre><span></span><code><span class="w"> </span>cat<span class="w"> </span><span class="s">&lt;&lt;EOF | kubectl apply -f -</span>
-<span class="s"> apiVersion: nauticus.com/v1alpha1</span>
-<span class="s"> kind: Space</span>
-<span class="s"> metadata:</span>
-<span class="s"> name: my-space</span>
-<span class="s"> EOF</span>
+<p><div class="highlight"><span class="filename">Create a basic Space</span><pre><span></span><code>cat<span class="w"> </span><span class="s">&lt;&lt; EOF | kubectl apply -f -</span>
+<span class="s">apiVersion: nauticus.io/v1alpha1</span>
+<span class="s">kind: Space</span>
+<span class="s">metadata:</span>
+<span class="s">  name: my-space</span>
+<span class="s">EOF</span>
 </code></pre></div>
-<p>The space will create a namespace and update the status of the <code>Space</code> by adding <code>status.NamespaceName</code> to it.
-For more details on how to use space's features please refer to the Tutorial.</p>
+The space will create a namespace and update the status of the <code>Space</code> by adding <code>status.NamespaceName</code> to it.
+For more details on how to use space's features please refer to the Tutorial Section.</p>
 
 
   
