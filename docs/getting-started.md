@@ -32,7 +32,7 @@ In this section, we will explain how to install Nauticus using Helm and kubectl.
 2. Start by creating a new Kubernetes cluster with kind command if you don't have one.
 
      ```bash title="Create a kind cluster"
-     kind create cluster --image kindest/node:v1.24.1 --wait 5m --name nauticus
+     kind create cluster --image kindest/node:v1.27.2 --wait 5m --name nauticus
      ```
 
 3. Make sure that you have Helm and kubectl installed on your machine. If you don't have them installed, you can find
@@ -84,21 +84,19 @@ the resources needed for Nauticus to function properly.
      ```bash title="Get Nauticus Controller logs"
      kubectl logs -f <nauticus-controller-pod-name> -n nauticus-system
      ```
-   
+
 ## Basic Usage
 
 To use Nauticus to create a new space, you can use the following kubectl command:
 
-  ```bash title="Create a basic Space"
-   cat <<EOF | kubectl apply -f -
-   apiVersion: nauticus.com/v1alpha1
-   kind: Space
-   metadata:
-   name: my-space
-   EOF
-  ```
-
-
+```bash title="Create a basic Space"
+cat << EOF | kubectl apply -f -
+apiVersion: nauticus.io/v1alpha1
+kind: Space
+metadata:
+  name: my-space
+EOF
+```
 The space will create a namespace and update the status of the `Space` by adding `status.NamespaceName` to it.
-For more details on how to use space's features please refer to the Tutorial.
+For more details on how to use space's features please refer to the Tutorial Section.
 
