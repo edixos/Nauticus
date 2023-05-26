@@ -14,7 +14,7 @@
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| Ismail KABOUBI | <ikaboubi@gmail.com> | <https://smileisak.com> |
+| Ismail KABOUBI | ikaboubi@gmail.com | https://smileisak.com |
 
 ## Description
 
@@ -51,6 +51,16 @@ A Helm chart to deploy the Nauticus Controller Simplifying Kubernetes cluster ma
 | serviceAccount.annotations | object | `{}` | Annotations to add to the service account |
 | serviceAccount.create | bool | `true` | Specifies whether a service account should be created |
 | serviceAccount.name | string | `""` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
+| serviceMonitor.annotations | object | `{}` | Assign additional Annotations |
+| serviceMonitor.enabled | bool | `false` | Enable ServiceMonitor |
+| serviceMonitor.endpoint.interval | string | `"15s"` | Set the scrape interval for the endpoint of the serviceMonitor |
+| serviceMonitor.endpoint.metricRelabelings | list | `[]` | Set metricRelabelings for the endpoint of the serviceMonitor |
+| serviceMonitor.endpoint.relabelings | list | `[]` | Set relabelings for the endpoint of the serviceMonitor |
+| serviceMonitor.endpoint.scrapeTimeout | string | `""` | Set the scrape timeout for the endpoint of the serviceMonitor |
+| serviceMonitor.labels | object | `{}` | Assign additional labels according to Prometheus' serviceMonitorSelector matching labels |
+| serviceMonitor.matchLabels | object | `{}` | Change matching labels |
+| serviceMonitor.namespace | string | `""` | Install the ServiceMonitor into a different Namespace, as the monitoring stack one (default: the release one) |
+| serviceMonitor.targetLabels | list | `[]` | Set targetLabels for the serviceMonitor |
 | tolerations | list | `[]` | Toleration to apply to the controller pod |
 
 ## Installing the Chart
