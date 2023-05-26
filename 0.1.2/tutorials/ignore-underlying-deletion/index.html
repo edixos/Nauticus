@@ -871,7 +871,7 @@
 
 
 <h1 id="ignore-underling-deletion">Ignore Underling Deletion<a class="headerlink" href="#ignore-underling-deletion" title="Permanent link"> ¶</a></h1>
-<p>In Nauticus, the `nauticus.io/ignore-underlying-deletion annotation allows you to delete a Space without deleting the underlying resources that were created by the Nauticus controller.</p>
+<p>In Nauticus, the <code>nauticus.io/ignore-underlying-deletion</code> annotation allows you to delete a Space without deleting the underlying resources that were created by the Nauticus controller.</p>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link"> ¶</a></h2>
 <p>By default, when a Space is deleted in Nauticus, all the underlying resources (including namespaces, quotas, and other objects created by Nauticus controller) are also deleted. This is usually the desired behavior to avoid orphan resources which can consume system resources.</p>
 <p>However, there may be cases where you want to delete a Space, but retain the underlying resources. This can be useful, for example, for debugging purposes, or when you want to move resources from one Space to another.</p>
