@@ -21,4 +21,4 @@ Welcome to Nauticus, the Kubernetes space management controller. With Nauticus, 
 
 ## Getting Started
 
-To get started with Nauticus, check out our [installation guide](getting-started.md) and [tutorial](tutorial.md) to learn more about the features and how to use them.
+To get started with Nauticus, check out our [installation guide](getting-started.md) and [Space Tutorial](tutorials/space-tutorial.md) to learn more about the features and how to use them.
