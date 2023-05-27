@@ -966,7 +966,7 @@ spec:
         - --leader-elect
         command:
         - /manager
-        image: ghcr.io/edixos/nauticus:v0.1.1
+        image: ghcr.io/edixos/nauticus:v0.1.2
         imagePullPolicy: Always
         livenessProbe:
           httpGet:
