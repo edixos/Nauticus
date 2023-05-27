@@ -1,6 +1,6 @@
 # Ignore Underling Deletion
 
-In Nauticus, the `nauticus.io/ignore-underlying-deletion annotation allows you to delete a Space without deleting the underlying resources that were created by the Nauticus controller.
+In Nauticus, the `nauticus.io/ignore-underlying-deletion` annotation allows you to delete a Space without deleting the underlying resources that were created by the Nauticus controller.
 
 ## Overview
 
