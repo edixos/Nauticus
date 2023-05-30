@@ -1,3 +1,6 @@
+// Copyright 2022-2023 Edixos
+// SPDX-License-Identifier: Apache-2.0
+
 package controllers
 
 import (
