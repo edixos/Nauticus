@@ -8,7 +8,6 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   name: {{ include "nauticus.fullname" . }}-controller-manager-metrics-service
-  namespace: nauticus-system
 spec:
   ports:
     - name: https

@@ -1,6 +1,6 @@
 # nauticus
 
-![Version: 0.1.2](https://img.shields.io/badge/Version-0.1.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v0.1.2](https://img.shields.io/badge/AppVersion-v0.1.2-informational?style=flat-square)
+![Version: 0.1.3](https://img.shields.io/badge/Version-0.1.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v0.1.3](https://img.shields.io/badge/AppVersion-v0.1.3-informational?style=flat-square)
 
 **Homepage:** <https://github.com/edixos/nauticus>
 
@@ -70,7 +70,7 @@ A Helm chart to deploy the Nauticus Controller Simplifying Kubernetes cluster ma
 To install the chart with the release name `my-release`:
 
 ```bash
-helm repo add edixos https://edixos.github.io/nauticus
+helm repo add edixos https://edixos.github.io/charts
 helm install edixos/nauticus
 ```
 
@@ -89,8 +89,8 @@ spec:
   project: infra
 
   source:
-    repoURL: "https://edixos.github.io/nauticus"
-    targetRevision: "0.1.2"
+    repoURL: "https://edixos.github.io/charts"
+    targetRevision: "0.1.3"
     chart: nauticus
     path: ''
 
