@@ -31,7 +31,7 @@
 To install the chart with the release name `my-release`:
 
 ```bash
-helm repo add edixos https://edixos.github.io/nauticus
+helm repo add edixos https://edixos.github.io/charts
 helm install edixos/{{ .Name }}
 ```
 
@@ -50,7 +50,7 @@ spec:
   project: infra
 
   source:
-    repoURL: "https://edixos.github.io/nauticus"
+    repoURL: "https://edixos.github.io/charts"
     targetRevision: "{{ .Version }}"
     chart: {{ .Name }}
     path: ''

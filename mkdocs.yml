@@ -6,7 +6,7 @@ repo_name: "edixos/Nauticus"
 site_description: Nauticus Simplifies Kubernetes cluster management with fully-managed Spaces.
 repo_url: https://github.com/edixos/Nauticus
 site_author: Edixos
-copyright: Copyright &copy; 2022-2023 Edixos
+copyright: Copyright &copy; 2022-2023 Edixos*
 
 #===================================================================================#
 # Mkdocs Theme (Material Mkdocs) + Extras

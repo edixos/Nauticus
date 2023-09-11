@@ -8,7 +8,6 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   name: {{ include "nauticus.fullname" . }}-leader-election-role
-  namespace: nauticus-system
 rules:
   - apiGroups:
       - ""
@@ -220,7 +219,6 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   name: {{ include "nauticus.fullname" . }}-leader-election-rolebinding
-  namespace: nauticus-system
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -240,7 +238,6 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   name: {{ include "nauticus.fullname" . }}-manager-rolebinding
-
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
