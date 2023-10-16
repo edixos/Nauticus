@@ -1,0 +1,21 @@
+apiVersion: nauticus.io/v1alpha1
+kind: Space
+metadata:
+  labels:
+    app.kubernetes.io/name: space
+    app.kubernetes.io/instance: space-sample
+    app.kubernetes.io/part-of: nauticus
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: nauticus
+  name: space-tpl-ref
+spec:
+  template:
+    group: nauticus.io/v1alpha1
+    kind: SpaceTemplate     # Specify the Kind of the referenced resource
+    name: spacetemplate-sample # Name of the SpaceTemplate
+    namespace: default # Namespace of the SpaceTemplate
+  owners:
+    - name: smile
+      kind: User
+    - name: smile@group.com
+      kind: Group

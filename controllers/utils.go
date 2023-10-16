@@ -5,6 +5,7 @@ package controllers
 
 import (
 	"context"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 
 	"github.com/edixos/nauticus/api/v1alpha1"
 	"github.com/edixos/nauticus/pkg/metrics"
@@ -12,6 +13,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/utils/clock"
+	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
@@ -136,4 +138,24 @@ func (s *SpaceReconciler) deleteObject(ctx context.Context, object client.Object
 	}
 
 	return nil
+}
+
+func (s *SpaceReconciler) FetchSpaceTemplate(ctx context.Context, req ctrl.Request, name string, namespace string) (*v1alpha1.SpaceTemplate, error) {
+	log := s.Log.WithValues("spaceTemplate", req.NamespacedName)
+
+	spaceTemplate := &v1alpha1.SpaceTemplate{}
+
+	err := s.Get(ctx, client.ObjectKey{
+		Namespace: namespace,
+		Name:      name}, spaceTemplate)
+
+	if err != nil {
+		if apierrors.IsNotFound(err) {
+			// SpaceTemplate not found, return
+			log.Info("SpaceTemplate not found.")
+
+			return nil, nil
+		}
+	}
+	return spaceTemplate, nil
 }

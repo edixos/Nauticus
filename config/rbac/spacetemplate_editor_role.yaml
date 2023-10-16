@@ -1,0 +1,31 @@
+# permissions for end users to edit spacetemplates.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/instance: spacetemplate-editor-role
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: nauticus
+    app.kubernetes.io/part-of: nauticus
+    app.kubernetes.io/managed-by: kustomize
+  name: spacetemplate-editor-role
+rules:
+- apiGroups:
+  - nauticus.io.nauticus.io
+  resources:
+  - spacetemplates
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - nauticus.io.nauticus.io
+  resources:
+  - spacetemplates/status
+  verbs:
+  - get

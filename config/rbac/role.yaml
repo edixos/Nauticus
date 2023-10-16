@@ -92,6 +92,32 @@ rules:
   - patch
   - update
 - apiGroups:
+  - nauticus.io.nauticus.io
+  resources:
+  - spacetemplates
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - nauticus.io.nauticus.io
+  resources:
+  - spacetemplates/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - nauticus.io.nauticus.io
+  resources:
+  - spacetemplates/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
   - networking.k8s.io
   resources:
   - networkpolicies

@@ -68,8 +68,11 @@ func (s *SpaceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 	if !space.ObjectMeta.DeletionTimestamp.IsZero() {
 		return s.reconcileDelete(ctx, space)
 	}
-
-	return s.reconcileSpace(ctx, space)
+	if space.Spec.Template.Name != "" {
+		return s.reconcileSpaceFromTemplate(ctx, req, space)
+	} else {
+		return s.reconcileSpace(ctx, space)
+	}
 }
 
 // SetupWithManager sets up the controller with the Manager.

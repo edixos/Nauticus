@@ -13,14 +13,15 @@ import (
 	// to ensure that exec-entrypoint and run can make use of them.
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
 
-	nauticusiov1alpha1 "github.com/edixos/nauticus/api/v1alpha1"
-	"github.com/edixos/nauticus/controllers"
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
+
+	nauticusiov1alpha1 "github.com/edixos/nauticus/api/v1alpha1"
+	"github.com/edixos/nauticus/controllers"
 	//+kubebuilder:scaffold:imports
 )
 
@@ -98,6 +99,15 @@ func main() {
 		Recorder: mgr.GetEventRecorderFor("space-controller"),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "Space")
+		os.Exit(1)
+	}
+	if err = (&controllers.SpaceTemplateReconciler{
+		Client:   mgr.GetClient(),
+		Log:      ctrl.Log.WithName("controllers").WithName("SpaceTemplate"),
+		Scheme:   mgr.GetScheme(),
+		Recorder: mgr.GetEventRecorderFor("spaceTempalte-controller"),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "SpaceTemplate")
 		os.Exit(1)
 	}
 	//+kubebuilder:scaffold:builder
