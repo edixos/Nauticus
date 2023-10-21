@@ -8,7 +8,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/edixos/nauticus/controllers"
+	"github.com/edixos/nauticus/controllers/shared"
+	"github.com/edixos/nauticus/controllers/space"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"k8s.io/client-go/kubernetes/scheme"
@@ -71,11 +72,13 @@ var _ = BeforeSuite(func() {
 	})
 	Expect(err).ToNot(HaveOccurred())
 
-	err = (&controllers.SpaceReconciler{
-		Client:   k8sManager.GetClient(),
-		Scheme:   k8sManager.GetScheme(),
-		Log:      ctrl.Log.WithName("controllers").WithName("Space"),
-		Recorder: k8sManager.GetEventRecorderFor("space-controller"),
+	err = (&space.Reconciler{
+		Reconciler: shared.Reconciler{
+			Client:   k8sManager.GetClient(),
+			Scheme:   k8sManager.GetScheme(),
+			Log:      ctrl.Log.WithName("controllers").WithName("Space"),
+			Recorder: k8sManager.GetEventRecorderFor("space-controller"),
+		},
 	}).SetupWithManager(k8sManager)
 	Expect(err).ToNot(HaveOccurred())
 

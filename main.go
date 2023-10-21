@@ -7,8 +7,12 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	goRuntime "runtime"
 
+	"github.com/edixos/nauticus/controllers/shared"
+	"github.com/edixos/nauticus/controllers/space"
+	"github.com/edixos/nauticus/controllers/spacetemplate"
+
+	goRuntime "runtime"
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
 	// to ensure that exec-entrypoint and run can make use of them.
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
@@ -21,7 +25,6 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
 	nauticusiov1alpha1 "github.com/edixos/nauticus/api/v1alpha1"
-	"github.com/edixos/nauticus/controllers"
 	//+kubebuilder:scaffold:imports
 )
 
@@ -92,20 +95,25 @@ func main() {
 		os.Exit(1)
 	}
 
-	if err = (&controllers.SpaceReconciler{
-		Client:   mgr.GetClient(),
-		Log:      ctrl.Log.WithName("controllers").WithName("Space"),
-		Scheme:   mgr.GetScheme(),
-		Recorder: mgr.GetEventRecorderFor("space-controller"),
+	if err = (&space.Reconciler{
+		Reconciler: shared.Reconciler{
+			Client:   mgr.GetClient(),
+			Log:      ctrl.Log.WithName("controllers").WithName("Space"),
+			Scheme:   mgr.GetScheme(),
+			Recorder: mgr.GetEventRecorderFor("space-controller"),
+		},
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "Space")
 		os.Exit(1)
 	}
-	if err = (&controllers.SpaceTemplateReconciler{
-		Client:   mgr.GetClient(),
-		Log:      ctrl.Log.WithName("controllers").WithName("SpaceTemplate"),
-		Scheme:   mgr.GetScheme(),
-		Recorder: mgr.GetEventRecorderFor("spaceTempalte-controller"),
+
+	if err = (&spacetemplate.Reconciler{
+		Reconciler: shared.Reconciler{
+			Client:   mgr.GetClient(),
+			Log:      ctrl.Log.WithName("controllers").WithName("SpaceTemplate"),
+			Scheme:   mgr.GetScheme(),
+			Recorder: mgr.GetEventRecorderFor("spaceTempalte-controller"),
+		},
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "SpaceTemplate")
 		os.Exit(1)

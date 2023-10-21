@@ -9,11 +9,10 @@ metadata:
     app.kubernetes.io/created-by: nauticus
   name: space-tpl-ref-override
 spec:
-  template:
+  templateRef:
     group: nauticus.io/v1alpha1
     kind: SpaceTemplate     # Specify the Kind of the referenced resource
     name: spacetemplate-sample # Name of the SpaceTemplate
-    namespace: default # Namespace of the SpaceTemplate
   owners:
     - name: smile
       kind: User

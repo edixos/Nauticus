@@ -1,7 +1,7 @@
 // Copyright 2022-2023 Edixos
 // SPDX-License-Identifier: Apache-2.0
 
-package controllers
+package space
 
 import (
 	"context"
@@ -13,13 +13,13 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
-func (s *SpaceReconciler) reconcileServiceAccounts(ctx context.Context, space *nauticusiov1alpha1.Space) (err error) {
+func (r *Reconciler) reconcileServiceAccounts(ctx context.Context, space *nauticusiov1alpha1.Space) (err error) {
 	for _, serviceAccount := range space.Spec.ServiceAccounts.Items {
 		sa := newServiceAccount(serviceAccount.Name, space.Status.NamespaceName, serviceAccount.Annotations)
-		err = s.syncServiceAccount(ctx, sa, space, serviceAccount.Annotations)
+		err = r.syncServiceAccount(ctx, sa, space, serviceAccount.Annotations)
 
 		if err != nil {
-			s.Log.Error(err, "Cannot Synchronize Service Account")
+			r.Log.Error(err, "Cannot Synchronize Service Account")
 
 			return err
 		}
@@ -28,7 +28,7 @@ func (s *SpaceReconciler) reconcileServiceAccounts(ctx context.Context, space *n
 	return nil
 }
 
-func (s *SpaceReconciler) syncServiceAccount(ctx context.Context, serviceAccount *corev1.ServiceAccount, space *nauticusiov1alpha1.Space, annotations nauticusiov1alpha1.Annotations) (err error) {
+func (r *Reconciler) syncServiceAccount(ctx context.Context, serviceAccount *corev1.ServiceAccount, space *nauticusiov1alpha1.Space, annotations nauticusiov1alpha1.Annotations) (err error) {
 	var (
 		res                             controllerutil.OperationResult
 		spaceLabel, serviceAccountLabel string
@@ -42,7 +42,7 @@ func (s *SpaceReconciler) syncServiceAccount(ctx context.Context, serviceAccount
 		return
 	}
 
-	res, err = controllerutil.CreateOrUpdate(ctx, s.Client, serviceAccount, func() (err error) {
+	res, err = controllerutil.CreateOrUpdate(ctx, r.Client, serviceAccount, func() (err error) {
 		serviceAccount.SetLabels(map[string]string{
 			spaceLabel:          space.Name,
 			serviceAccountLabel: serviceAccount.Name,
@@ -51,8 +51,8 @@ func (s *SpaceReconciler) syncServiceAccount(ctx context.Context, serviceAccount
 
 		return nil
 	})
-	s.Log.Info("ServiceAccount sync result: "+string(res), "name", serviceAccount.Name, "namespace", space.Status.NamespaceName)
-	s.emitEvent(space, space.Name, res, "Ensuring ServiceAccount creation/Update", err)
+	r.Log.Info("ServiceAccount sync result: "+string(res), "name", serviceAccount.Name, "namespace", space.Status.NamespaceName)
+	r.EmitEvent(space, space.Name, res, "Ensuring ServiceAccount creation/Update", err)
 
 	return nil
 }
@@ -67,10 +67,10 @@ func newServiceAccount(name, namespace string, annotations nauticusiov1alpha1.An
 	}
 }
 
-func (s *SpaceReconciler) deleteServiceAccounts(ctx context.Context, space *nauticusiov1alpha1.Space) (err error) {
+func (r *Reconciler) deleteServiceAccounts(ctx context.Context, space *nauticusiov1alpha1.Space) (err error) {
 	for _, serviceAccount := range space.Spec.ServiceAccounts.Items {
 		sa := newServiceAccount(serviceAccount.Name, space.Status.NamespaceName, serviceAccount.Annotations)
-		if err = s.deleteObject(ctx, sa); err != nil {
+		if err = r.DeleteObject(ctx, sa); err != nil {
 			return err
 		}
 	}

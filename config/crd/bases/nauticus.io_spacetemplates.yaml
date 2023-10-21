@@ -9,16 +9,27 @@ metadata:
 spec:
   group: nauticus.io
   names:
+    categories:
+    - spacetemplate
     kind: SpaceTemplate
     listKind: SpaceTemplateList
     plural: spacetemplates
     singular: spacetemplate
-  scope: Namespaced
+  scope: Cluster
   versions:
-  - name: v1alpha1
+  - additionalPrinterColumns:
+    - description: Ready
+      jsonPath: .status.conditions[?(@.type=='Ready')].status
+      name: Ready
+      type: string
+    - description: Ready
+      jsonPath: .status.conditions[?(@.type=='Ready')].status
+      name: Ready
+      type: string
+    name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: SpaceTemplate is the Schema for the spacetemplates API
+        description: SpaceTemplate is the Schema for the spacetemplates API.
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -33,7 +44,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: SpaceTemplateSpec defines the desired state of SpaceTemplate
+            description: SpaceTemplateSpec defines the desired state of SpaceTemplate.
             properties:
               additionalRoleBindings:
                 description: Specifies additional RoleBindings assigned to the Space.
@@ -776,7 +787,7 @@ spec:
                 type: object
             type: object
           status:
-            description: SpaceTemplateStatus defines the observed state of SpaceTemplate
+            description: SpaceTemplateStatus defines the observed state of SpaceTemplate.
             properties:
               conditions:
                 description: Conditions List of status conditions to indicate the
@@ -848,6 +859,11 @@ spec:
                   - type
                   type: object
                 type: array
+              status:
+                description: Status is the status of the cluster.
+                type: string
+            required:
+            - status
             type: object
         type: object
     served: true

@@ -30,17 +30,15 @@ type SpaceSpec struct {
 	// Specifies a list of service account to create within the Space. Optional
 	ServiceAccounts ServiceAccountsSpec `json:"serviceAccounts,omitempty"`
 	// Reference to a SpaceTemplate
-	Template SpaceTemplateReference `json:"template,omitempty"`
+	TemplateRef SpaceTemplateReference `json:"templateRef,omitempty"`
 }
 
-// SpaceTemplateReference
+// SpaceTemplateReference.
 type SpaceTemplateReference struct {
 	// Name of the SpaceTemplate.
 	Name string `json:"name,omitempty"`
 	// Kind specifies the kind of the referenced resource, which should be "SpaceTemplate".
 	Kind string `json:"kind,omitempty"`
-	// Namespace of the SpaceTemplate.
-	Namespace string `json:"namespace,omitempty"`
 	// Group is the API group of the SpaceTemplate,  "nauticus.io/v1alpha1".
 	Group string `json:"group,omitempty"`
 }
@@ -67,6 +65,14 @@ type Space struct {
 
 	Spec   SpaceSpec   `json:"spec,omitempty"`
 	Status SpaceStatus `json:"status,omitempty"`
+}
+
+func (s *Space) GetConditions() []metav1.Condition {
+	return s.Status.Conditions
+}
+
+func (s *Space) SetConditions(conditions []metav1.Condition) {
+	s.Status.Conditions = conditions
 }
 
 //+kubebuilder:object:root=true

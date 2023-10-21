@@ -1,18 +1,5 @@
-/*
-Copyright 2023.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Copyright 2022-2023 Edixos
+// SPDX-License-Identifier: Apache-2.0
 
 package v1alpha1
 
@@ -24,7 +11,7 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
-// SpaceTemplateSpec defines the desired state of SpaceTemplate
+// SpaceTemplateSpec defines the desired state of SpaceTemplate.
 type SpaceTemplateSpec struct {
 	// Specifies a list of ResourceQuota resources assigned to the Space. The assigned values are inherited by the namespace created by the Space. Optional.
 	ResourceQuota corev1.ResourceQuotaSpec `json:"resourceQuota,omitempty"`
@@ -36,16 +23,21 @@ type SpaceTemplateSpec struct {
 	LimitRanges LimitRangesSpec `json:"limitRanges,omitempty"`
 }
 
-// SpaceTemplateStatus defines the observed state of SpaceTemplate
+// SpaceTemplateStatus defines the observed state of SpaceTemplate.
 type SpaceTemplateStatus struct {
+	// Status is the status of the cluster.
+	Status string `json:"status"`
 	// Conditions List of status conditions to indicate the status of Space
 	Conditions []metav1.Condition `json:"conditions,omitempty"`
 }
 
-//+kubebuilder:object:root=true
-//+kubebuilder:subresource:status
+// +kubebuilder:object:root=true
+// +kubebuilder:resource:scope=Cluster, categories={spacetemplate}
+// +kubebuilder:subresource:status
+// +kubebuilder:printcolumn:name="Ready",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status",description="Ready"
+// +kubebuilder:printcolumn:name="Ready",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status",description="Ready"
 
-// SpaceTemplate is the Schema for the spacetemplates API
+// SpaceTemplate is the Schema for the spacetemplates API.
 type SpaceTemplate struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
@@ -54,14 +46,17 @@ type SpaceTemplate struct {
 	Status SpaceTemplateStatus `json:"status,omitempty"`
 }
 
-//func (st *SpaceTemplate) ApplyToDelete(options *client.DeleteOptions) {
-//TODO implement me
-//	panic("implement me")
-//}
+func (in *SpaceTemplate) GetConditions() []metav1.Condition {
+	return in.Status.Conditions
+}
+
+func (in *SpaceTemplate) SetConditions(conditions []metav1.Condition) {
+	in.Status.Conditions = conditions
+}
 
 //+kubebuilder:object:root=true
 
-// SpaceTemplateList contains a list of SpaceTemplate
+// SpaceTemplateList contains a list of SpaceTemplate.
 type SpaceTemplateList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`

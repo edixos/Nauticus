@@ -1,15 +1,12 @@
 // Copyright 2022-2023 Edixos
 // SPDX-License-Identifier: Apache-2.0
 
-package controllers
+package space
 
 import (
 	"context"
 
-	"github.com/go-logr/logr"
-	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/client-go/tools/record"
-	"sigs.k8s.io/controller-runtime/pkg/client"
+	"github.com/edixos/nauticus/controllers/shared"
 	"sigs.k8s.io/controller-runtime/pkg/event"
 	"sigs.k8s.io/controller-runtime/pkg/predicate"
 
@@ -19,11 +16,8 @@ import (
 )
 
 // SpaceReconciler reconciles a Space object.
-type SpaceReconciler struct {
-	client.Client
-	Scheme   *runtime.Scheme
-	Recorder record.EventRecorder
-	Log      logr.Logger
+type Reconciler struct {
+	shared.Reconciler
 }
 
 //+kubebuilder:rbac:groups=nauticus.io,resources=spaces,verbs=get;list;watch;create;update;patch;delete
@@ -46,13 +40,13 @@ type SpaceReconciler struct {
 //
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.13.1/pkg/reconcile
-func (s *SpaceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	log := s.Log.WithValues("space", req.NamespacedName)
+func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+	log := r.Log.WithValues("space", req.NamespacedName)
 
 	// Fetch the Space instance
 	space := &nauticusiov1alpha1.Space{}
 
-	err := s.Get(ctx, req.NamespacedName, space)
+	err := r.Get(ctx, req.NamespacedName, space)
 	if err != nil {
 		if apierrors.IsNotFound(err) {
 			// Space not found, return
@@ -66,22 +60,23 @@ func (s *SpaceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 	}
 
 	if !space.ObjectMeta.DeletionTimestamp.IsZero() {
-		return s.reconcileDelete(ctx, space)
+		return r.reconcileDelete(ctx, space)
 	}
-	if space.Spec.Template.Name != "" {
-		return s.reconcileSpaceFromTemplate(ctx, req, space)
-	} else {
-		return s.reconcileSpace(ctx, space)
+
+	if space.Spec.TemplateRef.Name != "" {
+		return r.reconcileSpaceFromTemplate(ctx, space)
 	}
+
+	return r.reconcileSpace(ctx, space)
 }
 
 // SetupWithManager sets up the controller with the Manager.
-func (s *SpaceReconciler) SetupWithManager(mgr ctrl.Manager) error {
+func (r *Reconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&nauticusiov1alpha1.Space{}).
 		WithEventFilter(predicate.GenerationChangedPredicate{}).
 		WithEventFilter(ignoreDeletionPredicate()).
-		Complete(s)
+		Complete(r)
 }
 
 func ignoreDeletionPredicate() predicate.Predicate {

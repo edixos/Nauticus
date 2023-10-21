@@ -843,7 +843,7 @@ spec:
                       type: object
                     type: array
                 type: object
-              template:
+              templateRef:
                 description: Reference to a SpaceTemplate
                 properties:
                   group:
@@ -855,9 +855,6 @@ spec:
                     type: string
                   name:
                     description: Name of the SpaceTemplate.
-                    type: string
-                  namespace:
-                    description: Namespace of the SpaceTemplate.
                     type: string
                 type: object
             type: object
