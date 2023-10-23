@@ -25,8 +25,6 @@ type SpaceTemplateSpec struct {
 
 // SpaceTemplateStatus defines the observed state of SpaceTemplate.
 type SpaceTemplateStatus struct {
-	// Status is the status of the cluster.
-	Status string `json:"status"`
 	// Conditions List of status conditions to indicate the status of Space
 	Conditions []metav1.Condition `json:"conditions,omitempty"`
 }
@@ -34,7 +32,7 @@ type SpaceTemplateStatus struct {
 // +kubebuilder:object:root=true
 // +kubebuilder:resource:scope=Cluster, categories={spacetemplate}
 // +kubebuilder:subresource:status
-// +kubebuilder:printcolumn:name="Ready",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status",description="Ready"
+// +kubebuilder:printcolumn:name="Age",type="date",JSONPath=".metadata.creationTimestamp",description="Age"
 // +kubebuilder:printcolumn:name="Ready",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status",description="Ready"
 
 // SpaceTemplate is the Schema for the spacetemplates API.

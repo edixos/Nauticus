@@ -1,0 +1,53 @@
+apiVersion: nauticus.io/v1alpha1
+kind: Space
+metadata:
+  labels:
+    app.kubernetes.io/name: space
+    app.kubernetes.io/instance: space-sample
+    app.kubernetes.io/part-of: nauticus
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: nauticus
+  name: space-tpl-ref-merge
+spec:
+  templateRef:
+    group: nauticus.io/v1alpha1
+    kind: SpaceTemplate     # Specify the Kind of the referenced resource
+    name: space-tpl-sample # Name of the SpaceTemplate
+  owners:
+    - name: smile
+      kind: User
+    - name: smile@group.com
+      kind: Group
+  resourceQuota:
+    hard:
+      limits.cpu: "4"
+      limits.memory: 8Gi
+      requests.cpu: "2"
+      requests.memory: 3Gi
+  additionalRoleBindings:
+    - roleRef:
+        apiGroup: rbac.authorization.k8s.io
+        kind: ClusterRole
+        name: viewer
+      subjects:
+        - name: dev
+          kind: Group
+    - roleRef:
+        apiGroup: rbac.authorization.k8s.io
+        kind: ClusterRole
+        name: editor
+      subjects:
+        - name: ali
+          kind: User
+  networkPolicies:
+    enableDefaultStrictMode: false # false
+    items:
+      - policyTypes:
+          - Egress
+        egress:
+          - to:
+              - ipBlock:
+                  cidr: 1.1.1.1/0
+                  except:
+                    - 192.168.0.0/16
+        podSelector: { }

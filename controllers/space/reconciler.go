@@ -135,17 +135,19 @@ func (r *Reconciler) reconcileSpaceFromTemplate(ctx context.Context, space *naut
 	}
 
 	// Update the existing Space resource with the data from the SpaceTemplate
-	// Check if specific fields in the Space spec are not provided
-	if reflect.ValueOf(space.Spec.ResourceQuota).IsZero() {
-		space.Spec.ResourceQuota = spacetpl.Spec.ResourceQuota
+	rs, err := r.MergeResourceQuotas(space, spacetpl)
+	if err == nil {
+		space.Spec.ResourceQuota = *rs
 	}
 
-	if reflect.ValueOf(space.Spec.AdditionalRoleBindings).IsZero() {
-		space.Spec.AdditionalRoleBindings = spacetpl.Spec.AdditionalRoleBindings
+	rb, err := r.MergeRoleBindings(space, spacetpl)
+	if err == nil {
+		space.Spec.AdditionalRoleBindings = rb
 	}
 
-	if reflect.ValueOf(space.Spec.NetworkPolicies).IsZero() {
-		space.Spec.NetworkPolicies = spacetpl.Spec.NetworkPolicies
+	netPolicies, err := r.MergeNetworkPolicies(space, spacetpl)
+	if err == nil {
+		space.Spec.NetworkPolicies.Items = netPolicies.Items
 	}
 
 	if reflect.ValueOf(space.Spec.LimitRanges).IsZero() {
