@@ -134,20 +134,19 @@ func (r *Reconciler) reconcileSpaceFromTemplate(ctx context.Context, space *naut
 		return ctrl.Result{}, err
 	}
 
-	// Update the existing Space resource with the data from the SpaceTemplate
+	// Merge and override space.ResourceQuota and spacetemplate.ResourceQuota
 	rs, err := r.MergeResourceQuotas(space, spacetpl)
 	if err == nil {
 		space.Spec.ResourceQuota = *rs
 	}
-
+	// Merge and override space.AdditionalRoleBindings and spacetemplate.AdditionalRoleBindings
 	rb, err := r.MergeRoleBindings(space, spacetpl)
 	if err == nil {
 		space.Spec.AdditionalRoleBindings = rb
 	}
 
-	netPolicies, err := r.MergeNetworkPolicies(space, spacetpl)
-	if err == nil {
-		space.Spec.NetworkPolicies.Items = netPolicies.Items
+	if reflect.ValueOf(space.Spec.NetworkPolicies).IsZero() {
+		space.Spec.NetworkPolicies = spacetpl.Spec.NetworkPolicies
 	}
 
 	if reflect.ValueOf(space.Spec.LimitRanges).IsZero() {

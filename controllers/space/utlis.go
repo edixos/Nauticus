@@ -9,7 +9,6 @@ import (
 
 	nauticusiov1alpha1 "github.com/edixos/nauticus/api/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
-	networkingv1 "k8s.io/api/networking/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -64,25 +63,11 @@ func (r *Reconciler) MergeRoleBindings(space *nauticusiov1alpha1.Space, spaceTem
 		}
 	}
 
-	return mergedRoleBindings, nil
-}
-
-func (r *Reconciler) MergeNetworkPolicies(space *nauticusiov1alpha1.Space, spaceTemplate *nauticusiov1alpha1.SpaceTemplate) (nauticusiov1alpha1.NetworkPolicies, error) {
-	mergedPolicies := space.Spec.NetworkPolicies
-
-	// Check if EnableDefaultStrictMode is not provided in the space
-	if reflect.ValueOf(mergedPolicies.EnableDefaultStrictMode).IsZero() {
-		mergedPolicies.EnableDefaultStrictMode = spaceTemplate.Spec.NetworkPolicies.EnableDefaultStrictMode
+	if len(mergedRoleBindings) > 0 {
+		return mergedRoleBindings, nil
 	}
 
-	for _, templatePolicy := range spaceTemplate.Spec.NetworkPolicies.Items {
-		// Check if the policy already exists in mergedPolicies
-		if !cmpNetworkPolicy(mergedPolicies, templatePolicy) {
-			mergedPolicies.Items = append(mergedPolicies.Items, templatePolicy)
-		}
-	}
-
-	return mergedPolicies, nil
+	return nil, errors.New("no additional roles bindings merged from the template")
 }
 
 func overrideResourceQuotas(resourceQuotas *corev1.ResourceQuotaSpec, spaceHard, templateHard corev1.ResourceList, resource corev1.ResourceName) {
@@ -100,16 +85,6 @@ func cmpRoleBinding(roleBindings []nauticusiov1alpha1.AdditionalRoleBinding, rol
 			if reflect.DeepEqual(rb.Subjects, roleBinding.Subjects) {
 				return true
 			}
-		}
-	}
-
-	return false
-}
-
-func cmpNetworkPolicy(mergedPolicies nauticusiov1alpha1.NetworkPolicies, policy networkingv1.NetworkPolicySpec) bool {
-	for _, mergedPolicy := range mergedPolicies.Items {
-		if reflect.DeepEqual(mergedPolicy, policy) {
-			return true
 		}
 	}
 

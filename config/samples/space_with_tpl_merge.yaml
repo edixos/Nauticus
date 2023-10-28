@@ -40,14 +40,23 @@ spec:
         - name: ali
           kind: User
   networkPolicies:
-    enableDefaultStrictMode: false # false
+    enableDefaultStrictMode: true # false
     items:
       - policyTypes:
+          - Ingress
           - Egress
         egress:
           - to:
               - ipBlock:
-                  cidr: 1.1.1.1/0
+                  cidr: 0.0.0.0/0
                   except:
                     - 192.168.0.0/16
+        ingress:
+          - from:
+              - namespaceSelector:
+                  matchLabels:
+                    app.kubernetes.io/instance: space-all-in-one
+              - podSelector: { }
+              - ipBlock:
+                  cidr: 192.168.0.0/16
         podSelector: { }

@@ -22,10 +22,15 @@ const (
 	SpaceSyncFailMessage    string = "Space failed to sync"
 	SpaceCreatingMessage    string = "Creating Space in progress"
 
-	SpaceTplConditionReady string = "Ready"
+	SpaceTplConditionReady    string = "Ready"
+	SpaceTplConditionCreating string = "Creating"
+	SpaceTplConditionFailed   string = "Failed"
 
+	SpaceTplCreatingReason    string = "SpaceTemplateCreating"
 	SpaceTplSyncSuccessReason string = "SpaceTemplateSyncedSuccessfully"
+	SpaceTplFailedReason      string = "SpaceTemplateSyncFailed"
 
 	SpaceTplSyncSuccessMessage string = "SpaceTemplate synced successfully"
 	SpaceTplCreatingMessage    string = "Creating SpaceTemplate in progress"
+	SpaceTplFailedMessage      string = "SpaceTemplate Failed to sync"
 )
