@@ -32,7 +32,7 @@ func (r *Reconciler) FetchSpaceTemplate(ctx context.Context, name string) (*naut
 	return spaceTemplate, nil
 }
 
-func (r *Reconciler) MergeResourceQuotas(space *nauticusiov1alpha1.Space, spacetpl *nauticusiov1alpha1.SpaceTemplate) (*corev1.ResourceQuotaSpec, error) {
+func MergeResourceQuotas(space *nauticusiov1alpha1.Space, spacetpl *nauticusiov1alpha1.SpaceTemplate) (*corev1.ResourceQuotaSpec, error) {
 	resourceQuotas := &corev1.ResourceQuotaSpec{}
 	resourceQuotas.Hard = make(corev1.ResourceList)
 	// Check if resourceQuota is provided in the Space and spaceTemplate
@@ -53,7 +53,7 @@ func (r *Reconciler) MergeResourceQuotas(space *nauticusiov1alpha1.Space, spacet
 	return resourceQuotas, nil
 }
 
-func (r *Reconciler) MergeRoleBindings(space *nauticusiov1alpha1.Space, spaceTemplate *nauticusiov1alpha1.SpaceTemplate) ([]nauticusiov1alpha1.AdditionalRoleBinding, error) {
+func MergeRoleBindings(space *nauticusiov1alpha1.Space, spaceTemplate *nauticusiov1alpha1.SpaceTemplate) ([]nauticusiov1alpha1.AdditionalRoleBinding, error) {
 	mergedRoleBindings := append([]nauticusiov1alpha1.AdditionalRoleBinding{}, space.Spec.AdditionalRoleBindings...)
 
 	for _, roleBinding := range spaceTemplate.Spec.AdditionalRoleBindings {

@@ -55,3 +55,4 @@ service:
 run:
   skip-files:
     - "zz_.*\\.go$"
+    - "_test*.go"
