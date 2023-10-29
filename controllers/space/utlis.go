@@ -45,9 +45,9 @@ func MergeResourceQuotas(space *nauticusiov1alpha1.Space, spacetpl *nauticusiov1
 	case reflect.ValueOf(space.Spec.ResourceQuota).IsZero() && !reflect.ValueOf(spacetpl.Spec.ResourceQuota).IsZero():
 		resourceQuotas.Hard = spacetpl.Spec.ResourceQuota.Hard
 	default:
-		err := errors.New("both space and spacetpl resource quotas are empty. No merge required")
+		err := errors.New("merge not required both space and spacetpl resource quotas are empty")
 
-		return resourceQuotas, err
+		return nil, err
 	}
 
 	return resourceQuotas, nil
