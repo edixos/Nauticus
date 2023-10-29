@@ -18,12 +18,6 @@ spec:
       kind: User
     - name: smile@group.com
       kind: Group
-  resourceQuota:
-    hard:
-      limits.cpu: "4"
-      limits.memory: 8Gi
-      requests.cpu: "2"
-      requests.memory: 3Gi
   additionalRoleBindings:
     - roleRef:
         apiGroup: rbac.authorization.k8s.io
@@ -39,24 +33,3 @@ spec:
       subjects:
         - name: ali
           kind: User
-  networkPolicies:
-    enableDefaultStrictMode: true # false
-    items:
-      - policyTypes:
-          - Ingress
-          - Egress
-        egress:
-          - to:
-              - ipBlock:
-                  cidr: 0.0.0.0/0
-                  except:
-                    - 192.168.0.0/16
-        ingress:
-          - from:
-              - namespaceSelector:
-                  matchLabels:
-                    app.kubernetes.io/instance: space-all-in-one
-              - podSelector: { }
-              - ipBlock:
-                  cidr: 192.168.0.0/16
-        podSelector: { }
