@@ -2701,13 +2701,6 @@ SpaceTemplateStatus defines the observed state of SpaceTemplate.
         </tr>
     </thead>
     <tbody><tr>
-        <td><b>status</b></td>
-        <td>string</td>
-        <td>
-          Status is the status of the cluster.<br/>
-        </td>
-        <td>true</td>
-      </tr><tr>
         <td><b><a href="#spacetemplatestatusconditionsindex">conditions</a></b></td>
         <td>[]object</td>
         <td>
