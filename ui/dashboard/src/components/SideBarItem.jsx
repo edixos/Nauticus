@@ -11,7 +11,7 @@ function SideBarItem({ title, Icon, to, href }) {
                 {Icon && <Icon className="text-xl" />}
                 <span className="ml-3">{title}</span>
             </NavLink>}
-            {href && <a href={href} className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+            {href && <a rel='noreferrer' target="_blank" href={href} className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
                 {Icon && <Icon className="text-xl" />}
                 <span className="ml-3">{title}</span>
             </a>}

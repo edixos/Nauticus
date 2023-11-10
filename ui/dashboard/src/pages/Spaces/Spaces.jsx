@@ -1,25 +1,40 @@
+import { createColumnHelper } from '@tanstack/react-table';
+import Table from '../../components/Table';
 import spacesData from '../../space.json';
-import TableBody from './components/TableBody';
-import TableHeader from './components/TableHeader';
+
+const columnHelper = createColumnHelper();
+
+const columns = [
+    columnHelper.accessor(row => row.metadata.name, {
+        header: 'Name',
+        cell: info => info.getValue(),
+    }),
+    columnHelper.accessor(row => row.spec.resourceQuota.hard['limits.cpu'], {
+        header: 'CPU Limits',
+        cell: info => info.getValue(),
+    }),
+    columnHelper.accessor(row => row.spec.resourceQuota.hard['requests.cpu'], {
+        header: 'CPU Request',
+        cell: info => info.getValue(),
+    }),
+    columnHelper.accessor(row => row.spec.resourceQuota.hard['limits.memory'], {
+        header: 'Memory Limits',
+        cell: info => info.getValue(),
+    }),
+    columnHelper.accessor(row => row.spec.resourceQuota.hard['requests.memory'], {
+        header: 'Memory Requests',
+        cell: info => info.getValue(),
+    }),
+    // ... other columns as needed
+];
+
 
 function Spaces() {
-    console.log(spacesData);
-    const tableHeader = [
-        { name: 'Name' },
-        { name: 'Owners' },
-        { name: 'CPU Limit' },
-        { name: 'Memory Limit' },
-    ]
 
     return (
-        <div className="overflow-x-auto p-1">
-            <table className="min-w-full table-auto bg-slate-800 shadow-md rounded-md overflow-hidden">
-                <TableHeader headers={tableHeader} />
-
-                <TableBody data={spacesData} />
-            </table>
-        </div>
+        <Table columns={columns} data={spacesData} />
     );
+
 }
 
 export default Spaces;
