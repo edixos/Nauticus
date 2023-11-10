@@ -1,0 +1,310 @@
+[
+  {
+    "apiVersion": "nauticus.io/v1alpha1",
+    "kind": "Space",
+    "metadata": {
+      "labels": {
+        "app.kubernetes.io/name": "space",
+        "app.kubernetes.io/instance": "space-all-in-one",
+        "app.kubernetes.io/part-of": "nauticus",
+        "app.kubernetes.io/managed-by": "kustomize",
+        "app.kubernetes.io/created-by": "nauticus"
+      },
+      "name": "space-all-in-one"
+    },
+    "spec": {
+      "resourceQuota": {
+        "hard": {
+          "limits.cpu": "8",
+          "limits.memory": "16Gi",
+          "requests.cpu": "8",
+          "requests.memory": "16Gi"
+        }
+      },
+      "owners": [
+        {
+          "name": "smile",
+          "kind": "User"
+        },
+        {
+          "name": "smile@group.com",
+          "kind": "Group"
+        }
+      ],
+      "additionalRoleBindings": [
+        {
+          "roleRef": {
+            "apiGroup": "rbac.authorization.k8s.io",
+            "kind": "ClusterRole",
+            "name": "viewer"
+          },
+          "subjects": [
+            {
+              "name": "alice",
+              "kind": "User"
+            }
+          ]
+        }
+      ],
+      "networkPolicies": {
+        "enableDefaultStrictMode": true,
+        "items": [
+          {
+            "policyTypes": ["Ingress", "Egress"],
+            "egress": [
+              {
+                "to": [
+                  {
+                    "ipBlock": {
+                      "cidr": "0.0.0.0/0",
+                      "except": ["192.168.0.0/16"]
+                    }
+                  }
+                ]
+              }
+            ],
+            "ingress": [
+              {
+                "from": [
+                  {
+                    "namespaceSelector": {
+                      "matchLabels": {
+                        "app.kubernetes.io/instance": "space-all-in-one"
+                      }
+                    }
+                  },
+                  {
+                    "podSelector": {}
+                  },
+                  {
+                    "ipBlock": {
+                      "cidr": "192.168.0.0/16"
+                    }
+                  }
+                ]
+              }
+            ],
+            "podSelector": {}
+          }
+        ]
+      },
+      "limitRanges": {
+        "items": [
+          {
+            "limits": [
+              {
+                "max": {
+                  "cpu": "1",
+                  "memory": "1Gi"
+                },
+                "min": {
+                  "cpu": "50m",
+                  "memory": "5Mi"
+                },
+                "type": "Pod"
+              },
+              {
+                "default": {
+                  "cpu": "200m",
+                  "memory": "100Mi"
+                },
+                "defaultRequest": {
+                  "cpu": "100m",
+                  "memory": "10Mi"
+                },
+                "max": {
+                  "cpu": "1",
+                  "memory": "1Gi"
+                },
+                "min": {
+                  "cpu": "50m",
+                  "memory": "5Mi"
+                },
+                "type": "Container"
+              },
+              {
+                "max": {
+                  "storage": "10Gi"
+                },
+                "min": {
+                  "storage": "1Gi"
+                },
+                "type": "PersistentVolumeClaim"
+              }
+            ]
+          }
+        ]
+      },
+      "serviceAccounts": {
+        "items": [
+          {
+            "name": "cloudsql",
+            "annotations": {
+              "iam.gke.io/gcp-service-account": "cloudsql@GSA_PROJECT.iam.gserviceaccount.com"
+            }
+          },
+          {
+            "name": "gcs",
+            "annotations": {
+              "iam.gke.io/gcp-service-account": "gcs@GSA_PROJECT.iam.gserviceaccount.com"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "apiVersion": "nauticus.io/v1alpha1",
+    "kind": "Space",
+    "metadata": {
+      "labels": {
+        "app.kubernetes.io/name": "space",
+        "app.kubernetes.io/instance": "space-all-in-one",
+        "app.kubernetes.io/part-of": "nauticus",
+        "app.kubernetes.io/managed-by": "kustomize",
+        "app.kubernetes.io/created-by": "nauticus"
+      },
+      "name": "space-all-in-one-2"
+    },
+    "spec": {
+      "resourceQuota": {
+        "hard": {
+          "limits.cpu": "8",
+          "limits.memory": "16Gi",
+          "requests.cpu": "8",
+          "requests.memory": "16Gi"
+        }
+      },
+      "owners": [
+        {
+          "name": "smile",
+          "kind": "User"
+        },
+        {
+          "name": "smile@group.com",
+          "kind": "Group"
+        }
+      ],
+      "additionalRoleBindings": [
+        {
+          "roleRef": {
+            "apiGroup": "rbac.authorization.k8s.io",
+            "kind": "ClusterRole",
+            "name": "viewer"
+          },
+          "subjects": [
+            {
+              "name": "alice",
+              "kind": "User"
+            }
+          ]
+        }
+      ],
+      "networkPolicies": {
+        "enableDefaultStrictMode": true,
+        "items": [
+          {
+            "policyTypes": ["Ingress", "Egress"],
+            "egress": [
+              {
+                "to": [
+                  {
+                    "ipBlock": {
+                      "cidr": "0.0.0.0/0",
+                      "except": ["192.168.0.0/16"]
+                    }
+                  }
+                ]
+              }
+            ],
+            "ingress": [
+              {
+                "from": [
+                  {
+                    "namespaceSelector": {
+                      "matchLabels": {
+                        "app.kubernetes.io/instance": "space-all-in-one"
+                      }
+                    }
+                  },
+                  {
+                    "podSelector": {}
+                  },
+                  {
+                    "ipBlock": {
+                      "cidr": "192.168.0.0/16"
+                    }
+                  }
+                ]
+              }
+            ],
+            "podSelector": {}
+          }
+        ]
+      },
+      "limitRanges": {
+        "items": [
+          {
+            "limits": [
+              {
+                "max": {
+                  "cpu": "1",
+                  "memory": "1Gi"
+                },
+                "min": {
+                  "cpu": "50m",
+                  "memory": "5Mi"
+                },
+                "type": "Pod"
+              },
+              {
+                "default": {
+                  "cpu": "200m",
+                  "memory": "100Mi"
+                },
+                "defaultRequest": {
+                  "cpu": "100m",
+                  "memory": "10Mi"
+                },
+                "max": {
+                  "cpu": "1",
+                  "memory": "1Gi"
+                },
+                "min": {
+                  "cpu": "50m",
+                  "memory": "5Mi"
+                },
+                "type": "Container"
+              },
+              {
+                "max": {
+                  "storage": "10Gi"
+                },
+                "min": {
+                  "storage": "1Gi"
+                },
+                "type": "PersistentVolumeClaim"
+              }
+            ]
+          }
+        ]
+      },
+      "serviceAccounts": {
+        "items": [
+          {
+            "name": "cloudsql",
+            "annotations": {
+              "iam.gke.io/gcp-service-account": "cloudsql@GSA_PROJECT.iam.gserviceaccount.com"
+            }
+          },
+          {
+            "name": "gcs",
+            "annotations": {
+              "iam.gke.io/gcp-service-account": "gcs@GSA_PROJECT.iam.gserviceaccount.com"
+            }
+          }
+        ]
+      }
+    }
+  }
+]
