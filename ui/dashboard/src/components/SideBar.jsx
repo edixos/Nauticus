@@ -11,7 +11,6 @@ function SideBar() {
                     <SideBarItem title="Spaces" Icon={HiOutlineCube} to='/spaces' />
                     <SideBarItem title="Templates" Icon={HiCubeTransparent} to='/templates' />
                     <SideBarItem title="Documentation" Icon={IoDocumentText} href='https://nauticus.edixos.com/0.1.3/' />
-                    {/* Add more SideBarItem as needed */}
                 </ul>
             </nav>
         </aside>

@@ -2,8 +2,9 @@ import './App.css'
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import RootLayout from './pages/Layout/RootLayout';
-import Spaces from './pages/Spaces/Spaces';
+import SpacesPage from './pages/Spaces/SpacesPage';
 import Templates from './pages/Templates/Templates';
+import SpaceDetailsPage from './pages/Spaces/SpaceDetailsPage';
 
 
 const router = createBrowserRouter([
@@ -12,10 +13,13 @@ const router = createBrowserRouter([
     element: <RootLayout />,
     children: [
       {
-        index: true, element: <Spaces />
+        index: true, element: <SpacesPage />
       },
       {
-        path: 'spaces', element: <Spaces />
+        path: 'spaces', children: [
+          { index: true, element: <SpacesPage /> },
+          { path: ':spaceId', element: <SpaceDetailsPage /> }
+        ]
       },
       {
         path: 'templates', element: <Templates />

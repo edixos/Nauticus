@@ -1,26 +1,40 @@
-import { useReactTable, flexRender, getCoreRowModel, getFilteredRowModel } from '@tanstack/react-table';
+import {
+    useReactTable, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel
+} from '@tanstack/react-table';
 import { useState } from 'react';
 import { PropTypes } from 'prop-types';
 import { FiSearch } from 'react-icons/fi';
 import { BsPlusSquare } from 'react-icons/bs';
+import Pagination from './Pagination';
+import { Link } from 'react-router-dom';
 
 function Table({ columns, data }) {
+    const [pageIndex] = useState(0);
+    const [pageSize] = useState(2);
     const [filter, setFilter] = useState('');
 
-
-    console.log(filter);
     const table = useReactTable({
         columns,
         data,
         state: {
-            globalFilter: filter
+            globalFilter: filter,
+            pageIndex, // Current page index
+            pageSize
+        },
+        initialState: {
+            pagination: {
+                pageSize,
+                pageIndex
+            }
         },
         onGlobalFilterChange: setFilter,
         globalFilterFn: 'includesString',
         getCoreRowModel: getCoreRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
+        getPaginationRowModel: getPaginationRowModel()
     });
 
+    console.log(table.getState());
 
     return (
         <div className='flex flex-col gap-4 p-4'>
@@ -56,18 +70,44 @@ function Table({ columns, data }) {
                         ))}
                     </thead>
                     <tbody className="bg-gray-200 divide-y divide-gray-900">
-                        {table.getRowModel().rows.map(row => (
+                        {table.getPaginationRowModel().rows.map(row => ( // Use the paginated rows here
                             <tr key={row.id}>
-                                {row.getVisibleCells().map(cell => (
-                                    <td key={cell.id} className="px-6 py-4 whitespace-nowrap">
-                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                    </td>
-                                ))}
+                                {row.getVisibleCells().map(cell => {
+                                    if (cell.column.id === 'Name') {
+
+                                        return (
+                                            <td key={cell.id} className="px-6 py-4 whitespace-nowrap">
+                                                <Link to={`${row.original.metadata.name}`} className="text-blue-600 hover:text-blue-800">
+                                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                </Link>
+                                            </td>
+                                        );
+                                    } else {
+                                        // For all other cells, just render the cell value
+                                        return (
+                                            <td key={cell.id} className="px-6 py-4 whitespace-nowrap">
+                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                            </td>
+                                        );
+                                    }
+                                }
+                                )}
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </div>
+            <Pagination
+                pageCount={table.getPageCount()}
+                pageIndex={table.getState().pagination.pageIndex}
+                initialPageSize={3}
+                canPreviousPage={table.getCanPreviousPage()}
+                canNextPage={table.getCanNextPage()}
+                gotoPage={table.setPageIndex}
+                nextPage={table.nextPage}
+                previousPage={table.previousPage}
+                setPageSize={table.setPageSize}
+            />
         </div>
     );
 }
@@ -77,4 +117,4 @@ Table.propTypes = {
     data: PropTypes.array.isRequired
 }
 
-export default Table;
+export default Table; 

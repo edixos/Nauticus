@@ -151,6 +151,14 @@
           }
         ]
       }
+    },
+    "status": {
+      "resourceQuota": {
+        "used": {
+          "cpu": "4",
+          "memory": "12Gi"
+        }
+      }
     }
   },
   {
@@ -613,6 +621,222 @@
           }
         ]
       }
+    }
+  },
+  {
+    "apiVersion": "nauticus.io/v1alpha1",
+    "kind": "Space",
+    "metadata": {
+      "name": "space-all-in-one-6"
+    },
+    "spec": {
+      "resourceQuota": {
+        "hard": {
+          "limits.cpu": "7",
+          "limits.memory": "15Gi",
+          "requests.cpu": "8",
+          "requests.memory": "16Gi"
+        }
+      },
+      "owners": [
+        {
+          "name": "smile",
+          "kind": "User"
+        },
+        {
+          "name": "smile@group.com",
+          "kind": "Group"
+        }
+      ]
+    }
+  },
+  {
+    "apiVersion": "nauticus.io/v1alpha1",
+    "kind": "Space",
+    "metadata": {
+      "name": "space-all-in-one-7"
+    },
+    "spec": {
+      "resourceQuota": {
+        "hard": {
+          "limits.cpu": "7",
+          "limits.memory": "15Gi",
+          "requests.cpu": "8",
+          "requests.memory": "16Gi"
+        }
+      },
+      "owners": [
+        {
+          "name": "smile",
+          "kind": "User"
+        },
+        {
+          "name": "smile@group.com",
+          "kind": "Group"
+        }
+      ]
+    }
+  },
+  {
+    "apiVersion": "nauticus.io/v1alpha1",
+    "kind": "Space",
+    "metadata": {
+      "name": "space-all-in-one-8"
+    },
+    "spec": {
+      "resourceQuota": {
+        "hard": {
+          "limits.cpu": "7",
+          "limits.memory": "15Gi",
+          "requests.cpu": "8",
+          "requests.memory": "16Gi"
+        }
+      },
+      "owners": [
+        {
+          "name": "smile",
+          "kind": "User"
+        },
+        {
+          "name": "smile@group.com",
+          "kind": "Group"
+        }
+      ]
+    }
+  },
+  {
+    "apiVersion": "nauticus.io/v1alpha1",
+    "kind": "Space",
+    "metadata": {
+      "name": "space-all-in-one-9"
+    },
+    "spec": {
+      "resourceQuota": {
+        "hard": {
+          "limits.cpu": "7",
+          "limits.memory": "15Gi",
+          "requests.cpu": "8",
+          "requests.memory": "16Gi"
+        }
+      },
+      "owners": [
+        {
+          "name": "smile",
+          "kind": "User"
+        },
+        {
+          "name": "smile@group.com",
+          "kind": "Group"
+        }
+      ]
+    }
+  },
+  {
+    "apiVersion": "nauticus.io/v1alpha1",
+    "kind": "Space",
+    "metadata": {
+      "name": "space-all-in-one-10"
+    },
+    "spec": {
+      "resourceQuota": {
+        "hard": {
+          "limits.cpu": "7",
+          "limits.memory": "15Gi",
+          "requests.cpu": "8",
+          "requests.memory": "16Gi"
+        }
+      },
+      "owners": [
+        {
+          "name": "smile",
+          "kind": "User"
+        },
+        {
+          "name": "smile@group.com",
+          "kind": "Group"
+        }
+      ]
+    }
+  },
+  {
+    "apiVersion": "nauticus.io/v1alpha1",
+    "kind": "Space",
+    "metadata": {
+      "name": "space-all-in-one-11"
+    },
+    "spec": {
+      "resourceQuota": {
+        "hard": {
+          "limits.cpu": "7",
+          "limits.memory": "15Gi",
+          "requests.cpu": "8",
+          "requests.memory": "16Gi"
+        }
+      },
+      "owners": [
+        {
+          "name": "smile",
+          "kind": "User"
+        },
+        {
+          "name": "smile@group.com",
+          "kind": "Group"
+        }
+      ]
+    }
+  },
+  {
+    "apiVersion": "nauticus.io/v1alpha1",
+    "kind": "Space",
+    "metadata": {
+      "name": "space-all-in-one-11"
+    },
+    "spec": {
+      "resourceQuota": {
+        "hard": {
+          "limits.cpu": "7",
+          "limits.memory": "15Gi",
+          "requests.cpu": "8",
+          "requests.memory": "16Gi"
+        }
+      },
+      "owners": [
+        {
+          "name": "smile",
+          "kind": "User"
+        },
+        {
+          "name": "smile@group.com",
+          "kind": "Group"
+        }
+      ]
+    }
+  },
+  {
+    "apiVersion": "nauticus.io/v1alpha1",
+    "kind": "Space",
+    "metadata": {
+      "name": "space-all-in-one-13"
+    },
+    "spec": {
+      "resourceQuota": {
+        "hard": {
+          "limits.cpu": "7",
+          "limits.memory": "15Gi",
+          "requests.cpu": "8",
+          "requests.memory": "16Gi"
+        }
+      },
+      "owners": [
+        {
+          "name": "smile",
+          "kind": "User"
+        },
+        {
+          "name": "smile@group.com",
+          "kind": "Group"
+        }
+      ]
     }
   }
 ]

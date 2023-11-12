@@ -29,7 +29,7 @@ const columns = [
 ];
 
 
-function Spaces() {
+function SpacesPage() {
 
     return (
         <Table columns={columns} data={spacesData} />
@@ -37,4 +37,4 @@ function Spaces() {
 
 }
 
-export default Spaces;
+export default SpacesPage;
