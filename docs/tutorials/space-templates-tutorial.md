@@ -32,7 +32,7 @@ In this example, a Space named `space-tpl-ref-override` references a SpaceTempla
 * This demonstrates the flexibility of SpaceTemplates, allowing Spaces to maintain standard configurations while adjusting specific settings as needed.
 
     ```yaml title="config/samples/space_wth_tpl_ref_overrides.yaml"
-    {% include "../../config/samples/space_wth_tpl_ref_overrides.yaml" %}
+    {% include "../../config/samples/space_with_tpl_ref_overrides.yaml" %}
     ```
 #### Example: Merging Additional Role Bindings
 
@@ -42,5 +42,5 @@ In this example, a Space named `space-tpl-ref-merge` references a Space Template
 * The Space includes additional role bindings for both `viewer` and `editor` roles, with specific subjects.
 * The merged role bindings enrich the Space's access control settings, ensuring flexibility and control.
     ```yaml title="config/samples/space_wth_tpl_merge.yaml"
-    {% include "../../config/samples/space_wth_tpl_merge.yaml" %}
+    {% include "../../config/samples/space_with_tpl_merge.yaml" %}
     ```

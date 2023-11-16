@@ -17,9 +17,9 @@ type Reconciler struct {
 	shared.Reconciler
 }
 
-//+kubebuilder:rbac:groups=nauticus.io.nauticus.io,resources=spacetemplates,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=nauticus.io.nauticus.io,resources=spacetemplates/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=nauticus.io.nauticus.io,resources=spacetemplates/finalizers,verbs=update
+//+kubebuilder:rbac:groups=nauticus.io,resources=spacetemplates,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=nauticus.io,resources=spacetemplates/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=nauticus.io,resources=spacetemplates/finalizers,verbs=update
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.

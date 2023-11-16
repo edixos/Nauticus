@@ -110,7 +110,7 @@ rules:
   verbs:
   - update
 - apiGroups:
-  - nauticus.io.nauticus.io
+  - nauticus.io
   resources:
   - spacetemplates/status
   verbs:
