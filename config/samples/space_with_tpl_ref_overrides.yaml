@@ -12,7 +12,7 @@ spec:
   templateRef:
     group: nauticus.io/v1alpha1
     kind: SpaceTemplate     # Specify the Kind of the referenced resource
-    name: spacetemplate-sample # Name of the SpaceTemplate
+    name: space-tpl-sample # Name of the SpaceTemplate
   owners:
     - name: smile
       kind: User

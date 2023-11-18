@@ -127,7 +127,7 @@ func (r *Reconciler) reconcileSpace(ctx context.Context, space *nauticusiov1alph
 
 func (r *Reconciler) reconcileSpaceFromTemplate(ctx context.Context, space *nauticusiov1alpha1.Space) (result reconcile.Result, err error) {
 	// Fetch data from the SpaceTemplate
-	spacetpl, err := r.FetchSpaceTemplate(ctx, space.Spec.TemplateRef.Name)
+	spaceTpl, err := r.FetchSpaceTemplate(ctx, space.Spec.TemplateRef.Name)
 	if err != nil {
 		r.Log.Info("SpaceTemplate:", "SpaceTemplate does not exist", space.Spec.TemplateRef.Name)
 
@@ -135,25 +135,25 @@ func (r *Reconciler) reconcileSpaceFromTemplate(ctx context.Context, space *naut
 	}
 
 	// Merge and override space.ResourceQuota and spacetemplate.ResourceQuota
-	rs, err := MergeResourceQuotas(space, spacetpl)
+	rs, err := MergeResourceQuotas(space, spaceTpl)
 	if err == nil {
 		space.Spec.ResourceQuota = *rs
 	}
 	// Merge and override space.AdditionalRoleBindings and spacetemplate.AdditionalRoleBindings
-	rb, err := MergeRoleBindings(space, spacetpl)
+	rb, err := MergeRoleBindings(space, spaceTpl)
 	if err == nil {
 		space.Spec.AdditionalRoleBindings = rb
 	}
 
 	if reflect.ValueOf(space.Spec.NetworkPolicies).IsZero() {
-		space.Spec.NetworkPolicies = spacetpl.Spec.NetworkPolicies
+		space.Spec.NetworkPolicies = spaceTpl.Spec.NetworkPolicies
 	}
 
 	if reflect.ValueOf(space.Spec.LimitRanges).IsZero() {
-		space.Spec.LimitRanges = spacetpl.Spec.LimitRanges
+		space.Spec.LimitRanges = spaceTpl.Spec.LimitRanges
 	}
 	// Create or update the Space in the cluster
-	r.Log.Info("Reconciling Space from", "SpaceTemplate", spacetpl.Name)
+	r.Log.Info("Reconciling Space from", "SpaceTemplate", spaceTpl.Name)
 
 	return r.reconcileSpace(ctx, space)
 }

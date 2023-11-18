@@ -4,12 +4,13 @@ package space
 
 import (
 	"errors"
+	"reflect"
+	"testing"
+
 	nauticusiov1alpha1 "github.com/edixos/nauticus/api/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	v1 "k8s.io/api/rbac/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
-	"reflect"
-	"testing"
 )
 
 func TestMergeResourceQuotas(t *testing.T) {
@@ -148,11 +149,12 @@ func TestMergeRoleBindings(t *testing.T) {
 			space: &nauticusiov1alpha1.Space{
 				Spec: nauticusiov1alpha1.SpaceSpec{
 					AdditionalRoleBindings: []nauticusiov1alpha1.AdditionalRoleBinding{
-						{RoleRef: v1.RoleRef{
-							APIGroup: "rbac.authorization.k8s.io",
-							Kind:     "ClusterRole",
-							Name:     "editor",
-						},
+						{
+							RoleRef: v1.RoleRef{
+								APIGroup: "rbac.authorization.k8s.io",
+								Kind:     "ClusterRole",
+								Name:     "editor",
+							},
 							Subjects: []v1.Subject{
 								{
 									Name: "bob",
@@ -170,11 +172,12 @@ func TestMergeRoleBindings(t *testing.T) {
 			spaceTemplate: &nauticusiov1alpha1.SpaceTemplate{
 				Spec: nauticusiov1alpha1.SpaceTemplateSpec{
 					AdditionalRoleBindings: []nauticusiov1alpha1.AdditionalRoleBinding{
-						{RoleRef: v1.RoleRef{
-							APIGroup: "rbac.authorization.k8s.io",
-							Kind:     "ClusterRole",
-							Name:     "viewer",
-						},
+						{
+							RoleRef: v1.RoleRef{
+								APIGroup: "rbac.authorization.k8s.io",
+								Kind:     "ClusterRole",
+								Name:     "viewer",
+							},
 							Subjects: []v1.Subject{
 								{
 									Name: "alice",
@@ -233,11 +236,12 @@ func TestMergeRoleBindings(t *testing.T) {
 			spaceTemplate: &nauticusiov1alpha1.SpaceTemplate{
 				Spec: nauticusiov1alpha1.SpaceTemplateSpec{
 					AdditionalRoleBindings: []nauticusiov1alpha1.AdditionalRoleBinding{
-						{RoleRef: v1.RoleRef{
-							APIGroup: "rbac.authorization.k8s.io",
-							Kind:     "ClusterRole",
-							Name:     "viewer",
-						},
+						{
+							RoleRef: v1.RoleRef{
+								APIGroup: "rbac.authorization.k8s.io",
+								Kind:     "ClusterRole",
+								Name:     "viewer",
+							},
 							Subjects: []v1.Subject{
 								{
 									Name: "alice",

@@ -15,7 +15,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 )
 
-// SpaceReconciler reconciles a Space object.
+// Reconciler reconciles a Space object.
 type Reconciler struct {
 	shared.Reconciler
 }
