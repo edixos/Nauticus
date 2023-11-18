@@ -1,0 +1,74 @@
+apiVersion: nauticus.io/v1alpha1
+kind: SpaceTemplate
+metadata:
+  labels:
+    app.kubernetes.io/name: spacetemplate
+    app.kubernetes.io/instance: spacetemplate-sample
+    app.kubernetes.io/part-of: nauticus
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: nauticus
+  name: space-tpl-sample
+spec:
+  resourceQuota:
+    hard:
+      requests.cpu: "1"
+      requests.memory: "1Gi"
+      limits.cpu: "2"
+      limits.memory: "2Gi"
+  additionalRoleBindings:
+    - roleRef:
+        apiGroup: rbac.authorization.k8s.io
+        kind: ClusterRole
+        name: viewer
+      subjects:
+        - name: alice
+          kind: User
+  networkPolicies:
+    enableDefaultStrictMode: true # false
+    items:
+      - policyTypes:
+          - Ingress
+          - Egress
+        egress:
+          - to:
+              - ipBlock:
+                  cidr: 0.0.0.0/0
+                  except:
+                    - 192.168.0.0/16
+        ingress:
+          - from:
+              - namespaceSelector:
+                  matchLabels:
+                    app.kubernetes.io/instance: space-all-in-one
+              - podSelector: { }
+              - ipBlock:
+                  cidr: 192.168.0.0/16
+        podSelector: { }
+  limitRanges:
+    items:
+      - limits:
+          - max:
+              cpu: "1"
+              memory: 1Gi
+            min:
+              cpu: 50m
+              memory: 5Mi
+            type: Pod
+          - default:
+              cpu: 200m
+              memory: 100Mi
+            defaultRequest:
+              cpu: 100m
+              memory: 10Mi
+            max:
+              cpu: "1"
+              memory: 1Gi
+            min:
+              cpu: 50m
+              memory: 5Mi
+            type: Container
+          - max:
+              storage: 10Gi
+            min:
+              storage: 1Gi
+            type: PersistentVolumeClaim

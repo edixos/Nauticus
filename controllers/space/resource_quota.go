@@ -1,7 +1,7 @@
 // Copyright 2022-2023 Edixos
 // SPDX-License-Identifier: Apache-2.0
 
-package controllers
+package space
 
 import (
 	"context"
@@ -13,7 +13,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
-func (s *SpaceReconciler) reconcileResourceQuota(ctx context.Context, space *nauticusiov1alpha1.Space) (err error) {
+func (r *Reconciler) reconcileResourceQuota(ctx context.Context, space *nauticusiov1alpha1.Space) (err error) {
 	resourceQuota := &corev1.ResourceQuota{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      space.Name,
@@ -21,12 +21,12 @@ func (s *SpaceReconciler) reconcileResourceQuota(ctx context.Context, space *nau
 		},
 		Spec: space.Spec.ResourceQuota,
 	}
-	err = s.syncResourceQuotas(ctx, resourceQuota, space)
+	err = r.syncResourceQuotas(ctx, resourceQuota, space)
 
 	return err
 }
 
-func (s *SpaceReconciler) syncResourceQuotas(ctx context.Context, resourceQuota *corev1.ResourceQuota, space *nauticusiov1alpha1.Space) (err error) {
+func (r *Reconciler) syncResourceQuotas(ctx context.Context, resourceQuota *corev1.ResourceQuota, space *nauticusiov1alpha1.Space) (err error) {
 	var (
 		res                            controllerutil.OperationResult
 		spaceLabel, resourceQuotaLabel string
@@ -40,7 +40,7 @@ func (s *SpaceReconciler) syncResourceQuotas(ctx context.Context, resourceQuota 
 		return
 	}
 
-	res, err = controllerutil.CreateOrUpdate(ctx, s.Client, resourceQuota, func() error {
+	res, err = controllerutil.CreateOrUpdate(ctx, r.Client, resourceQuota, func() error {
 		resourceQuota.SetLabels(map[string]string{
 			spaceLabel:         space.Name,
 			resourceQuotaLabel: resourceQuota.Name,
@@ -49,13 +49,13 @@ func (s *SpaceReconciler) syncResourceQuotas(ctx context.Context, resourceQuota 
 
 		return nil
 	})
-	s.Log.Info("ResourceQuota sync result: "+string(res), "name", resourceQuota.Name)
-	s.emitEvent(space, space.Name, res, "Ensuring ResourceQuota creation/Update", err)
+	r.Log.Info("ResourceQuota sync result: "+string(res), "name", resourceQuota.Name)
+	r.EmitEvent(space, space.Name, res, "Ensuring ResourceQuota creation/Update", err)
 
 	return err
 }
 
-func (s *SpaceReconciler) deleteResourceQuota(ctx context.Context, space *nauticusiov1alpha1.Space) (err error) {
+func (r *Reconciler) deleteResourceQuota(ctx context.Context, space *nauticusiov1alpha1.Space) (err error) {
 	resourceQuota := &corev1.ResourceQuota{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      space.Name,
@@ -63,7 +63,7 @@ func (s *SpaceReconciler) deleteResourceQuota(ctx context.Context, space *nautic
 		},
 		Spec: space.Spec.ResourceQuota,
 	}
-	err = s.deleteObject(ctx, resourceQuota)
+	err = r.DeleteObject(ctx, resourceQuota)
 
 	return err
 }

@@ -1,7 +1,7 @@
 // Copyright 2022-2023 Edixos
 // SPDX-License-Identifier: Apache-2.0
 
-package controllers
+package space
 
 import (
 	"context"
@@ -15,15 +15,15 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
-func (s *SpaceReconciler) reconcileNetworkPolicies(ctx context.Context, space *nauticusiov1alpha1.Space) (err error) {
+func (r *Reconciler) reconcileNetworkPolicies(ctx context.Context, space *nauticusiov1alpha1.Space) (err error) {
 	if space.Spec.NetworkPolicies.EnableDefaultStrictMode {
 		networkPolicyName := fmt.Sprintf("nauticus-%s", space.Name)
 		networkPolicySpec := newNetworkPolicyDefaultSpec()
 		networkPolicy := newNetworkPolicy(networkPolicyName, space.Status.NamespaceName, networkPolicySpec)
-		err = s.syncNetworkPolicy(ctx, networkPolicy, space, networkPolicySpec)
+		err = r.syncNetworkPolicy(ctx, networkPolicy, space, networkPolicySpec)
 
 		if err != nil {
-			s.Log.Error(err, "Cannot Synchronize Network policy")
+			r.Log.Error(err, "Cannot Synchronize Network policy")
 
 			return err
 		}
@@ -32,10 +32,10 @@ func (s *SpaceReconciler) reconcileNetworkPolicies(ctx context.Context, space *n
 	for i, networkPolicy := range space.Spec.NetworkPolicies.Items {
 		npName := "nauticus-custom-" + strconv.Itoa(i)
 		np := newNetworkPolicy(npName, space.Status.NamespaceName, networkPolicy)
-		err = s.syncNetworkPolicy(ctx, np, space, networkPolicy)
+		err = r.syncNetworkPolicy(ctx, np, space, networkPolicy)
 
 		if err != nil {
-			s.Log.Error(err, "Cannot Synchronize Network policy")
+			r.Log.Error(err, "Cannot Synchronize Network policy")
 
 			return err
 		}
@@ -44,7 +44,7 @@ func (s *SpaceReconciler) reconcileNetworkPolicies(ctx context.Context, space *n
 	return nil
 }
 
-func (s *SpaceReconciler) syncNetworkPolicy(ctx context.Context, networkPolicy *networkingv1.NetworkPolicy, space *nauticusiov1alpha1.Space, spec networkingv1.NetworkPolicySpec) (err error) {
+func (r *Reconciler) syncNetworkPolicy(ctx context.Context, networkPolicy *networkingv1.NetworkPolicy, space *nauticusiov1alpha1.Space, spec networkingv1.NetworkPolicySpec) (err error) {
 	var (
 		res                            controllerutil.OperationResult
 		spaceLabel, networkPolicyLabel string
@@ -58,7 +58,7 @@ func (s *SpaceReconciler) syncNetworkPolicy(ctx context.Context, networkPolicy *
 		return
 	}
 
-	res, err = controllerutil.CreateOrUpdate(ctx, s.Client, networkPolicy, func() (err error) {
+	res, err = controllerutil.CreateOrUpdate(ctx, r.Client, networkPolicy, func() (err error) {
 		networkPolicy.SetLabels(map[string]string{
 			spaceLabel:         space.Name,
 			networkPolicyLabel: networkPolicy.Name,
@@ -69,8 +69,8 @@ func (s *SpaceReconciler) syncNetworkPolicy(ctx context.Context, networkPolicy *
 
 		return nil
 	})
-	s.Log.Info("Network Policy sync result: "+string(res), "name", networkPolicy.Name, "namespace", space.Status.NamespaceName)
-	s.emitEvent(space, space.Name, res, "Ensuring NetworkPolicy creation/Update", err)
+	r.Log.Info("Network Policy sync result: "+string(res), "name", networkPolicy.Name, "namespace", space.Status.NamespaceName)
+	r.EmitEvent(space, space.Name, res, "Ensuring NetworkPolicy creation/Update", err)
 
 	return nil
 }
@@ -109,13 +109,13 @@ func newNetworkPolicyDefaultSpec() networkingv1.NetworkPolicySpec {
 	}
 }
 
-func (s *SpaceReconciler) deleteNetworkPolicies(ctx context.Context, space *nauticusiov1alpha1.Space) (err error) {
+func (r *Reconciler) deleteNetworkPolicies(ctx context.Context, space *nauticusiov1alpha1.Space) (err error) {
 	if space.Spec.NetworkPolicies.EnableDefaultStrictMode {
 		networkPolicyName := fmt.Sprintf("nauticus-%s", space.Name)
 		networkPolicySpec := newNetworkPolicyDefaultSpec()
 		networkPolicy := newNetworkPolicy(networkPolicyName, space.Status.NamespaceName, networkPolicySpec)
 
-		if err = s.deleteObject(ctx, networkPolicy); err != nil {
+		if err = r.DeleteObject(ctx, networkPolicy); err != nil {
 			return err
 		}
 	}
@@ -124,7 +124,7 @@ func (s *SpaceReconciler) deleteNetworkPolicies(ctx context.Context, space *naut
 		npName := "nauticus-custom-" + strconv.Itoa(i)
 		np := newNetworkPolicy(npName, space.Status.NamespaceName, networkPolicy)
 
-		if err = s.deleteObject(ctx, np); err != nil {
+		if err = r.DeleteObject(ctx, np); err != nil {
 			return err
 		}
 	}

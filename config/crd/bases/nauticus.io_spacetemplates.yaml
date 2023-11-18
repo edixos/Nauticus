@@ -5,34 +5,31 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.10.0
   creationTimestamp: null
-  name: spaces.nauticus.io
+  name: spacetemplates.nauticus.io
 spec:
   group: nauticus.io
   names:
     categories:
-    - spaces
-    kind: Space
-    listKind: SpaceList
-    plural: spaces
-    singular: space
+    - spacetemplate
+    kind: SpaceTemplate
+    listKind: SpaceTemplateList
+    plural: spacetemplates
+    singular: spacetemplate
   scope: Cluster
   versions:
   - additionalPrinterColumns:
-    - description: Ready
-      jsonPath: .status.conditions[?(@.type=='Ready')].status
-      name: Ready
-      type: string
     - description: Age
       jsonPath: .metadata.creationTimestamp
       name: Age
       type: date
-    - jsonPath: .status.namespaceName
-      name: NamespaceName
+    - description: Ready
+      jsonPath: .status.conditions[?(@.type=='Ready')].status
+      name: Ready
       type: string
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: Space is the Schema for the spaces API.
+        description: SpaceTemplate is the Schema for the spacetemplates API.
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -47,7 +44,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: SpaceSpec defines the desired state of Space.
+            description: SpaceTemplateSpec defines the desired state of SpaceTemplate.
             properties:
               additionalRoleBindings:
                 description: Specifies additional RoleBindings assigned to the Space.
@@ -723,39 +720,6 @@ spec:
                       type: object
                     type: array
                 type: object
-              owners:
-                description: Specifies the owners of the Space. Mandatory.
-                items:
-                  description: Subject contains a reference to the object or user
-                    identities a role binding applies to.  This can either hold a
-                    direct API object reference, or a value for non-objects such as
-                    user and group names.
-                  properties:
-                    apiGroup:
-                      description: APIGroup holds the API group of the referenced
-                        subject. Defaults to "" for ServiceAccount subjects. Defaults
-                        to "rbac.authorization.k8s.io" for User and Group subjects.
-                      type: string
-                    kind:
-                      description: Kind of object being referenced. Values defined
-                        by this API group are "User", "Group", and "ServiceAccount".
-                        If the Authorizer does not recognized the kind value, the
-                        Authorizer should report an error.
-                      type: string
-                    name:
-                      description: Name of the object being referenced.
-                      type: string
-                    namespace:
-                      description: Namespace of the referenced object.  If the object
-                        kind is non-namespace, such as "User" or "Group", and this
-                        value is not empty the Authorizer should report an error.
-                      type: string
-                  required:
-                  - kind
-                  - name
-                  type: object
-                  x-kubernetes-map-type: atomic
-                type: array
               resourceQuota:
                 description: Specifies a list of ResourceQuota resources assigned
                   to the Space. The assigned values are inherited by the namespace
@@ -821,45 +785,9 @@ spec:
                       type: string
                     type: array
                 type: object
-              serviceAccounts:
-                description: Specifies a list of service account to create within
-                  the Space. Optional
-                properties:
-                  items:
-                    description: Specifies the list of Service Account to be created.
-                      Optional
-                    items:
-                      properties:
-                        annotations:
-                          additionalProperties:
-                            type: string
-                          description: Specifies the annotations to be placed in the
-                            ServiceAccount. Optional
-                          type: object
-                        name:
-                          description: Specifies the service account name to be created.
-                            Required
-                          type: string
-                      type: object
-                    type: array
-                type: object
-              templateRef:
-                description: Reference to a SpaceTemplate
-                properties:
-                  group:
-                    description: Group is the API group of the SpaceTemplate,  "nauticus.io/v1alpha1".
-                    type: string
-                  kind:
-                    description: Kind specifies the kind of the referenced resource,
-                      which should be "SpaceTemplate".
-                    type: string
-                  name:
-                    description: Name of the SpaceTemplate.
-                    type: string
-                type: object
             type: object
           status:
-            description: SpaceStatus defines the observed state of Space.
+            description: SpaceTemplateStatus defines the observed state of SpaceTemplate.
             properties:
               conditions:
                 description: Conditions List of status conditions to indicate the
@@ -931,9 +859,6 @@ spec:
                   - type
                   type: object
                 type: array
-              namespaceName:
-                description: NamespaceName the name of the created underlying namespace.
-                type: string
             type: object
         type: object
     served: true

@@ -114,7 +114,7 @@ apidoc: apidocs-gen ## Generate CRD Documentation
 
 GOLANGCI_LINT = $(shell pwd)/bin/golangci-lint
 golangci-lint: ## Download golangci-lint locally if necessary.
-	$(call go-install-tool,$(GOLANGCI_LINT),github.com/golangci/golangci-lint/cmd/golangci-lint@v1.52.2)
+	$(call go-install-tool,$(GOLANGCI_LINT),github.com/golangci/golangci-lint/cmd/golangci-lint@v1.54.2)
 
 # Linting code as PR is expecting
 .PHONY: golint
@@ -193,13 +193,14 @@ undeploy: ## Undeploy controller from the K8s cluster specified in ~/.kube/confi
 # Helm
 SRC_ROOT = $(shell git rev-parse --show-toplevel)
 
+HELM_DOCS = $(shell pwd)/bin/helm-docs
+.PHONY: helm-docs-ensure
+helm-docs-ensure: ## Download helm-docs locally if necessary.
+	$(call go-install-tool,$(HELM_DOCS),github.com/norwoodj/helm-docs/cmd/helm-docs@v1.11.0)
 
 .PHONY: helm-docs
-helm-docs: HELMDOCS_VERSION := v1.11.0
-helm-docs: docker ## Run helm-docs within docker.
-	@docker run --rm -v "$(SRC_ROOT):/helm-docs" jnorwood/helm-docs:$(HELMDOCS_VERSION) --chart-search-root /helm-docs
-
-
+helm-docs: helm-docs-ensure ## Run helm-docs.
+	$(HELM_DOCS) --chart-search-root $(shell pwd)/charts
 
 .PHONY: helm-lint
 helm-lint: docker ## Run ct test linter in docker.
@@ -255,3 +256,7 @@ $(CONTROLLER_GEN): $(LOCALBIN)
 envtest: $(ENVTEST) ## Download envtest-setup locally if necessary.
 $(ENVTEST): $(LOCALBIN)
 	test -s $(LOCALBIN)/setup-envtest || GOBIN=$(LOCALBIN) go install sigs.k8s.io/controller-runtime/tools/setup-envtest@latest
+
+
+.PHONY: merge-request
+merge-request: manifests installer golint apidoc helm-docs ## Run Local checks before a opening merge request

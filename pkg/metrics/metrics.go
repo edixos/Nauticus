@@ -27,8 +27,28 @@ var (
 			Help: "In Progress Spaces",
 		}, []string{"name"},
 	)
+
+	ReadySpaceTemplates = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "ready_spacetemplates",
+			Help: "ready SpaceTemplates",
+		}, []string{"name"},
+	)
+
+	FailedSpaceTemplates = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "not_ready_spacetemplates",
+			Help: "not ready SpaceTemplates",
+		}, []string{"name"},
+	)
+	InProgresSpaceTemplates = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "in_progress_spacetemplates",
+			Help: "In Progress SpaceTemplates",
+		}, []string{"name"},
+	)
 )
 
 func init() {
-	metrics.Registry.MustRegister(FailedSpaces, ReadySpaces, InProgressSpaces)
+	metrics.Registry.MustRegister(FailedSpaces, ReadySpaces, InProgressSpaces, ReadySpaceTemplates, FailedSpaceTemplates, InProgresSpaceTemplates)
 }

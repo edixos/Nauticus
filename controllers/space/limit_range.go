@@ -1,7 +1,7 @@
 // Copyright 2022-2023 Edixos
 // SPDX-License-Identifier: Apache-2.0
 
-package controllers
+package space
 
 import (
 	"context"
@@ -14,14 +14,14 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
-func (s *SpaceReconciler) reconcileLimitRanges(ctx context.Context, space *nauticusiov1alpha1.Space) (err error) {
+func (r *Reconciler) reconcileLimitRanges(ctx context.Context, space *nauticusiov1alpha1.Space) (err error) {
 	for i, limitRange := range space.Spec.LimitRanges.Items {
 		lrName := "nauticus-custom-" + strconv.Itoa(i)
 		lr := newLimitRange(lrName, space.Status.NamespaceName, limitRange)
-		err = s.syncLimitRange(ctx, lr, space, limitRange)
+		err = r.syncLimitRange(ctx, lr, space, limitRange)
 
 		if err != nil {
-			s.Log.Error(err, "Cannot Synchronize Limit Range")
+			r.Log.Error(err, "Cannot Synchronize Limit Range")
 
 			return err
 		}
@@ -30,7 +30,7 @@ func (s *SpaceReconciler) reconcileLimitRanges(ctx context.Context, space *nauti
 	return nil
 }
 
-func (s *SpaceReconciler) syncLimitRange(ctx context.Context, limitRange *corev1.LimitRange, space *nauticusiov1alpha1.Space, spec corev1.LimitRangeSpec) (err error) {
+func (r *Reconciler) syncLimitRange(ctx context.Context, limitRange *corev1.LimitRange, space *nauticusiov1alpha1.Space, spec corev1.LimitRangeSpec) (err error) {
 	var (
 		res                         controllerutil.OperationResult
 		spaceLabel, limitRangeLabel string
@@ -44,7 +44,7 @@ func (s *SpaceReconciler) syncLimitRange(ctx context.Context, limitRange *corev1
 		return
 	}
 
-	res, err = controllerutil.CreateOrUpdate(ctx, s.Client, limitRange, func() (err error) {
+	res, err = controllerutil.CreateOrUpdate(ctx, r.Client, limitRange, func() (err error) {
 		limitRange.SetLabels(map[string]string{
 			spaceLabel:      space.Name,
 			limitRangeLabel: limitRange.Name,
@@ -53,8 +53,8 @@ func (s *SpaceReconciler) syncLimitRange(ctx context.Context, limitRange *corev1
 
 		return nil
 	})
-	s.Log.Info("LimitRange sync result: "+string(res), "name", limitRange.Name, "namespace", space.Status.NamespaceName)
-	s.emitEvent(space, space.Name, res, "Ensuring LimitRange creation/Update", err)
+	r.Log.Info("LimitRange sync result: "+string(res), "name", limitRange.Name, "namespace", space.Status.NamespaceName)
+	r.EmitEvent(space, space.Name, res, "Ensuring LimitRange creation/Update", err)
 
 	return nil
 }
@@ -69,12 +69,12 @@ func newLimitRange(name, namespace string, limitRangeSpec corev1.LimitRangeSpec)
 	}
 }
 
-func (s *SpaceReconciler) deleteLimitRanges(ctx context.Context, space *nauticusiov1alpha1.Space) (err error) {
+func (r *Reconciler) deleteLimitRanges(ctx context.Context, space *nauticusiov1alpha1.Space) (err error) {
 	for i, limitRange := range space.Spec.LimitRanges.Items {
 		lrName := "nauticus-custom-" + strconv.Itoa(i)
 		lr := newLimitRange(lrName, space.Status.NamespaceName, limitRange)
 
-		if err = s.deleteObject(ctx, lr); err != nil {
+		if err = r.DeleteObject(ctx, lr); err != nil {
 			return err
 		}
 	}
