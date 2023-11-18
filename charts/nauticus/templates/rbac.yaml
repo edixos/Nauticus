@@ -168,6 +168,32 @@ rules:
       - patch
       - update
       - watch
+  - apiGroups:
+      - nauticus.io
+    resources:
+      - spacetemplates
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - nauticus.io
+    resources:
+      - spacetemplates/finalizers
+    verbs:
+      - update
+  - apiGroups:
+      - nauticus.io
+    resources:
+      - spacetemplates/status
+    verbs:
+      - get
+      - patch
+      - update
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
