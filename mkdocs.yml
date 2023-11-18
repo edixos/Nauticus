@@ -137,6 +137,8 @@ nav:
 
   - Tutorials:
       - Space Tutorial: tutorials/space-tutorial.md
+      - Space Template Tutorial: tutorials/space-templates-tutorial.md
+
       - Ignore Underlying Deletion: tutorials/ignore-underlying-deletion.md
   - Reference:
       - API Specification: crds-apis.md

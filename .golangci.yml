@@ -22,6 +22,7 @@ linters-settings:
 linters:
   enable-all: true
   disable:
+    - depguard
     - nestif
     - nonamedreturns
     - exhaustruct
@@ -55,3 +56,4 @@ service:
 run:
   skip-files:
     - "zz_.*\\.go$"
+    - "_test*.go"
