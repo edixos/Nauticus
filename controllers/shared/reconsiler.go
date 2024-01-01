@@ -1,4 +1,4 @@
-// Copyright 2022-2023 Edixos
+// Copyright 2023-2024 Edixos
 // SPDX-License-Identifier: Apache-2.0
 package shared
 
