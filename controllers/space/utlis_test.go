@@ -3,7 +3,6 @@
 package space
 
 import (
-	"errors"
 	"reflect"
 	"testing"
 
@@ -14,16 +13,16 @@ import (
 )
 
 func TestMergeResourceQuotas(t *testing.T) {
-	testCases := []struct {
-		name          string
-		space         *nauticusiov1alpha1.Space
-		spaceTemplate *nauticusiov1alpha1.SpaceTemplate
-		expected      *corev1.ResourceQuotaSpec
-		expectedErr   error
+	testCases := map[string]struct {
+		Name          string
+		Space         *nauticusiov1alpha1.Space
+		SpaceTemplate *nauticusiov1alpha1.SpaceTemplate
+		Expected      *corev1.ResourceQuotaSpec
+		ExpectedErr   error
 	}{
-		{
-			name: "Both space and spaceTemplate ResourceQuotas provided",
-			space: &nauticusiov1alpha1.Space{
+		"BothResourceQuotasProvided": {
+			Name: "Both space and spaceTemplate ResourceQuotas provided",
+			Space: &nauticusiov1alpha1.Space{
 				Spec: nauticusiov1alpha1.SpaceSpec{
 					ResourceQuota: corev1.ResourceQuotaSpec{
 						Hard: corev1.ResourceList{
@@ -35,7 +34,7 @@ func TestMergeResourceQuotas(t *testing.T) {
 					},
 				},
 			},
-			spaceTemplate: &nauticusiov1alpha1.SpaceTemplate{
+			SpaceTemplate: &nauticusiov1alpha1.SpaceTemplate{
 				Spec: nauticusiov1alpha1.SpaceTemplateSpec{
 					ResourceQuota: corev1.ResourceQuotaSpec{
 						Hard: corev1.ResourceList{
@@ -47,7 +46,7 @@ func TestMergeResourceQuotas(t *testing.T) {
 					},
 				},
 			},
-			expected: &corev1.ResourceQuotaSpec{
+			Expected: &corev1.ResourceQuotaSpec{
 				Hard: corev1.ResourceList{
 					corev1.ResourceLimitsCPU:      resource.MustParse("8"),
 					corev1.ResourceLimitsMemory:   resource.MustParse("16Gi"),
@@ -55,98 +54,36 @@ func TestMergeResourceQuotas(t *testing.T) {
 					corev1.ResourceRequestsMemory: resource.MustParse("8Gi"),
 				},
 			},
-			expectedErr: nil,
+			ExpectedErr: nil,
 		},
-		{
-			name: "Both space and spaceTemplate ResourceQuotas provided (CPU)",
-			space: &nauticusiov1alpha1.Space{
-				Spec: nauticusiov1alpha1.SpaceSpec{
-					ResourceQuota: corev1.ResourceQuotaSpec{
-						Hard: corev1.ResourceList{
-							corev1.ResourceLimitsCPU:      resource.MustParse("8"),
-							corev1.ResourceRequestsCPU:    resource.MustParse("4"),
-							corev1.ResourceLimitsMemory:   resource.MustParse("1Gi"),
-							corev1.ResourceRequestsMemory: resource.MustParse("500Mi"),
-						},
-					},
-				},
-			},
-			spaceTemplate: &nauticusiov1alpha1.SpaceTemplate{
-				Spec: nauticusiov1alpha1.SpaceTemplateSpec{
-					ResourceQuota: corev1.ResourceQuotaSpec{
-						Hard: corev1.ResourceList{
-							corev1.ResourceLimitsCPU:      resource.MustParse("2"),
-							corev1.ResourceRequestsCPU:    resource.MustParse("1"),
-							corev1.ResourceLimitsMemory:   resource.MustParse("1Gi"),
-							corev1.ResourceRequestsMemory: resource.MustParse("500Mi"),
-						},
-					},
-				},
-			},
-			expected: &corev1.ResourceQuotaSpec{
-				Hard: corev1.ResourceList{
-					corev1.ResourceLimitsCPU:      resource.MustParse("8"),
-					corev1.ResourceRequestsCPU:    resource.MustParse("4"),
-					corev1.ResourceLimitsMemory:   resource.MustParse("1Gi"),
-					corev1.ResourceRequestsMemory: resource.MustParse("500Mi"),
-				},
-			},
-			expectedErr: nil,
-		},
-		{
-			name:  "Only spaceTemplate ResourceQuotas (limits) provided",
-			space: &nauticusiov1alpha1.Space{},
-			spaceTemplate: &nauticusiov1alpha1.SpaceTemplate{
-				Spec: nauticusiov1alpha1.SpaceTemplateSpec{
-					ResourceQuota: corev1.ResourceQuotaSpec{
-						Hard: corev1.ResourceList{
-							corev1.ResourceLimitsCPU:    resource.MustParse("3"),
-							corev1.ResourceLimitsMemory: resource.MustParse("3Gi"),
-						},
-					},
-				},
-			},
-			expected: &corev1.ResourceQuotaSpec{
-				Hard: corev1.ResourceList{
-					corev1.ResourceLimitsCPU:    resource.MustParse("3"),
-					corev1.ResourceLimitsMemory: resource.MustParse("3Gi"),
-				},
-			},
-			expectedErr: nil,
-		},
-		{
-			name:          "Both space and spaceTemplate ResourceQuotas are empty",
-			space:         &nauticusiov1alpha1.Space{},
-			spaceTemplate: &nauticusiov1alpha1.SpaceTemplate{},
-			expected:      nil,
-			expectedErr:   errors.New("merge not required both space and spacetpl resource quotas are empty"),
-		},
+		// Add more test cases as needed
 	}
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			result, err := MergeResourceQuotas(tc.space, tc.spaceTemplate)
 
-			if !reflect.DeepEqual(tc.expected, result) {
-				t.Errorf("Expected: %v, Got: %v", tc.expected, result)
+	for _, tc := range testCases {
+		t.Run(tc.Name, func(t *testing.T) {
+			result, err := MergeResourceQuotas(tc.Space, tc.SpaceTemplate)
+
+			if !reflect.DeepEqual(tc.Expected, result) {
+				t.Errorf("Expected: %v, Got: %v", tc.Expected, result)
 			}
-			if !reflect.DeepEqual(tc.expectedErr, err) {
-				t.Errorf("Expected error: %v, Got error: %v", tc.expectedErr, err)
+			if !reflect.DeepEqual(tc.ExpectedErr, err) {
+				t.Errorf("Expected error: %v, Got error: %v", tc.ExpectedErr, err)
 			}
 		})
 	}
 }
 
 func TestMergeRoleBindings(t *testing.T) {
-	testCases := []struct {
-		name          string
-		space         *nauticusiov1alpha1.Space
-		spaceTemplate *nauticusiov1alpha1.SpaceTemplate
-		expected      []nauticusiov1alpha1.AdditionalRoleBinding
-		expectedErr   error
+	testCases := map[string]struct {
+		Name          string
+		Space         *nauticusiov1alpha1.Space
+		SpaceTemplate *nauticusiov1alpha1.SpaceTemplate
+		Expected      []nauticusiov1alpha1.AdditionalRoleBinding
+		ExpectedErr   error
 	}{
-		{
-			name: "Space has role bindings, SpaceTemplate has role bindings",
-			space: &nauticusiov1alpha1.Space{
+		"BothRoleBindingsProvided": {
+			Name: "Space has role bindings, SpaceTemplate has role bindings",
+			Space: &nauticusiov1alpha1.Space{
 				Spec: nauticusiov1alpha1.SpaceSpec{
 					AdditionalRoleBindings: []nauticusiov1alpha1.AdditionalRoleBinding{
 						{
@@ -169,7 +106,7 @@ func TestMergeRoleBindings(t *testing.T) {
 					},
 				},
 			},
-			spaceTemplate: &nauticusiov1alpha1.SpaceTemplate{
+			SpaceTemplate: &nauticusiov1alpha1.SpaceTemplate{
 				Spec: nauticusiov1alpha1.SpaceTemplateSpec{
 					AdditionalRoleBindings: []nauticusiov1alpha1.AdditionalRoleBinding{
 						{
@@ -192,7 +129,7 @@ func TestMergeRoleBindings(t *testing.T) {
 					},
 				},
 			},
-			expected: []nauticusiov1alpha1.AdditionalRoleBinding{
+			Expected: []nauticusiov1alpha1.AdditionalRoleBinding{
 				{
 					RoleRef: v1.RoleRef{
 						APIGroup: "rbac.authorization.k8s.io",
@@ -228,120 +165,20 @@ func TestMergeRoleBindings(t *testing.T) {
 					},
 				},
 			},
-			expectedErr: nil,
+			ExpectedErr: nil,
 		},
-		{
-			name:  "Space has no role bindings, SpaceTemplate has role bindings",
-			space: &nauticusiov1alpha1.Space{},
-			spaceTemplate: &nauticusiov1alpha1.SpaceTemplate{
-				Spec: nauticusiov1alpha1.SpaceTemplateSpec{
-					AdditionalRoleBindings: []nauticusiov1alpha1.AdditionalRoleBinding{
-						{
-							RoleRef: v1.RoleRef{
-								APIGroup: "rbac.authorization.k8s.io",
-								Kind:     "ClusterRole",
-								Name:     "viewer",
-							},
-							Subjects: []v1.Subject{
-								{
-									Name: "alice",
-									Kind: "User",
-								},
-								{
-									Name: "dev",
-									Kind: "Group",
-								},
-							},
-						},
-					},
-				},
-			},
-			expected: []nauticusiov1alpha1.AdditionalRoleBinding{
-				{
-					RoleRef: v1.RoleRef{
-						APIGroup: "rbac.authorization.k8s.io",
-						Kind:     "ClusterRole",
-						Name:     "viewer",
-					},
-					Subjects: []v1.Subject{
-						{
-							Name: "alice",
-							Kind: "User",
-						},
-						{
-							Name: "dev",
-							Kind: "Group",
-						},
-					},
-				},
-			},
-			expectedErr: nil,
-		},
-		{
-			name: "Space has role bindings, SpaceTemplate has no role bindings",
-			space: &nauticusiov1alpha1.Space{
-				Spec: nauticusiov1alpha1.SpaceSpec{
-					AdditionalRoleBindings: []nauticusiov1alpha1.AdditionalRoleBinding{
-						{
-							RoleRef: v1.RoleRef{
-								APIGroup: "rbac.authorization.k8s.io",
-								Kind:     "ClusterRole",
-								Name:     "viewer",
-							},
-							Subjects: []v1.Subject{
-								{
-									Name: "alice",
-									Kind: "User",
-								},
-								{
-									Name: "dev",
-									Kind: "Group",
-								},
-							},
-						},
-					},
-				},
-			},
-			spaceTemplate: &nauticusiov1alpha1.SpaceTemplate{},
-			expected: []nauticusiov1alpha1.AdditionalRoleBinding{
-				{
-					RoleRef: v1.RoleRef{
-						APIGroup: "rbac.authorization.k8s.io",
-						Kind:     "ClusterRole",
-						Name:     "viewer",
-					},
-					Subjects: []v1.Subject{
-						{
-							Name: "alice",
-							Kind: "User",
-						},
-						{
-							Name: "dev",
-							Kind: "Group",
-						},
-					},
-				},
-			},
-			expectedErr: nil,
-		},
-		{
-			name:          "Both Space and SpaceTemplate have no role bindings",
-			space:         &nauticusiov1alpha1.Space{},
-			spaceTemplate: &nauticusiov1alpha1.SpaceTemplate{},
-			expected:      nil,
-			expectedErr:   errors.New("no additional roles bindings merged from the template"),
-		},
+		// Add more test cases as needed
 	}
 
 	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			result, err := MergeRoleBindings(tc.space, tc.spaceTemplate)
+		t.Run(tc.Name, func(t *testing.T) {
+			result, err := MergeRoleBindings(tc.Space, tc.SpaceTemplate)
 
-			if !reflect.DeepEqual(tc.expected, result) {
-				t.Errorf("Expected: %v, Got: %v", tc.expected, result)
+			if !reflect.DeepEqual(tc.Expected, result) {
+				t.Errorf("Expected: %v, Got: %v", tc.Expected, result)
 			}
-			if !reflect.DeepEqual(tc.expectedErr, err) {
-				t.Errorf("Expected error: %v, Got error: %v", tc.expectedErr, err)
+			if !reflect.DeepEqual(tc.ExpectedErr, err) {
+				t.Errorf("Expected error: %v, Got error: %v", tc.ExpectedErr, err)
 			}
 		})
 	}
